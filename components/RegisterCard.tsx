@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Link from "next/link";
 import {
   Heading,
@@ -32,7 +32,7 @@ function RegisterCard() {
   const [submit, setSubmit] = useState(false);
   const [avatar, setAvatar] = useState("Please, choose your avatar (optional)");
   const [error, setError] = useState(false);
-
+  const router = useRouter();
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
@@ -59,8 +59,6 @@ function RegisterCard() {
   const handleShow = () => setShow(!show);
 
   const navigate = (href: string) => {
-    const router = useRouter();
-
     router.push(`/chat/${href}`);
   };
 
@@ -72,7 +70,7 @@ function RegisterCard() {
 
       const storageRef = ref(
         storage,
-        displayName + ".(" + res.user.uid + ")." + fileName
+        displayName + "." + res.user.uid.slice(0, 5) + "." + fileName
       );
 
       if (fileCheck) {
@@ -130,7 +128,8 @@ function RegisterCard() {
       }
 
       await setDoc(doc(db, "userChats", res.user.uid), {});
-      navigate(res.user.uid);
+
+      navigate(displayName + "/" + res.user.uid.slice(0, 5));
     } catch (error: any) {
       setError(true);
       // console.log(error.message);
