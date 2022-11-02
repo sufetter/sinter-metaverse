@@ -40,8 +40,10 @@ function RegisterCard() {
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
-    if (e.target.value.length < 6) {
-    }
+  };
+
+  const handlePasswordRepeat = (e: any) => {
+    setPasswordRepeat(e.target.value);
   };
 
   const handleDisplayNameChange = (e: any) => setDisplayName(e.target.value);
@@ -147,7 +149,7 @@ function RegisterCard() {
   };
 
   const isErrorEmail = email === "";
-  const isErrorPssword = password.length < 6;
+  const isErrorPssword = password.length < 6 || passwordRepeat !== password;
   const isErrorNickname = displayName === "";
   let file: Array<File> = [];
   let fileName: string = "";
@@ -227,7 +229,7 @@ function RegisterCard() {
                     size="sm"
                     onClick={handleShow}
                     p="20px"
-                    disabled={isErrorPssword}
+                    disabled={password.length < 1}
                     ml={2}
                   >
                     {show ? "Hide" : "Show"}
@@ -243,7 +245,7 @@ function RegisterCard() {
                 <Input
                   type={show ? "text" : "password"}
                   value={passwordRepeat}
-                  onChange={handlePasswordChange}
+                  onChange={handlePasswordRepeat}
                   placeholder="Repeat your Password"
                   bg="#224957"
                   w="100%"
