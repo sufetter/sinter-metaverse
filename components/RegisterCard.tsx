@@ -48,7 +48,6 @@ function RegisterCard() {
 
     if (
       file[0]?.type.includes("image") &&
-      Math.round(file[0].size / 1000) > 20 &&
       Math.round(file[0].size / 1000) < 5000
     ) {
       fileName = file[0].name.split(".").pop()!;
@@ -129,7 +128,7 @@ function RegisterCard() {
 
       await setDoc(doc(db, "userChats", res.user.uid), {});
 
-      navigate(displayName + "/" + res.user.uid.slice(0, 5));
+      navigate(displayName + "." + res.user.uid.slice(0, 5));
     } catch (error: any) {
       setError(true);
       // console.log(error.message);
@@ -145,145 +144,148 @@ function RegisterCard() {
   let fileCheck: File;
 
   return (
-    <Center>
-      <Flex w="100%" h="100vh" align="center" justify="center" bg="#030812">
-        <Flex minWidth="400px">
-          <Box
-            maxW={"470px"}
-            w={"full"}
-            boxShadow={"2xl"}
-            rounded={"md"}
-            overflow={"hidden"}
-            flex={1}
-          >
-            <Box p={4}>
-              <Heading
-                fontSize={"38px"}
-                fontWeight={500}
-                fontFamily={"body"}
-                color="white"
-                mb="5"
+    <Flex
+      w="100%"
+      flex={"1 1 auto"}
+      h="100%"
+      align="center"
+      justify="center"
+      bg="#030812"
+    >
+      <Flex minWidth="400px">
+        <Box
+          maxW={"470px"}
+          w={"full"}
+          boxShadow={"2xl"}
+          rounded={"md"}
+          overflow={"hidden"}
+          flex={1}
+        >
+          <Box p={4}>
+            <Heading
+              fontSize={"38px"}
+              fontWeight={500}
+              fontFamily={"body"}
+              color="white"
+              mb="5"
+            >
+              Register
+            </Heading>
+            <form onSubmit={handleSubmit}>
+              <FormControl isInvalid={isErrorNickname}>
+                <Input
+                  type="text"
+                  value={displayName}
+                  onChange={handleDisplayNameChange}
+                  placeholder="Your nickname"
+                  bg="#224957"
+                />
+                {!isErrorNickname ? (
+                  <FormHelperText mb="2">Nice one.</FormHelperText>
+                ) : (
+                  <FormErrorMessage mb="2">
+                    We need any nickname for you.
+                  </FormErrorMessage>
+                )}
+              </FormControl>
+              <FormControl isInvalid={isErrorEmail}>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="Email"
+                  bg="#224957"
+                />
+                {!isErrorEmail ? (
+                  <FormHelperText mb="2">Email is checked.</FormHelperText>
+                ) : (
+                  <FormErrorMessage mb="2">Email is required.</FormErrorMessage>
+                )}
+              </FormControl>
+              <FormControl isInvalid={isErrorPssword}>
+                <InputGroup mb={2}>
+                  <Input
+                    type={show ? "text" : "password"}
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder="Password"
+                    bg="#224957"
+                    w="100%"
+                  />
+                  <Button
+                    h="1.75rem"
+                    size="sm"
+                    onClick={handleShow}
+                    p="20px"
+                    disabled={isErrorPssword}
+                    ml={2}
+                  >
+                    {show ? "Hide" : "Show"}
+                  </Button>
+                </InputGroup>
+                {!isErrorPssword ? (
+                  <FormHelperText mb={2}>Password is correct</FormHelperText>
+                ) : (
+                  <FormErrorMessage mb={2}>
+                    Please, enter your password. Min length os required.
+                  </FormErrorMessage>
+                )}
+
+                <Stack direction="row" align="center">
+                  <img color="white" width="50px" src={imageIcon.src}></img>
+                  <FormLabel htmlFor="Avatar">
+                    <Input
+                      type="file"
+                      pl={3}
+                      color="white"
+                      border="white"
+                      cursor="pointer"
+                      onChange={handleFileChange}
+                      display="none"
+                      id="Avatar"
+                    ></Input>
+                    <Text
+                      color="white"
+                      _hover={{
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {avatar}
+                    </Text>
+                  </FormLabel>
+                </Stack>
+              </FormControl>
+
+              <Stack direction="row" mt={2}>
+                <Text color="#224957" fontSize={14} fontWeight="bold">
+                  Have an account?
+                </Text>
+                <Spacer />
+                <Link href="/login">
+                  <a>Login</a>
+                </Link>
+              </Stack>
+              <Button
+                type="submit"
+                w={"full"}
+                mt={5}
+                bg="#FE6060"
+                color={"white"}
+                rounded={"md"}
+                disabled={submit}
+                _hover={{
+                  transform: "translateY(-2px)",
+                  boxShadow: "lg",
+                }}
               >
                 Register
-              </Heading>
-              <form onSubmit={handleSubmit}>
-                <FormControl isInvalid={isErrorNickname}>
-                  <Input
-                    type="text"
-                    value={displayName}
-                    onChange={handleDisplayNameChange}
-                    placeholder="Your nickname"
-                    bg="#224957"
-                  />
-                  {!isErrorNickname ? (
-                    <FormHelperText mb="2">Nice one.</FormHelperText>
-                  ) : (
-                    <FormErrorMessage mb="2">
-                      We need any nickname for you.
-                    </FormErrorMessage>
-                  )}
-                </FormControl>
-                <FormControl isInvalid={isErrorEmail}>
-                  <Input
-                    type="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    placeholder="Email"
-                    bg="#224957"
-                  />
-                  {!isErrorEmail ? (
-                    <FormHelperText mb="2">Email is checked.</FormHelperText>
-                  ) : (
-                    <FormErrorMessage mb="2">
-                      Email is required.
-                    </FormErrorMessage>
-                  )}
-                </FormControl>
-                <FormControl isInvalid={isErrorPssword}>
-                  <InputGroup mb={2}>
-                    <Input
-                      type={show ? "text" : "password"}
-                      value={password}
-                      onChange={handlePasswordChange}
-                      placeholder="Password"
-                      bg="#224957"
-                      w="100%"
-                    />
-                    <Button
-                      h="1.75rem"
-                      size="sm"
-                      onClick={handleShow}
-                      p="20px"
-                      disabled={isErrorPssword}
-                      ml={2}
-                    >
-                      {show ? "Hide" : "Show"}
-                    </Button>
-                  </InputGroup>
-                  {!isErrorPssword ? (
-                    <FormHelperText mb={2}>Password is correct</FormHelperText>
-                  ) : (
-                    <FormErrorMessage mb={2}>
-                      Please, enter your password. Min length os required.
-                    </FormErrorMessage>
-                  )}
-
-                  <Stack direction="row" align="center">
-                    <img color="white" width="50px" src={imageIcon.src}></img>
-                    <FormLabel htmlFor="Avatar">
-                      <Input
-                        type="file"
-                        pl={3}
-                        color="white"
-                        border="white"
-                        cursor="pointer"
-                        onChange={handleFileChange}
-                        display="none"
-                        id="Avatar"
-                      ></Input>
-                      <Text
-                        color="white"
-                        _hover={{
-                          textDecoration: "underline",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {avatar}
-                      </Text>
-                    </FormLabel>
-                  </Stack>
-                </FormControl>
-
-                <Stack direction="row" mt={2}>
-                  <Text color="#224957" fontSize={14} fontWeight="bold">
-                    Have an account?
-                  </Text>
-                  <Spacer />
-                  <Link href="/login">
-                    <a>Login</a>
-                  </Link>
-                </Stack>
-                <Button
-                  type="submit"
-                  w={"full"}
-                  mt={5}
-                  bg="#FE6060"
-                  color={"white"}
-                  rounded={"md"}
-                  disabled={submit}
-                  _hover={{
-                    transform: "translateY(-2px)",
-                    boxShadow: "lg",
-                  }}
-                >
-                  Register
-                </Button>
-              </form>
-            </Box>
+              </Button>
+            </form>
           </Box>
-        </Flex>
+        </Box>
       </Flex>
-    </Center>
+    </Flex>
   );
 }
 export default RegisterCard;

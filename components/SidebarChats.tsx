@@ -22,11 +22,18 @@ export const SidebarChats = () => {
   return (
     <Flex
       w="300px"
-      h="100vh"
       bg=""
       borderEnd="1px solid"
       borderColor={"#C1402F"}
       direction="column"
+      overflowY="scroll"
+      sx={{scrollbarWidth: "none"}}
+      css={{
+        "&::-webkit-scrollbar": {
+          display: "none",
+          width: "30px",
+        },
+      }}
     >
       <Flex
         w="100%"
