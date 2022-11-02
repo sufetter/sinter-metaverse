@@ -15,6 +15,7 @@ import {
   Input,
   InputGroup,
   Spacer,
+  Image,
 } from "@chakra-ui/react";
 import {AttachmentIcon} from "@chakra-ui/icons";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
@@ -31,7 +32,10 @@ function RegisterCard() {
   const [show, setShow] = useState(false);
   const [submit, setSubmit] = useState(false);
   const [avatar, setAvatar] = useState("Please, choose your avatar (optional)");
+  const [imagePreview, setImagePreview] = useState(imageIcon.src);
+  const [passwordRepeat, setPasswordRepeat] = useState("");
   const [error, setError] = useState(false);
+
   const router = useRouter();
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
@@ -52,6 +56,12 @@ function RegisterCard() {
     ) {
       fileName = file[0].name.split(".").pop()!;
       fileCheck = file[0];
+      setAvatar("Your Avatar is: " + file[0].name);
+      let avatarPath = URL.createObjectURL(file[0]);
+      setImagePreview(avatarPath);
+      console.log(file[0].webkitRelativePath);
+    } else {
+      setAvatar("Not valid file, please, upload Image (up to 5mb)");
     }
   };
 
@@ -152,7 +162,7 @@ function RegisterCard() {
       justify="center"
       bg="#030812"
     >
-      <Flex minWidth="400px">
+      <Flex minWidth="400px" maxW={"400px"}>
         <Box
           maxW={"470px"}
           w={"full"}
@@ -227,35 +237,44 @@ function RegisterCard() {
                   <FormHelperText mb={2}>Password is correct</FormHelperText>
                 ) : (
                   <FormErrorMessage mb={2}>
-                    Please, enter your password. Min length os required.
+                    Please, enter your password. Min length 6 is required.
                   </FormErrorMessage>
                 )}
-
-                <Stack direction="row" align="center">
-                  <img color="white" width="50px" src={imageIcon.src}></img>
-                  <FormLabel htmlFor="Avatar">
-                    <Input
-                      type="file"
-                      pl={3}
-                      color="white"
-                      border="white"
-                      cursor="pointer"
-                      onChange={handleFileChange}
-                      display="none"
-                      id="Avatar"
-                    ></Input>
-                    <Text
-                      color="white"
-                      _hover={{
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {avatar}
-                    </Text>
-                  </FormLabel>
-                </Stack>
+                <Input
+                  type={show ? "text" : "password"}
+                  value={passwordRepeat}
+                  onChange={handlePasswordChange}
+                  placeholder="Repeat your Password"
+                  bg="#224957"
+                  w="100%"
+                />
               </FormControl>
+              <Stack direction="row" align="center" m={3}>
+                <Image boxSize="70px" objectFit="cover" src={imagePreview} />
+                <FormLabel htmlFor="Avatar">
+                  <Input
+                    type="file"
+                    pl={3}
+                    color="white"
+                    border="white"
+                    cursor="pointer"
+                    onChange={handleFileChange}
+                    display="none"
+                    id="Avatar"
+                  ></Input>
+                  <Text
+                    align="center"
+                    color="white"
+                    _hover={{
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    }}
+                    flexWrap="wrap"
+                  >
+                    {avatar}
+                  </Text>
+                </FormLabel>
+              </Stack>
 
               <Stack direction="row" mt={2}>
                 <Text color="#224957" fontSize={14} fontWeight="bold">
