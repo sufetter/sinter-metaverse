@@ -231,6 +231,7 @@ function RegisterCard() {
                     p="20px"
                     disabled={password.length < 1}
                     ml={2}
+                    minW="70px"
                   >
                     {show ? "Hide" : "Show"}
                   </Button>
