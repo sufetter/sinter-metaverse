@@ -37,7 +37,6 @@ export const MainChat = () => {
     >
       <TopBarChat />
       <Flex
-        flex={1}
         direction="column"
         overflowY="scroll"
         sx={{scrollbarWidth: "none"}}
