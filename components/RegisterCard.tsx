@@ -129,7 +129,7 @@ function RegisterCard() {
 
       await setDoc(doc(db, "userChats", res.user.uid), {});
 
-      navigate(displayName + "/" + res.user.uid.slice(0, 5));
+      navigate(displayName + "." + res.user.uid.slice(0, 5));
     } catch (error: any) {
       setError(true);
       // console.log(error.message);

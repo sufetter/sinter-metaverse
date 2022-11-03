@@ -22,7 +22,19 @@ export const BottomBarChat = () => {
 
 export const MainChat = () => {
   return (
-    <Flex h="100vh" w="100%" direction="column">
+    <Flex
+      h="100vh"
+      w="100%"
+      direction="column"
+      overflowY="scroll"
+      sx={{scrollbarWidth: "none"}}
+      css={{
+        "&::-webkit-scrollbar": {
+          display: "none",
+          width: "30px",
+        },
+      }}
+    >
       <TopBarChat />
       <Flex
         flex={1}
