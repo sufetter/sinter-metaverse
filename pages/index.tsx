@@ -3,6 +3,8 @@ import Head from "next/head";
 import Login from "./login";
 import {ChakraProvider} from "@chakra-ui/react";
 import Chats from "./Chats";
+import Layout from "../components/Layout";
+import Register from "./register";
 
 const Home: NextPage = () => {
   return (
@@ -13,7 +15,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ChakraProvider>
-        <Login />
+        <Register />
       </ChakraProvider>
     </div>
   );
