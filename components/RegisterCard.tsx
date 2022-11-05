@@ -57,7 +57,7 @@ function RegisterCard() {
       Math.round(file[0].size / 1000) < 5000
     ) {
       fileName = file[0].name.split(".").pop()!;
-      fileCheck = file[0];
+      fileCheck = file[0]; // Вот говоришь ему мол держи значение переменной
       setAvatar("Your Avatar is: " + file[0].name);
       let avatarPath = URL.createObjectURL(file[0]);
       setImagePreview(avatarPath);
@@ -74,6 +74,7 @@ function RegisterCard() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    console.log(file[0]); //  А он говорит, что рот твой в undefinde
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -108,38 +109,38 @@ function RegisterCard() {
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then(
               async (downloadURL) => {
-                // console.log("File available at", downloadURL);
-                // console.log(res.user);
-                await updateProfile(res.user, {
-                  displayName: displayName,
-                  photoURL: downloadURL,
-                });
-                await setDoc(doc(db, "users", res.user.uid), {
-                  userID: res.user.uid,
-                  displayName,
-                  email,
-                  photoURL: downloadURL,
-                });
+                console.log("File available at", downloadURL);
+                console.log(res.user);
+                // await updateProfile(res.user, {
+                //   displayName: displayName,
+                //   photoURL: downloadURL,
+                // });
+                // await setDoc(doc(db, "users", res.user.uid), {
+                //   userID: res.user.uid,
+                //   displayName,
+                //   email,
+                //   photoURL: downloadURL,
+                // });
 
-                await setDoc(doc(db, "userChats", res.user.uid), {});
+                // await setDoc(doc(db, "userChats", res.user.uid), {});
               }
             );
           }
         );
       } else {
-        await updateProfile(res.user, {
-          displayName: displayName,
-        });
-        await setDoc(doc(db, "users", res.user.uid), {
-          userID: res.user.uid,
-          displayName,
-          email,
-        });
+        // await updateProfile(res.user, {
+        //   displayName: displayName,
+        // });
+        // await setDoc(doc(db, "users", res.user.uid), {
+        //   userID: res.user.uid,
+        //   displayName,
+        //   email,
+        // });
       }
 
       await setDoc(doc(db, "userChats", res.user.uid), {});
 
-      navigate(displayName + "." + res.user.uid.slice(0, 5));
+      // navigate(displayName + "." + res.user.uid.slice(0, 5));
     } catch (error: any) {
       setError(true);
       // console.log(error.message);
@@ -153,6 +154,7 @@ function RegisterCard() {
   let file: Array<File> = [];
   let fileName: string = "";
   let fileCheck: File;
+  let x;
 
   return (
     <Flex
@@ -161,7 +163,7 @@ function RegisterCard() {
       h="100%"
       align="center"
       justify="center"
-      bg="#030812"
+      mt="-60px"
     >
       <Flex minWidth="400px" maxW={"400px"}>
         <Box
@@ -258,12 +260,16 @@ function RegisterCard() {
                   </FormErrorMessage>
                 )}
               </FormControl>
-              <Stack direction="row" align="center" m={3}>
-                <Image boxSize="70px" objectFit="cover" src={imagePreview} />
-                <FormLabel htmlFor="Avatar">
+              <Stack direction="row" align="center" m={2}>
+                <Image
+                  boxSize="70px"
+                  objectFit="cover"
+                  src={imagePreview}
+                  borderRadius="10px"
+                />
+                <FormLabel htmlFor="Avatar" w="100%">
                   <Input
                     type="file"
-                    pl={3}
                     color="white"
                     border="white"
                     cursor="pointer"
