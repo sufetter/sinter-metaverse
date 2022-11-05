@@ -74,7 +74,7 @@ function RegisterCard() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(file[0]); //  А он говорит, что рот твой в undefinde
+    console.log(fileCheck); //  А он говорит, что рот твой в undefinde
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
