@@ -20,7 +20,12 @@ import {
 import {AttachmentIcon} from "@chakra-ui/icons";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
 import imageIcon from "../images/imageIcon.png";
-import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  onAuthStateChanged,
+  sendEmailVerification,
+} from "firebase/auth";
 import {auth, storage, db} from "../firebaseconfig";
 import {doc, setDoc} from "firebase/firestore";
 import {useRouter} from "next/router";
@@ -69,7 +74,7 @@ function RegisterCard() {
   const handleShow = () => setShow(!show);
 
   const navigate = (href: string) => {
-    router.push(`/chat/${href}`);
+    router.push(`${href}`);
   };
 
   const handleSubmit = async (e: any) => {
@@ -78,7 +83,7 @@ function RegisterCard() {
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-
+      await sendEmailVerification(res.user);
       const storageRef = ref(
         storage,
         displayName + "." + res.user.uid.slice(0, 5) + "." + fileName
@@ -111,10 +116,10 @@ function RegisterCard() {
               async (downloadURL) => {
                 console.log("File available at", downloadURL);
                 console.log(res.user);
-                // await updateProfile(res.user, {
-                //   displayName: displayName,
-                //   photoURL: downloadURL,
-                // });
+                await updateProfile(res.user, {
+                  displayName: displayName,
+                  photoURL: downloadURL,
+                });
                 // await setDoc(doc(db, "users", res.user.uid), {
                 //   userID: res.user.uid,
                 //   displayName,
@@ -128,9 +133,9 @@ function RegisterCard() {
           }
         );
       } else {
-        // await updateProfile(res.user, {
-        //   displayName: displayName,
-        // });
+        await updateProfile(res.user, {
+          displayName: displayName,
+        });
         // await setDoc(doc(db, "users", res.user.uid), {
         //   userID: res.user.uid,
         //   displayName,
@@ -138,13 +143,14 @@ function RegisterCard() {
         // });
       }
 
-      await setDoc(doc(db, "userChats", res.user.uid), {});
+      // await setDoc(doc(db, "userChats", res.user.uid), {});
 
       // navigate(displayName + "." + res.user.uid.slice(0, 5));
+      navigate("/verefication");
     } catch (error: any) {
       setError(true);
-      // console.log(error.message);
-      // console.log(error);
+      console.log(error.message);
+      console.log(error);
     }
   };
 

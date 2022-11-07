@@ -36,6 +36,7 @@ export default function LayoutCard({children}: LayoutProps) {
             align="center"
             mx="60px"
             h="60px"
+            zIndex={10}
           >
             <Box>
               <Text fontFamily="Roboto" fontSize="24px">
