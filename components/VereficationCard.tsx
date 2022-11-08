@@ -28,18 +28,35 @@ const VereficationCard = () => {
       console.log(user.emailVerified);
       console.log(user);
     } else {
-      console.log("wtf");
+      // navigate("/register");
+      console.log("No user");
     }
   });
 
-  useEffect(() => {
+  const checkEmail = () => {
     auth.currentUser?.reload();
     let user = auth.currentUser;
     console.log(user?.emailVerified);
     if (auth.currentUser?.emailVerified) {
       navigate("/chat/" + user?.displayName + "." + user?.uid.slice(0, 5));
     }
-  });
+  };
+
+  const sendEmailVerificationAgain = () => {
+    let user = auth.currentUser;
+    if (user) {
+      sendEmailVerification(user!);
+    }
+  };
+
+  // useEffect(() => {
+  //   auth.currentUser?.reload();
+  //   let user = auth.currentUser;
+  //   console.log(user?.emailVerified);
+  //   if (auth.currentUser?.emailVerified) {
+  //     navigate("/chat/" + user?.displayName + "." + user?.uid.slice(0, 5));
+  //   }
+  // });
 
   return (
     <Flex
@@ -77,7 +94,14 @@ const VereficationCard = () => {
               We have sent you an email with a link to verify your mail. Please
               check your mail.
             </Text>
-            <Button w="100%" mt={3} bg="#FE6060">
+            <Text
+              _hover={{textDecoration: "underline", cursor: "pointer"}}
+              color="white"
+              w="fill-content"
+            >
+              BETA ADD TEXT
+            </Text>
+            <Button w="100%" mt={3} bg="#FE6060" onClick={checkEmail}>
               <Spinner />
             </Button>
           </Box>

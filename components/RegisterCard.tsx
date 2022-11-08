@@ -53,6 +53,14 @@ function RegisterCard() {
 
   const handleDisplayNameChange = (e: any) => setDisplayName(e.target.value);
 
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
+    } else {
+      // navigate();
+    }
+  });
+
   const handleFileChange = (e: any) => {
     if (e.target.files[0]?.type == undefined) return;
     file[0] = e.target.files![0];
