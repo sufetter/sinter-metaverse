@@ -16,6 +16,7 @@ import {
   InputGroup,
   Spacer,
   Image,
+  Progress,
 } from "@chakra-ui/react";
 import {AttachmentIcon} from "@chakra-ui/icons";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
@@ -44,8 +45,8 @@ function RegisterCard() {
   const router = useRouter();
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
-    setPassword(e.target.value);
     let str: string = e.target.value;
+    setPassword(str);
     if (str.length < 6) {
       setPasswordAlerter(
         "Please, enter your password. Min length 6 is required."
@@ -168,15 +169,21 @@ function RegisterCard() {
     }
   };
 
-  const isErrorEmail = email === "";
-  const isPassowordShort = password.length < 6;
-  const isPasswordReliable =
-    password.search(/[A-Z]/) !== -1 &&
-    password.search(/[a-z]/) !== -1 &&
-    password.search(/[0-9]/) !== -1;
-  const isErrorPassword = isPassowordShort || !isPasswordReliable;
-  const isErrorPasswordRepeat = passwordRepeat != password;
-  const isErrorNickname = displayName === "";
+  const isErrorEmail: boolean = email === "";
+  const isPassowordShort: boolean = password.length < 6;
+  const areBigLetters: boolean = password.search(/[A-Z]/) !== -1;
+  const areLittleLetters: boolean = password.search(/[a-z]/) !== -1;
+  const areNumbers: boolean = password.search(/[0-9]/) !== -1;
+  const isPasswordReliable: boolean =
+    areBigLetters && areLittleLetters && areNumbers;
+  const passwordProgress: number =
+    Number(!isPassowordShort) * 50 +
+    (50 *
+      (Number(areBigLetters) + Number(areLittleLetters) + Number(areNumbers))) /
+      3;
+  const isErrorPassword: boolean = isPassowordShort || !isPasswordReliable;
+  const isErrorPasswordRepeat: boolean = passwordRepeat != password;
+  const isErrorNickname: boolean = displayName === "";
   let file: Array<File> = [];
   let fileName: string = "";
   let fileCheck: File;
@@ -267,6 +274,15 @@ function RegisterCard() {
                   <FormErrorMessage mb={2}>{passwordAlerter}</FormErrorMessage>
                 )}
               </FormControl>
+              <Progress
+                hasStripe
+                colorScheme="orange"
+                value={passwordProgress}
+                mb="14px"
+                border-radius="10px"
+                h="5px"
+                bg="#224957"
+              />
               <FormControl isInvalid={isErrorPasswordRepeat}>
                 <Input
                   type={show ? "text" : "password"}
