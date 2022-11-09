@@ -8,7 +8,7 @@ export default function Layout({children}: LayoutProps) {
   return (
     <>
       {/* <Navbar /> */}
-      <Flex h="100vh" bg="#030812" justify="center" align="center">
+      <Flex bg="#030812" justify="center" align="center">
         <Flex
           direction="column"
           justify="space-between"

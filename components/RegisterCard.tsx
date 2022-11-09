@@ -26,20 +26,40 @@ import {doc, setDoc} from "firebase/firestore";
 import {useRouter} from "next/router";
 
 function RegisterCard() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [show, setShow] = useState(false);
-  const [submit, setSubmit] = useState(false);
-  const [avatar, setAvatar] = useState("Please, choose your avatar (optional)");
-  const [imagePreview, setImagePreview] = useState(imageIcon.src);
-  const [passwordRepeat, setPasswordRepeat] = useState("");
-  const [error, setError] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [displayName, setDisplayName] = useState<string>("");
+  const [show, setShow] = useState<boolean>(false);
+  const [submit, setSubmit] = useState<boolean>(false);
+  const [avatar, setAvatar] = useState<string>(
+    "Please, choose your avatar (optional)"
+  );
+  const [imagePreview, setImagePreview] = useState<string>(imageIcon.src);
+  const [passwordRepeat, setPasswordRepeat] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [passwordAlerter, setPasswordAlerter] = useState<string>(
+    "Please, enter your password. Min length 6 is required."
+  );
 
   const router = useRouter();
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
+    let str: string = e.target.value;
+    if (str.length < 6) {
+      setPasswordAlerter(
+        "Please, enter your password. Min length 6 is required."
+      );
+    } else if (
+      str.search(/[A-Z]/) == -1 ||
+      str.search(/[a-z]/) == -1 ||
+      str.search(/[0-9]/) == -1
+    ) {
+      setPasswordAlerter(
+        "Password must contain at least one uppercase and lowercase letter and a number."
+      );
+    }
+    console.log(passwordAlerter);
   };
 
   const handlePasswordRepeat = (e: any) => {
@@ -149,7 +169,13 @@ function RegisterCard() {
   };
 
   const isErrorEmail = email === "";
-  const isErrorPssword = password.length < 6 || passwordRepeat !== password;
+  const isPassowordShort = password.length < 6;
+  const isPasswordReliable =
+    password.search(/[A-Z]/) !== -1 &&
+    password.search(/[a-z]/) !== -1 &&
+    password.search(/[0-9]/) !== -1;
+  const isErrorPassword = isPassowordShort || !isPasswordReliable;
+  const isErrorPasswordRepeat = passwordRepeat != password;
   const isErrorNickname = displayName === "";
   let file: Array<File> = [];
   let fileName: string = "";
@@ -214,7 +240,7 @@ function RegisterCard() {
                   <FormErrorMessage mb="2">Email is required.</FormErrorMessage>
                 )}
               </FormControl>
-              <FormControl isInvalid={isErrorPssword}>
+              <FormControl isInvalid={isErrorPassword}>
                 <InputGroup mb={2}>
                   <Input
                     type={show ? "text" : "password"}
@@ -235,13 +261,13 @@ function RegisterCard() {
                     {show ? "Hide" : "Show"}
                   </Button>
                 </InputGroup>
-                {!isErrorPssword ? (
+                {!isErrorPassword ? (
                   <FormHelperText mb={2}>Password is correct</FormHelperText>
                 ) : (
-                  <FormErrorMessage mb={2}>
-                    Please, enter your password. Min length 6 is required.
-                  </FormErrorMessage>
+                  <FormErrorMessage mb={2}>{passwordAlerter}</FormErrorMessage>
                 )}
+              </FormControl>
+              <FormControl isInvalid={isErrorPasswordRepeat}>
                 <Input
                   type={show ? "text" : "password"}
                   value={passwordRepeat}
@@ -250,6 +276,15 @@ function RegisterCard() {
                   bg="#224957"
                   w="100%"
                 />
+                {!isErrorPasswordRepeat ? (
+                  <FormHelperText mb={2}>
+                    The entered passwords match each other.
+                  </FormHelperText>
+                ) : (
+                  <FormErrorMessage mb={2}>
+                    Please repeat your password.
+                  </FormErrorMessage>
+                )}
               </FormControl>
               <Stack direction="row" align="center" m={3}>
                 <Image boxSize="70px" objectFit="cover" src={imagePreview} />
