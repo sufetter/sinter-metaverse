@@ -20,6 +20,14 @@ import {
   Checkbox,
   Spacer,
 } from "@chakra-ui/react";
+import {auth} from "../firebaseconfig";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  onAuthStateChanged,
+  sendEmailVerification,
+} from "firebase/auth";
+import {useRouter} from "next/router";
 
 function loginCard() {
   const [email, setEmail] = useState("");
@@ -31,6 +39,14 @@ function loginCard() {
   const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
   };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
+    } else {
+      // navigate();
+    }
+  });
 
   const handleShow = () => setShow(!show);
 

@@ -1,12 +1,15 @@
 import {ChakraProvider} from "@chakra-ui/react";
 import React from "react";
+import LayoutCard from "../components/LayoutCard";
 import RegisterCard from "../components/RegisterCard";
 
 const Register = () => {
   return (
-    <ChakraProvider>
-      <RegisterCard />
-    </ChakraProvider>
+    <LayoutCard>
+      <ChakraProvider>
+        <RegisterCard />
+      </ChakraProvider>
+    </LayoutCard>
   );
 };
 
