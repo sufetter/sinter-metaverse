@@ -178,7 +178,7 @@ function RegisterCard() {
     } catch (error: any) {
       setError(true);
       console.log(error.message);
-      console.log(error);
+      console.log(error.message.includes("network"));
     }
   };
 
@@ -200,7 +200,6 @@ function RegisterCard() {
   let file: Array<File> = [];
   let fileName: string = "";
   let fileCheck: File;
-  let x;
 
   return (
     <Flex

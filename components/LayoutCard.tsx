@@ -1,8 +1,11 @@
 import {Box, Flex, Stack, Spacer, Text} from "@chakra-ui/react";
 import Head from "next/head";
+import Header from "./Header";
 
 type LayoutProps = {
   children: JSX.Element;
+  main?: boolean;
+  style?: object;
 };
 
 <link
@@ -10,7 +13,7 @@ type LayoutProps = {
   rel="stylesheet"
 />;
 
-export default function LayoutCard({children}: LayoutProps) {
+export default function LayoutCard({children, main, style}: LayoutProps) {
   return (
     <>
       {/* <Navbar /> */}
@@ -28,25 +31,9 @@ export default function LayoutCard({children}: LayoutProps) {
           w="100%"
           maxW="1280px"
           minH="100vh"
+          {...style}
         >
-          <Flex
-            bg="#030812"
-            color="white"
-            // position="absolute"
-            align="center"
-            mx="60px"
-            h="60px"
-            zIndex={10}
-          >
-            <Box>
-              <Text fontFamily="Roboto" fontSize="24px">
-                Sinter
-              </Text>
-            </Box>
-            <Spacer />
-            <Box>Box 2</Box>
-          </Flex>
-
+          {main && <Header />}
           {children}
 
           {/* <Flex bg="#030812" color="white">
