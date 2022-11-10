@@ -65,7 +65,6 @@ function RegisterCard() {
         "Password must contain at least one uppercase and lowercase letter and a number."
       );
     }
-    console.log(passwordAlerter);
   };
 
   const handlePasswordRepeat = (e: any) => {
