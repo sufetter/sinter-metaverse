@@ -16,6 +16,7 @@ import {
   InputGroup,
   Spacer,
   Image,
+  Progress,
 } from "@chakra-ui/react";
 import {AttachmentIcon} from "@chakra-ui/icons";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
@@ -31,20 +32,40 @@ import {doc, setDoc} from "firebase/firestore";
 import {useRouter} from "next/router";
 
 function RegisterCard() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [show, setShow] = useState(false);
-  const [submit, setSubmit] = useState(false);
-  const [avatar, setAvatar] = useState("Please, choose your avatar (optional)");
-  const [imagePreview, setImagePreview] = useState(imageIcon.src);
-  const [passwordRepeat, setPasswordRepeat] = useState("");
-  const [error, setError] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [displayName, setDisplayName] = useState<string>("");
+  const [show, setShow] = useState<boolean>(false);
+  const [submit, setSubmit] = useState<boolean>(false);
+  const [avatar, setAvatar] = useState<string>(
+    "Please, choose your avatar (optional)"
+  );
+  const [imagePreview, setImagePreview] = useState<string>(imageIcon.src);
+  const [passwordRepeat, setPasswordRepeat] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [passwordAlerter, setPasswordAlerter] = useState<string>(
+    "Please, enter your password. Min length 6 is required."
+  );
 
   const router = useRouter();
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
-    setPassword(e.target.value);
+    let str: string = e.target.value;
+    setPassword(str);
+    if (str.length < 6) {
+      setPasswordAlerter(
+        "Please, enter your password. Min length 6 is required."
+      );
+    } else if (
+      str.search(/[A-Z]/) == -1 ||
+      str.search(/[a-z]/) == -1 ||
+      str.search(/[0-9]/) == -1
+    ) {
+      setPasswordAlerter(
+        "Password must contain at least one uppercase and lowercase letter and a number."
+      );
+    }
+    console.log(passwordAlerter);
   };
 
   const handlePasswordRepeat = (e: any) => {
@@ -162,9 +183,21 @@ function RegisterCard() {
     }
   };
 
-  const isErrorEmail = email === "";
-  const isErrorPssword = password.length < 6 || passwordRepeat !== password;
-  const isErrorNickname = displayName === "";
+  const isErrorEmail: boolean = email === "";
+  const isPassowordShort: boolean = password.length < 6;
+  const areBigLetters: boolean = password.search(/[A-Z]/) !== -1;
+  const areLittleLetters: boolean = password.search(/[a-z]/) !== -1;
+  const areNumbers: boolean = password.search(/[0-9]/) !== -1;
+  const isPasswordReliable: boolean =
+    areBigLetters && areLittleLetters && areNumbers;
+  const passwordProgress: number =
+    Number(!isPassowordShort) * 50 +
+    (50 *
+      (Number(areBigLetters) + Number(areLittleLetters) + Number(areNumbers))) /
+      3;
+  const isErrorPassword: boolean = isPassowordShort || !isPasswordReliable;
+  const isErrorPasswordRepeat: boolean = passwordRepeat != password;
+  const isErrorNickname: boolean = displayName === "";
   let file: Array<File> = [];
   let fileName: string = "";
   let fileCheck: File;
@@ -229,7 +262,7 @@ function RegisterCard() {
                   <FormErrorMessage mb="2">Email is required.</FormErrorMessage>
                 )}
               </FormControl>
-              <FormControl isInvalid={isErrorPssword}>
+              <FormControl isInvalid={isErrorPassword}>
                 <InputGroup mb={2}>
                   <Input
                     type={show ? "text" : "password"}
@@ -251,13 +284,22 @@ function RegisterCard() {
                     {show ? "Hide" : "Show"}
                   </Button>
                 </InputGroup>
-                {!isErrorPssword ? (
+                {!isErrorPassword ? (
                   <FormHelperText mb={2}>Password is correct</FormHelperText>
                 ) : (
-                  <FormErrorMessage mb={2}>
-                    Please, enter your password. Min length 6 is required.
-                  </FormErrorMessage>
+                  <FormErrorMessage mb={2}>{passwordAlerter}</FormErrorMessage>
                 )}
+              </FormControl>
+              <Progress
+                hasStripe
+                colorScheme="orange"
+                value={passwordProgress}
+                mb="14px"
+                border-radius="10px"
+                h="5px"
+                bg="#224957"
+              />
+              <FormControl isInvalid={isErrorPasswordRepeat}>
                 <Input
                   type={show ? "text" : "password"}
                   value={passwordRepeat}
@@ -266,11 +308,13 @@ function RegisterCard() {
                   bg="#224957"
                   w="100%"
                 />
-                {!isErrorPssword ? (
-                  <FormHelperText mb={2}>Password is correct</FormHelperText>
+                {!isErrorPasswordRepeat ? (
+                  <FormHelperText mb={2}>
+                    The entered passwords match each other.
+                  </FormHelperText>
                 ) : (
                   <FormErrorMessage mb={2}>
-                    Please, enter your password. Min length 6 is required.
+                    Please repeat your password.
                   </FormErrorMessage>
                 )}
               </FormControl>
