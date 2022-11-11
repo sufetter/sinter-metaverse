@@ -1,19 +1,19 @@
 import {Avatar, Box, ChakraProvider, Flex} from "@chakra-ui/react";
 import React from "react";
-import LayoutMain from "../../components/LayoutMain";
+import LayoutCard from "../../components/LayoutCard";
 import {MainChat} from "../../components/MainChat";
 import {SidebarChats} from "../../components/SidebarChats";
 
 const id: React.FC = () => {
   return (
-    <LayoutMain height="100vh">
+    <LayoutCard style={{height: "100vh"}} main>
       <ChakraProvider>
-        <Flex bg="#030812" align="stretch" overflowY="hidden">
+        <Flex bg="#161517" align="stretch" overflowY="hidden">
           <SidebarChats />
           <MainChat />
         </Flex>
       </ChakraProvider>
-    </LayoutMain>
+    </LayoutCard>
   );
 };
 
