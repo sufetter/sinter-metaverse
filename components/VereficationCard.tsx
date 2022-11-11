@@ -12,6 +12,7 @@ import {
   Spinner,
   useRadio,
 } from "@chakra-ui/react";
+import {checkCustomRoutes} from "next/dist/lib/load-custom-routes";
 
 const VereficationCard = () => {
   const navigate = (href: string) => {
@@ -33,12 +34,17 @@ const VereficationCard = () => {
   });
 
   useEffect(() => {
-    auth.currentUser?.reload();
-    let user = auth.currentUser;
-    console.log(user?.emailVerified);
-    if (auth.currentUser?.emailVerified) {
-      navigate("/chat/" + user?.displayName + "." + user?.uid.slice(0, 5));
-    }
+    let check = setInterval(() => {
+      auth.currentUser?.reload();
+
+      let user = auth.currentUser;
+      console.log(user?.emailVerified);
+      if (auth.currentUser?.emailVerified) {
+        navigate("/chat/" + user?.displayName + "." + user?.uid.slice(0, 5));
+        return () => clearInterval(check);
+      }
+    }, 2000);
+    return;
   });
 
   return (
