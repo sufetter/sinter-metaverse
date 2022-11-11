@@ -18,7 +18,7 @@ export const ChatItem = () => {
   );
 };
 
-export const SidebarChats = () => {
+export const SidebarMain = () => {
   return (
     <Flex
       w="300px"
