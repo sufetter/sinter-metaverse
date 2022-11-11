@@ -33,7 +33,8 @@ export default function LayoutCard({children, main, style}: LayoutProps) {
           minH="100vh"
           {...style}
         >
-          {main && <Header />}
+          <Header />
+          {/* {main && <Header />} */}
           {children}
 
           {/* <Flex bg="#030812" color="white">
