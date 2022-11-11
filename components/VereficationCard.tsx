@@ -12,6 +12,7 @@ import {
   Spinner,
   useRadio,
 } from "@chakra-ui/react";
+import {checkCustomRoutes} from "next/dist/lib/load-custom-routes";
 
 const VereficationCard = () => {
   const navigate = (href: string) => {

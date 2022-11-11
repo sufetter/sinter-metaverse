@@ -8,12 +8,18 @@ type LayoutProps = {
   style?: object;
 };
 
+export const mainItemColor = "#FE6060";
+
 <link
   href="https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic"
   rel="stylesheet"
 />;
 
-export default function LayoutCard({children, main, style}: LayoutProps) {
+export default function LayoutCard({
+  children,
+  main = true,
+  style,
+}: LayoutProps) {
   return (
     <>
       {/* <Navbar /> */}
