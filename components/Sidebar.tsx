@@ -12,7 +12,9 @@ type SideBarItemProps = {
 export const SidebarItem = ({icon, desc}: SideBarItemProps) => {
   return (
     <Tooltip hasArrow label={desc} bg="gray.300" color="black">
-      <Icon boxSize={"25px"} color="white" as={icon} />
+      <Box>
+        <Icon boxSize={"25px"} color="white" as={icon} />
+      </Box>
     </Tooltip>
   );
 };
