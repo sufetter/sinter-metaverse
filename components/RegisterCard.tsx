@@ -30,6 +30,7 @@ import {
 import {auth, storage, db} from "../firebaseconfig";
 import {doc, setDoc} from "firebase/firestore";
 import {useRouter} from "next/router";
+import {FcAddImage} from "react-icons/fc";
 import {mainItemColor} from "./LayoutCard";
 
 function RegisterCard() {
@@ -318,12 +319,14 @@ function RegisterCard() {
                 )}
               </FormControl>
               <Stack direction="row" align="center" m={2}>
-                <Image
+                {/* <Image
                   boxSize="70px"
                   objectFit="cover"
                   src={imagePreview}
                   borderRadius="10px"
-                />
+                /> */}
+
+                {/* <FcAddImage size="80px" display="none" /> */}
                 <FormLabel htmlFor="Avatar" w="100%">
                   <Input
                     type="file"

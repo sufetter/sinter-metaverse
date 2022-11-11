@@ -27,6 +27,7 @@ export const SidebarItem = ({icon, desc}: SideBarItemProps) => {
       <Flex
         _hover={{cursor: "pointer"}}
         mb={2}
+        mr={2}
         borderRadius="100px"
         p={2}
         bg="white"
@@ -49,7 +50,7 @@ const Sidebar = () => {
       <SidebarItem icon={GoFileMedia} desc="Media Files" />
       <Spacer />
       <SidebarItem icon={FiSettings} desc="Settings" />
-      <SidebarItem icon={MdOutlineLogout} desc="Settings" />
+      <SidebarItem icon={MdOutlineLogout} desc="LogOut" />
     </Flex>
   );
 };
