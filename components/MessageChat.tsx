@@ -1,19 +1,19 @@
 import {Flex, Text} from "@chakra-ui/react";
 import React from "react";
+import {mainStyles} from "./LayoutCard";
 
 export interface StandardProps {
   type: string;
   children?: React.ReactNode;
 }
-
 export const MessageChat = ({children, type}: StandardProps) => {
   let mainColor;
   let position;
   if (type === "send") {
-    mainColor = "#C1402F";
+    mainColor = mainStyles.sendMessages;
     position = "flex-start";
   } else if (type === "get") {
-    mainColor = "#224957";
+    mainColor = mainStyles.getMessages;
     position = "flex-end";
   }
   return (

@@ -14,7 +14,7 @@ import {BsNewspaper} from "react-icons/bs";
 import {FaUserFriends} from "react-icons/fa";
 import {GoFileMedia} from "react-icons/go";
 import {MdOutlineLogout} from "react-icons/md";
-import {mainItemColor} from "./LayoutCard";
+import {mainStyles} from "./LayoutCard";
 
 type SideBarItemProps = {
   icon?: JSX.Element | any;
@@ -25,15 +25,21 @@ export const SidebarItem = ({icon, desc}: SideBarItemProps) => {
   return (
     <Tooltip hasArrow label={desc} bg="gray.300" color="black">
       <Flex
-        _hover={{cursor: "pointer"}}
+        _hover={{
+          cursor: "pointer",
+          bg: mainStyles.sidebarBTNSHover,
+        }}
         mb={2}
         mr={2}
-        borderRadius="100px"
+        borderRadius="12px"
         p={2}
-        bg="white"
+        bg={mainStyles.sidebarBTNS}
         align="center"
+        border="2px solid"
+        borderColor={mainStyles.sidebarBTNSBBorder}
+        transition="background-color 300ms linear"
       >
-        <Icon boxSize={"25px"} color={mainItemColor} as={icon} />
+        <Icon boxSize={"25px"} color={mainStyles.mainItemColor} as={icon} />
       </Flex>
     </Tooltip>
   );

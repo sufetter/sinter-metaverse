@@ -31,7 +31,7 @@ import {auth, storage, db} from "../firebaseconfig";
 import {doc, setDoc} from "firebase/firestore";
 import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
-import {mainItemColor} from "./LayoutCard";
+import {mainStyles} from "./LayoutCard";
 
 function RegisterCard() {
   const [email, setEmail] = useState<string>("");
@@ -364,7 +364,7 @@ function RegisterCard() {
                 type="submit"
                 w={"full"}
                 mt={5}
-                bg={mainItemColor}
+                bg={mainStyles.mainItemColor}
                 color={"white"}
                 rounded={"md"}
                 disabled={submit}

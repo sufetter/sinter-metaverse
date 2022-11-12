@@ -4,7 +4,7 @@ import {Box, Flex, Stack, Spacer, Text} from "@chakra-ui/react";
 const Header = () => {
   return (
     <Flex
-      bg="#030812"
+      bg="#22242C"
       color="white"
       // position="absolute"
       align="center"

@@ -6,12 +6,18 @@ import {SidebarMain} from "../../components/SidebarMain";
 import Sidebar from "../../components/Sidebar";
 import {ChatSettings} from "../../components/ChatSettings";
 import ChatList from "../../components/ChatList";
+import {mainStyles} from "../../components/LayoutCard";
 
 const id: React.FC = () => {
   return (
     <LayoutCard style={{height: "100vh"}} main>
       <ChakraProvider>
-        <Flex bg="#161517" align="stretch" overflowY="hidden" h="100%">
+        <Flex
+          bg={mainStyles.mainBGColor}
+          align="stretch"
+          overflowY="hidden"
+          h="100%"
+        >
           <Sidebar />
           <ChatList />
           <MainChat />
