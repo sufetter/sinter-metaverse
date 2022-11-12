@@ -212,7 +212,13 @@ function RegisterCard() {
       justify="center"
       mt="-60px"
     >
-      <Flex minWidth="400px" maxW={"400px"}>
+      <Flex
+        minWidth="400px"
+        maxW={"400px"}
+        border="2px solid"
+        borderColor={mainStyles.cardBorder}
+        borderRadius="10px"
+      >
         <Box
           maxW={"470px"}
           w={"full"}

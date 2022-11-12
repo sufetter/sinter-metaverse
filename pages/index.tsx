@@ -5,6 +5,7 @@ import {ChakraProvider} from "@chakra-ui/react";
 import Register from "./register";
 
 import Link from "next/link";
+import HH from "./../components/HH";
 
 const Home: NextPage = () => {
   return (
@@ -16,7 +17,8 @@ const Home: NextPage = () => {
       </Head>
 
       <ChakraProvider>
-        <Register />
+        {/* <Register /> */}
+        <HH />
       </ChakraProvider>
     </div>
   );

@@ -1858,6 +1858,13 @@
     "json-schema-traverse" "^0.4.1"
     "uri-js" "^4.2.2"
 
+"akaneko@^5.2.3":
+  "integrity" "sha512-l8uRYnR381RbwMQbNyYhX2LLAiFQZli0tqxWLEiWK46spptPjIJPmg8mjs9IOYCGyLXGRHkO1R5siIggpz10vA=="
+  "resolved" "https://registry.npmjs.org/akaneko/-/akaneko-5.2.3.tgz"
+  "version" "5.2.3"
+  dependencies:
+    "node-fetch" "^2.6.1"
+
 "ansi-regex@^5.0.1":
   "integrity" "sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ=="
   "resolved" "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz"
@@ -3205,7 +3212,7 @@
     "@next/swc-win32-ia32-msvc" "12.3.1"
     "@next/swc-win32-x64-msvc" "12.3.1"
 
-"node-fetch@2.6.7":
+"node-fetch@^2.6.1", "node-fetch@2.6.7":
   "integrity" "sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ=="
   "resolved" "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.7.tgz"
   "version" "2.6.7"
