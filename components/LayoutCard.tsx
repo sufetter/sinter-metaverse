@@ -47,12 +47,13 @@ export default function LayoutCard({
         direction="column"
         {...style} // С хуя ли не работает?
       >
-        <VStack w="100%">
+        <VStack w="100%" h="100%">
           <Header />
           <Flex
             direction="column"
             bg={mainStyles.mainBGColor}
             w="100%"
+            h="100%"
             maxW="1280px"
             mx="60px"
             flex={1}
