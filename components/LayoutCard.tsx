@@ -43,19 +43,21 @@ export default function LayoutCard({
 
       <Flex
         bg={mainStyles.mainBGColor}
-        minH="100vh"
         direction="column"
-        {...style} // С хуя ли не работает?
+        height="100vh"
+        {...style}
+        // С хуя ли не работает? Я бы на его месте тоже не работал...
       >
-        <VStack w="100%">
+        <VStack overflowY="hidden" height="100vh" w="100%">
           <Header />
           <Flex
             direction="column"
             bg={mainStyles.mainBGColor}
             w="100%"
             maxW="1280px"
-            minH="100vh"
+            overflowY="hidden"
             mx="60px"
+            height="100%"
             flex={1}
           >
             {/* {main && <Header />} */}
