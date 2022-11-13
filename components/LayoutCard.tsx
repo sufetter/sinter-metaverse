@@ -54,7 +54,6 @@ export default function LayoutCard({
             bg={mainStyles.mainBGColor}
             w="100%"
             maxW="1280px"
-            minH="100vh"
             mx="60px"
             flex={1}
           >
