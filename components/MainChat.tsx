@@ -2,12 +2,15 @@ import {Flex, Avatar, Heading, Spacer} from "@chakra-ui/react";
 import React from "react";
 import {InputChat} from "../components/InputChat";
 import {MessageChat} from "./MessageChat";
+import {mainStyles} from "./LayoutCard";
 
 export const TopBarChat = () => {
   return (
-    <Flex w="100%" h="81px" align="center" p={5}>
+    <Flex w="100%" h="81px" align="center" p={5} pt={0}>
       <Avatar src="" marginEnd={3}></Avatar>
-      <Heading color="white">user@fisting.com</Heading>
+      <Heading color="white" p={0}>
+        user@fisting.com
+      </Heading>
     </Flex>
   );
 };
@@ -25,6 +28,7 @@ export const MainChat = () => {
     <Flex
       flex={1}
       w="100%"
+      px={4}
       direction="column"
       overflowY="scroll"
       sx={{scrollbarWidth: "none"}}

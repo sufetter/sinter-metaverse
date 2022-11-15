@@ -33,11 +33,13 @@ import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
 import {mainStyles} from "./LayoutCard";
 
+// MAIN Types and Interfaces
 interface RegisterCardProps {
   changeProgressColor: (color: string) => void;
 }
 
 function RegisterCard(props: RegisterCardProps) {
+  // MAIN STATES
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
@@ -53,7 +55,32 @@ function RegisterCard(props: RegisterCardProps) {
     "Please, enter your password. Min length 6 is required."
   );
   const router = useRouter();
+
+  // MAIN FUNCTIONS
+
   const handleEmailChange = (e: any) => setEmail(e.target.value);
+
+  const handlePasswordRepeat = (e: any) => {
+    setPasswordRepeat(e.target.value);
+  };
+
+  const handleShow = () => setShow(!show);
+
+  const navigate = (href: string) => {
+    router.push(`${href}`);
+  };
+
+  const handleDisplayNameChange = (e: any) => setDisplayName(e.target.value);
+
+  // FB State Locator
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
+    } else {
+      // navigate();
+    }
+  });
+
   const handlePasswordChange = (e: any) => {
     let str: string = e.target.value;
     setPassword(str);
@@ -71,18 +98,7 @@ function RegisterCard(props: RegisterCardProps) {
       );
     }
   };
-  const handlePasswordRepeat = (e: any) => {
-    setPasswordRepeat(e.target.value);
-  };
-  const handleDisplayNameChange = (e: any) => setDisplayName(e.target.value);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
-    } else {
-      // navigate();
-    }
-  });
   const handleFileChange = (e: any) => {
     if (e.target.files[0]?.type == undefined) return;
     file[0] = e.target.files![0];
@@ -99,12 +115,6 @@ function RegisterCard(props: RegisterCardProps) {
     } else {
       setAvatar("Not valid file, please, upload Image (up to 5mb)");
     }
-  };
-
-  const handleShow = () => setShow(!show);
-
-  const navigate = (href: string) => {
-    router.push(`${href}`);
   };
 
   const handleSubmit = async (e: any) => {
@@ -140,12 +150,13 @@ function RegisterCard(props: RegisterCardProps) {
           (err) => {
             setError(true);
             console.log(err);
+            console.log(err.message);
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then(
               async (downloadURL) => {
-                console.log("File available at", downloadURL);
-                console.log(res.user);
+                // console.log("File available at", downloadURL);
+                // console.log(res.user);
                 await updateProfile(res.user, {
                   displayName: displayName,
                   photoURL: downloadURL,
@@ -184,6 +195,8 @@ function RegisterCard(props: RegisterCardProps) {
     }
   };
 
+  // VARIABELS
+
   const isErrorEmail: boolean = email === "";
   const isPassowordShort: boolean = password.length < 6;
   const areBigLetters: boolean = password.search(/[A-Z]/) !== -1;
@@ -191,16 +204,16 @@ function RegisterCard(props: RegisterCardProps) {
   const areNumbers: boolean = password.search(/[0-9]/) !== -1;
   const isPasswordReliable: boolean =
     areBigLetters && areLittleLetters && areNumbers;
-  const passwordProgress: number =
-    ((password.length > 6 ? 6 : password.length) * 50) / 6 +
-    (50 *
-      (Number(areBigLetters) + Number(areLittleLetters) + Number(areNumbers))) /
-      3;
-  props.changeProgressColor(
-    `rgb(${
-      (255 * (passwordProgress > 66 ? 100 - passwordProgress : 33)) / 33
-    }, ${(255 * (passwordProgress > 33 ? passwordProgress - 33 : 0)) / 33}, 0)`
-  );
+  // const passwordProgress: number =
+  //   ((password.length > 6 ? 6 : password.length) * 50) / 6 +
+  //   (50 *
+  //     (Number(areBigLetters) + Number(areLittleLetters) + Number(areNumbers))) /
+  //     3;
+  // props.changeProgressColor(
+  //   `rgb(${
+  //     (255 * (passwordProgress > 66 ? 100 - passwordProgress : 33)) / 33
+  //   }, ${(255 * (passwordProgress > 33 ? passwordProgress - 33 : 0)) / 33}, 0)`
+  // );
   const isErrorPassword: boolean = isPassowordShort || !isPasswordReliable;
   const isErrorPasswordRepeat: boolean = passwordRepeat != password;
   const isErrorNickname: boolean = displayName === "";
@@ -208,6 +221,7 @@ function RegisterCard(props: RegisterCardProps) {
   let fileName: string = "";
   let fileCheck: File;
 
+  // MAIN UI
   return (
     <Flex
       w="100%"
@@ -303,7 +317,7 @@ function RegisterCard(props: RegisterCardProps) {
               </FormControl>
               <Progress
                 colorScheme="progressColor"
-                value={passwordProgress}
+                // value={passwordProgress}
                 mb="14px"
                 border-radius="10px"
                 h="5px"
@@ -329,12 +343,12 @@ function RegisterCard(props: RegisterCardProps) {
                 )}
               </FormControl>
               <Stack direction="row" align="center" m={2}>
-                {/* <Image
+                <Image
                   boxSize="70px"
                   objectFit="cover"
                   src={imagePreview}
                   borderRadius="10px"
-                /> */}
+                />
 
                 {/* <FcAddImage size="80px" display="none" /> */}
                 <FormLabel htmlFor="Avatar" w="100%">

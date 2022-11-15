@@ -10,15 +10,18 @@ type LayoutProps = {
 
 let secondBGColor = "#9D0039";
 export const mainStyles = {
-  mainItemColor: "#FF9A02",
+  mainItemColor: "#5A83E1",
   mainBGColor: "#141923",
+  mainTextColor: "#B5BFD6",
   sidebarBTNS: "",
   sidebarBTNSHover: "#224957",
   sidebarBTNSBBorder: secondBGColor,
   getMessages: "#224957",
   sendMessages: "#C1402F",
   cardBorder: "#224957",
-  headerBG: "#232833",
+  headerBG: "#222836",
+  chatCardBG: "#222836",
+  chatListItemHober: "#224957",
 };
 
 <link

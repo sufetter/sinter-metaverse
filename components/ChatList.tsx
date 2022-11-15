@@ -8,13 +8,14 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import {BiSearchAlt2} from "react-icons/bi";
+import {mainStyles} from "./LayoutCard";
 
 export const ChatItem = () => {
   return (
     <Flex
       align="center"
       p="2"
-      _hover={{bg: "#C1402F", cursor: "pointer"}}
+      _hover={{bg: mainStyles.chatListItemHober, cursor: "pointer"}}
       w="100%"
     >
       <Avatar src="" />
