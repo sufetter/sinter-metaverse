@@ -33,7 +33,11 @@ import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
 import {mainStyles} from "./LayoutCard";
 
-function RegisterCard() {
+interface RegisterCardProps {
+  changeProgressColor: (color: string) => void;
+}
+
+function RegisterCard(props: RegisterCardProps) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
@@ -48,7 +52,6 @@ function RegisterCard() {
   const [passwordAlerter, setPasswordAlerter] = useState<string>(
     "Please, enter your password. Min length 6 is required."
   );
-
   const router = useRouter();
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
@@ -68,11 +71,9 @@ function RegisterCard() {
       );
     }
   };
-
   const handlePasswordRepeat = (e: any) => {
     setPasswordRepeat(e.target.value);
   };
-
   const handleDisplayNameChange = (e: any) => setDisplayName(e.target.value);
 
   onAuthStateChanged(auth, (user) => {
@@ -82,7 +83,6 @@ function RegisterCard() {
       // navigate();
     }
   });
-
   const handleFileChange = (e: any) => {
     if (e.target.files[0]?.type == undefined) return;
     file[0] = e.target.files![0];
@@ -192,10 +192,15 @@ function RegisterCard() {
   const isPasswordReliable: boolean =
     areBigLetters && areLittleLetters && areNumbers;
   const passwordProgress: number =
-    Number(!isPassowordShort) * 50 +
+    ((password.length > 6 ? 6 : password.length) * 50) / 6 +
     (50 *
       (Number(areBigLetters) + Number(areLittleLetters) + Number(areNumbers))) /
       3;
+  props.changeProgressColor(
+    `rgb(${
+      (255 * (passwordProgress > 66 ? 100 - passwordProgress : 33)) / 33
+    }, ${(255 * (passwordProgress > 33 ? passwordProgress - 33 : 0)) / 33}, 0)`
+  );
   const isErrorPassword: boolean = isPassowordShort || !isPasswordReliable;
   const isErrorPasswordRepeat: boolean = passwordRepeat != password;
   const isErrorNickname: boolean = displayName === "";
@@ -297,8 +302,7 @@ function RegisterCard() {
                 )}
               </FormControl>
               <Progress
-                hasStripe
-                colorScheme="orange"
+                colorScheme="progressColor"
                 value={passwordProgress}
                 mb="14px"
                 border-radius="10px"
