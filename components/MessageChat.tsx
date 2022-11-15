@@ -17,7 +17,7 @@ export const MessageChat = ({children, type}: StandardProps) => {
     position = "flex-end";
   }
   return (
-    <Flex px={5} alignSelf={position}>
+    <Flex alignSelf={position}>
       <Text
         color="white"
         w="fit-content"

@@ -50,7 +50,31 @@ function RegisterCard() {
   );
   const router = useRouter();
 
+  // MAIN FUNCTIONS
+
   const handleEmailChange = (e: any) => setEmail(e.target.value);
+
+  const handlePasswordRepeat = (e: any) => {
+    setPasswordRepeat(e.target.value);
+  };
+
+  const handleShow = () => setShow(!show);
+
+  const navigate = (href: string) => {
+    router.push(`${href}`);
+  };
+
+  const handleDisplayNameChange = (e: any) => setDisplayName(e.target.value);
+
+  // FB State Locator
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
+    } else {
+      // navigate();
+    }
+  });
+
   const handlePasswordChange = (e: any) => {
     let str: string = e.target.value;
     setPassword(str);
@@ -68,18 +92,7 @@ function RegisterCard() {
       );
     }
   };
-  const handlePasswordRepeat = (e: any) => {
-    setPasswordRepeat(e.target.value);
-  };
-  const handleDisplayNameChange = (e: any) => setDisplayName(e.target.value);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
-    } else {
-      // navigate();
-    }
-  });
   const handleFileChange = (e: any) => {
     if (e.target.files[0]?.type == undefined) return;
     file[0] = e.target.files![0];
@@ -96,12 +109,6 @@ function RegisterCard() {
     } else {
       setAvatar("Not valid file, please, upload Image (up to 5mb)");
     }
-  };
-
-  const handleShow = () => setShow(!show);
-
-  const navigate = (href: string) => {
-    router.push(`${href}`);
   };
 
   const handleSubmit = async (e: any) => {
@@ -137,12 +144,13 @@ function RegisterCard() {
           (err) => {
             setError(true);
             console.log(err);
+            console.log(err.message);
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then(
               async (downloadURL) => {
-                console.log("File available at", downloadURL);
-                console.log(res.user);
+                // console.log("File available at", downloadURL);
+                // console.log(res.user);
                 await updateProfile(res.user, {
                   displayName: displayName,
                   photoURL: downloadURL,
@@ -181,6 +189,8 @@ function RegisterCard() {
     }
   };
 
+  // VARIABELS
+
   const isErrorEmail: boolean = email === "";
   const isPassowordShort: boolean = password.length < 6;
   const areBigLetters: boolean = password.search(/[A-Z]/) !== -1;
@@ -200,6 +210,7 @@ function RegisterCard() {
   let fileName: string = "";
   let fileCheck: File;
 
+  // MAIN UI
   return (
     <Flex
       w="100%"
@@ -330,12 +341,12 @@ function RegisterCard() {
                 )}
               </FormControl>
               <Stack direction="row" align="center" m={2}>
-                {/* <Image
+                <Image
                   boxSize="70px"
                   objectFit="cover"
                   src={imagePreview}
                   borderRadius="10px"
-                /> */}
+                />
 
                 {/* <FcAddImage size="80px" display="none" /> */}
                 <FormLabel htmlFor="Avatar" w="100%">

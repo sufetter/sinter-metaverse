@@ -23,32 +23,31 @@ type SideBarItemProps = {
 
 export const SidebarItem = ({icon, desc}: SideBarItemProps) => {
   return (
-    <Tooltip hasArrow label={desc} bg="gray.300" color="black">
-      <Flex
-        _hover={{
-          cursor: "pointer",
-          bg: mainStyles.sidebarBTNSHover,
-        }}
-        mb={2}
-        mr={2}
-        borderRadius="12px"
-        p={2}
-        bg={mainStyles.sidebarBTNS}
-        align="center"
-        border="2px solid"
-        borderColor={mainStyles.sidebarBTNSBBorder}
-        transition="background-color 300ms linear"
-      >
-        <Icon boxSize={"25px"} color={mainStyles.mainItemColor} as={icon} />
-      </Flex>
-    </Tooltip>
+    <Flex
+      w="140px"
+      mb={2}
+      mr={2}
+      p={1.5}
+      bg={mainStyles.sidebarBTNS}
+      align="center"
+      borderRadius="5px"
+      transition="background-color 100ms linear"
+      _hover={{
+        cursor: "pointer",
+        bg: mainStyles.sidebarBTNSHover,
+      }}
+    >
+      <Icon boxSize={"16px"} color={mainStyles.mainItemColor} as={icon} />
+      <Text color={mainStyles.mainTextColor} pl={3} fontSize="14px">
+        {desc}
+      </Text>
+    </Flex>
   );
 };
 
 const Sidebar = () => {
-  const ref = React.createRef();
   return (
-    <Flex borderEnd="1px solid" borderColor={"#C1402F"} direction="column">
+    <Flex direction="column">
       <SidebarItem icon={CgProfile} desc="My Profile" />
       <SidebarItem icon={BsNewspaper} desc="News" />
       <SidebarItem icon={FiMessageSquare} desc="Messages" />
@@ -56,7 +55,7 @@ const Sidebar = () => {
       <SidebarItem icon={GoFileMedia} desc="Media Files" />
       <Spacer />
       <SidebarItem icon={FiSettings} desc="Settings" />
-      <SidebarItem icon={MdOutlineLogout} desc="LogOut" />
+      <SidebarItem icon={MdOutlineLogout} desc="Logout" />
     </Flex>
   );
 };

@@ -10,15 +10,18 @@ type LayoutProps = {
 
 let secondBGColor = "#9D0039";
 export const mainStyles = {
-  mainItemColor: "#FF9A02",
-  mainBGColor: "#171C28",
+  mainItemColor: "#5A83E1",
+  mainBGColor: "#141923",
+  mainTextColor: "#B5BFD6",
   sidebarBTNS: "",
   sidebarBTNSHover: "#224957",
   sidebarBTNSBBorder: secondBGColor,
   getMessages: "#224957",
   sendMessages: "#C1402F",
   cardBorder: "#224957",
-  headerBG: "#224957",
+  headerBG: "#222836",
+  chatCardBG: "#222836",
+  chatListItemHober: "#224957",
 };
 
 <link
@@ -54,7 +57,8 @@ export default function LayoutCard({
             direction="column"
             bg={mainStyles.mainBGColor}
             w="100%"
-            maxW="1280px"
+            h="100%"
+            maxW="1076px"
             overflowY="hidden"
             mx="60px"
             height="100%"

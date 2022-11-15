@@ -7,8 +7,8 @@ export const InputChat = () => {
   const handleMessageChange = (e: any) => setMessage(e.target.value);
   const isErrorMessage = message === "";
   return (
-    <Flex justify="space-between" w="100%">
-      <FormControl p={3} w="100%" isInvalid={isErrorMessage}>
+    <Flex justify="space-between" w="100%" pb={3}>
+      <FormControl w="100%" isInvalid={isErrorMessage}>
         <Input
           placeholder="Type a message....."
           borderColor="#C1402F"
@@ -18,7 +18,7 @@ export const InputChat = () => {
       </FormControl>
 
       <Flex align="center">
-        <Button type="submit" disabled={isErrorMessage}>
+        <Button type="submit" disabled={isErrorMessage} ml={3}>
           Submit
         </Button>
       </Flex>
