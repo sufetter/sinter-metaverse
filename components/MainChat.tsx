@@ -17,7 +17,7 @@ export const TopBarChat = () => {
 
 export const BottomBarChat = () => {
   return (
-    <Flex>
+    <Flex px={4}>
       <InputChat />
     </Flex>
   );
@@ -28,7 +28,6 @@ export const MainChat = () => {
     <Flex
       flex={1}
       w="100%"
-      px={4}
       direction="column"
       overflowY="scroll"
       sx={{scrollbarWidth: "none"}}
@@ -42,7 +41,8 @@ export const MainChat = () => {
       <TopBarChat />
       <Flex
         flex={1}
-        direction="column"
+        px={10}
+        direction="column-reverse"
         overflowY="scroll"
         height="100px"
         sx={{scrollbarWidth: "none"}}

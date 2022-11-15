@@ -37,7 +37,7 @@ export const SidebarItem = ({icon, desc}: SideBarItemProps) => {
         bg: mainStyles.sidebarBTNSHover,
       }}
     >
-      <Icon boxSize={"16px"} color={mainStyles.mainItemColor} as={icon} />
+      <Icon boxSize={"20px"} color={mainStyles.mainItemColor} as={icon} />
       <Text color={mainStyles.mainTextColor} pl={3} fontSize="14px">
         {desc}
       </Text>

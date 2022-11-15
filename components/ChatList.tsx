@@ -17,6 +17,8 @@ export const ChatItem = () => {
       p="2"
       _hover={{bg: mainStyles.chatListItemHober, cursor: "pointer"}}
       w="100%"
+      px={3}
+      py={2}
     >
       <Avatar src="" />
       <Text ms={3} color="white">
@@ -28,19 +30,26 @@ export const ChatItem = () => {
 
 export const ChatSearch = () => {
   return (
-    <InputGroup>
-      <InputRightElement
-        pointerEvents="none"
-        children={<BiSearchAlt2 color="white" size="20px" />}
-      />
-      <Input type="tel" placeholder="Search Chat" />
-    </InputGroup>
+    <Flex p={3}>
+      <InputGroup>
+        <InputRightElement
+          pointerEvents="none"
+          children={<BiSearchAlt2 color="white" size="20px" />}
+        />
+        <Input type="tel" placeholder="Search Chat" />
+      </InputGroup>
+    </Flex>
   );
 };
 
 const ChatList = () => {
   return (
-    <Flex flex={0.4} direction="column">
+    <Flex
+      flex={0.4}
+      direction="column"
+      borderEnd="2px solid"
+      borderColor={"#534E93"}
+    >
       <ChatSearch />
       <ChatItem />
       <ChatItem />

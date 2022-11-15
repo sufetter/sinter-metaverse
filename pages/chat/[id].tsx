@@ -12,13 +12,9 @@ const id: React.FC = () => {
   return (
     <LayoutCard style={{height: "100vh", overflow: "hidden"}} main>
       <ChakraProvider>
-        <Flex
-          bg={mainStyles.mainBGColor}
-          overflowY="hidden"
-          borderRadius="10px"
-        >
+        <Flex bg={mainStyles.mainBGColor} overflowY="hidden" my={3}>
           <Sidebar />
-          <Flex bg={mainStyles.chatCardBG} w="100%">
+          <Flex bg={mainStyles.chatCardBG} w="100%" borderRadius="10px">
             <ChatList />
             <MainChat />
           </Flex>
