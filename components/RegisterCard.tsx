@@ -33,11 +33,7 @@ import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
 import {mainStyles} from "./LayoutCard";
 
-interface RegisterCardProps {
-  changeProgressColor: (color: string) => void;
-}
-
-function RegisterCard(props: RegisterCardProps) {
+function RegisterCard() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
@@ -53,6 +49,7 @@ function RegisterCard(props: RegisterCardProps) {
     "Please, enter your password. Min length 6 is required."
   );
   const router = useRouter();
+
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
     let str: string = e.target.value;
@@ -196,11 +193,6 @@ function RegisterCard(props: RegisterCardProps) {
     (50 *
       (Number(areBigLetters) + Number(areLittleLetters) + Number(areNumbers))) /
       3;
-  props.changeProgressColor(
-    `rgb(${
-      (255 * (passwordProgress > 66 ? 100 - passwordProgress : 33)) / 33
-    }, ${(255 * (passwordProgress > 33 ? passwordProgress - 33 : 0)) / 33}, 0)`
-  );
   const isErrorPassword: boolean = isPassowordShort || !isPasswordReliable;
   const isErrorPasswordRepeat: boolean = passwordRepeat != password;
   const isErrorNickname: boolean = displayName === "";
@@ -301,14 +293,23 @@ function RegisterCard(props: RegisterCardProps) {
                   <FormErrorMessage mb={2}>{passwordAlerter}</FormErrorMessage>
                 )}
               </FormControl>
-              <Progress
-                colorScheme="progressColor"
-                value={passwordProgress}
-                mb="14px"
-                border-radius="10px"
-                h="5px"
-                bg="#224957"
-              />
+              <Box bg="#224957" w="100%" h="5px" mb="14px">
+                <Box
+                  bg={`rgb(${
+                    (255 *
+                      (passwordProgress > 66 ? 100 - passwordProgress : 33)) /
+                    33
+                  }, ${
+                    (255 *
+                      (passwordProgress > 33 ? passwordProgress - 33 : 0)) /
+                    33
+                  }, 0)`}
+                  w={passwordProgress + "%"}
+                  h="100%"
+                  border-radius="10px"
+                  transition={`width 0.3s linear`}
+                ></Box>
+              </Box>
               <FormControl isInvalid={isErrorPasswordRepeat}>
                 <Input
                   type={show ? "text" : "password"}
