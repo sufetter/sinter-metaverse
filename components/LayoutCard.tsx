@@ -11,14 +11,14 @@ type LayoutProps = {
 let secondBGColor = "#9D0039";
 export const mainStyles = {
   mainItemColor: "#FF9A02",
-  mainBGColor: "#171C28",
+  mainBGColor: "#141923",
   sidebarBTNS: "",
   sidebarBTNSHover: "#224957",
   sidebarBTNSBBorder: secondBGColor,
   getMessages: "#224957",
   sendMessages: "#C1402F",
   cardBorder: "#224957",
-  headerBG: "#224957",
+  headerBG: "#232833",
 };
 
 <link
@@ -43,19 +43,22 @@ export default function LayoutCard({
 
       <Flex
         bg={mainStyles.mainBGColor}
-        minH="100vh"
         direction="column"
-        {...style} // С хуя ли не работает?
+        height="100vh"
+        {...style}
+        // С хуя ли не работает? Я бы на его месте тоже не работал...
       >
-        <VStack w="100%" h="100%">
+        <VStack overflowY="hidden" height="100vh" w="100%">
           <Header />
           <Flex
             direction="column"
             bg={mainStyles.mainBGColor}
             w="100%"
             h="100%"
-            maxW="1280px"
+            maxW="1076px"
+            overflowY="hidden"
             mx="60px"
+            height="100%"
             flex={1}
           >
             {/* {main && <Header />} */}

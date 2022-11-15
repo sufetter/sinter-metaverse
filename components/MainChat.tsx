@@ -40,6 +40,7 @@ export const MainChat = () => {
         flex={1}
         direction="column"
         overflowY="scroll"
+        height="100px"
         sx={{scrollbarWidth: "none"}}
         css={{
           "&::-webkit-scrollbar": {
