@@ -10,22 +10,19 @@ function MyApp({Component, pageProps}: AppProps) {
     <AnimatePresence mode="wait">
       <motion.div
         key={router.route}
-        initial="initialState"
-        animate="animateState"
-        exit="exitState"
-        transition={{
-          duration: 1.5,
+        initial={{
+          opacity: 0.9,
+          clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)",
+          y: "100%",
         }}
-        variants={{
-          initialState: {
-            opacity: 0.9,
-            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)",
-          },
-          animateState: {
-            opacity: 1,
-            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)",
-          },
-          exitState: {clipPath: "polygon(50% 0, 50% 0, 50% 100%, 50% 100%)"},
+        animate={{
+          opacity: 1,
+          clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)",
+          y: "0%",
+        }}
+        exit={{clipPath: "polygon(50% 0, 50% 0, 50% 100%, 50% 100%)"}}
+        transition={{
+          duration: 1,
         }}
       >
         <Component {...pageProps} />
