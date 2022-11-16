@@ -5,7 +5,6 @@ import {ChakraProvider} from "@chakra-ui/react";
 import Register from "./register";
 
 import Link from "next/link";
-import HH from "./../components/HH";
 
 const Home: NextPage = () => {
   return (
@@ -16,10 +15,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ChakraProvider>
-        {/* <Register /> */}
-        <HH />
-      </ChakraProvider>
+      <ChakraProvider>{/* <Register /> */}</ChakraProvider>
     </div>
   );
 };

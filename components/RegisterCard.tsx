@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import Link from "next/link";
 import {
   Heading,
@@ -48,7 +48,9 @@ function RegisterCard() {
   const [passwordAlerter, setPasswordAlerter] = useState<string>(
     "Please, enter your password. Min length 6 is required."
   );
+  const [fileChecked, setFileChecked] = useState(false);
   const router = useRouter();
+  const inputFile: any = useRef(null);
 
   // MAIN FUNCTIONS
 
@@ -101,8 +103,7 @@ function RegisterCard() {
       file[0]?.type.includes("image") &&
       Math.round(file[0].size / 1000) < 5000
     ) {
-      fileName = file[0].name.split(".").pop()!;
-      fileCheck = file[0]; // Вот говоришь ему мол держи значение переменной
+      setFileChecked(true);
       setAvatar("Your Avatar is: " + file[0].name);
       let avatarPath = URL.createObjectURL(file[0]);
       setImagePreview(avatarPath);
@@ -113,17 +114,19 @@ function RegisterCard() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(fileCheck); //  А он говорит, что рот твой в undefinde
+    fileCheck = inputFile.current!.files![0];
+    fileName = fileCheck.name;
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
+
       await sendEmailVerification(res.user);
       const storageRef = ref(
         storage,
         displayName + "." + res.user.uid.slice(0, 5) + "." + fileName
       );
 
-      if (fileCheck) {
+      if (fileCheck && fileChecked) {
         const uploadTask = uploadBytesResumable(storageRef, fileCheck);
 
         uploadTask.on(
@@ -207,8 +210,8 @@ function RegisterCard() {
   const isErrorPasswordRepeat: boolean = passwordRepeat != password;
   const isErrorNickname: boolean = displayName === "";
   let file: Array<File> = [];
-  let fileName: string = "";
-  let fileCheck: File;
+  let fileName: string | any = "";
+  let fileCheck: File | any;
 
   // MAIN UI
   return (
@@ -358,6 +361,7 @@ function RegisterCard() {
                     onChange={handleFileChange}
                     display="none"
                     id="Avatar"
+                    ref={inputFile}
                   ></Input>
                   <Text
                     align="center"
