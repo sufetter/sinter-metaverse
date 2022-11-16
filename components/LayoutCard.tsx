@@ -13,16 +13,19 @@ export const mainStyles = {
   mainItemColor: "#5A83E1",
   mainBGColor: "#141923",
   mainTextColor: "#B5BFD6",
+  secondTextColor: "#FE6060",
   sidebarBTNS: "",
   sidebarBTNSHover: "#224957",
   sidebarBTNSBBorder: secondBGColor,
-  chatListBorderColor: "#5A83E1",
   getMessages: "#224957",
   sendMessages: "#C1402F",
   cardBorder: "#224957",
   headerBG: "#222836",
   chatCardBG: "#222836",
-  chatListItemHober: "#224957",
+  chatListItemHover: "#224957",
+  chatListBorderColor: "#534E93",
+  chatInputBorderColor: "#534E93",
+  reservTextColor: "#534E93",
 };
 
 <link

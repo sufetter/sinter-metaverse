@@ -20,6 +20,7 @@ import {
   Checkbox,
   Spacer,
 } from "@chakra-ui/react";
+import {mainStyles} from "./LayoutCard";
 import {auth} from "../firebaseconfig";
 import {
   createUserWithEmailAndPassword,
@@ -54,7 +55,13 @@ function loginCard() {
   const isErrorPssword = password === "";
 
   return (
-    <Flex flex={1} w="100%" align="center" justify="center" bg="#030812">
+    <Flex
+      flex={1}
+      w="100%"
+      align="center"
+      justify="center"
+      bg={mainStyles.mainBGColor}
+    >
       <Flex>
         <Box
           maxW={"470px"}
@@ -131,7 +138,15 @@ function loginCard() {
                 </Checkbox>
                 <Spacer />
                 <Link color="#FFE927" href="">
-                  Forgot Pssword?
+                  <a>
+                    <Text
+                      color={mainStyles.reservTextColor}
+                      fontWeight="660"
+                      _hover={{textDecoration: "underline"}}
+                    >
+                      Forgot Pssword?
+                    </Text>
+                  </a>
                 </Link>
               </Stack>
               <Stack direction="row" mt={2}>
@@ -140,14 +155,22 @@ function loginCard() {
                 </Text>
                 <Spacer />
                 <Link href="/register">
-                  <a>Register</a>
+                  <a>
+                    <Text
+                      color={mainStyles.secondTextColor}
+                      fontWeight="660"
+                      _hover={{textDecoration: "underline"}}
+                    >
+                      Register
+                    </Text>
+                  </a>
                 </Link>
               </Stack>
               <Button
                 type="submit"
                 w={"full"}
                 mt={5}
-                bg="#FE6060"
+                bg={mainStyles.mainItemColor}
                 color={"white"}
                 rounded={"md"}
                 disabled={submit}

@@ -379,7 +379,15 @@ function RegisterCard() {
                 </Text>
                 <Spacer />
                 <Link href="/login">
-                  <a>Login</a>
+                  <a>
+                    <Text
+                      color={mainStyles.secondTextColor}
+                      fontWeight="660"
+                      _hover={{textDecoration: "underline"}}
+                    >
+                      Login
+                    </Text>
+                  </a>
                 </Link>
               </Stack>
               <Button

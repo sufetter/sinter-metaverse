@@ -15,7 +15,7 @@ export const ChatItem = () => {
     <Flex
       align="center"
       p="2"
-      _hover={{bg: mainStyles.chatListItemHober, cursor: "pointer"}}
+      _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
       w="100%"
       px={3}
       py={2}
@@ -48,7 +48,7 @@ const ChatList = () => {
       flex={0.4}
       direction="column"
       borderEnd="2px solid"
-      borderColor={"#534E93"}
+      borderColor={mainStyles.chatListBorderColor}
     >
       <ChatSearch />
       <ChatItem />

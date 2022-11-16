@@ -1,5 +1,6 @@
 import {Button, Flex, FormControl, Input, Spacer} from "@chakra-ui/react";
 import React, {useState} from "react";
+import {mainStyles} from "./LayoutCard";
 
 export const InputChat = () => {
   const [message, setMessage] = useState("");
@@ -11,8 +12,9 @@ export const InputChat = () => {
       <FormControl w="100%" isInvalid={isErrorMessage}>
         <Input
           placeholder="Type a message....."
-          borderColor="#C1402F"
+          focusBorderColor={mainStyles.chatInputBorderColor}
           autoComplete="off"
+          color="white"
           onChange={handleMessageChange}
         ></Input>
       </FormControl>
