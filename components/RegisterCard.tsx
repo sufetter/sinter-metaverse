@@ -18,6 +18,7 @@ import {
   Image,
   Progress,
 } from "@chakra-ui/react";
+import {motion} from "framer-motion";
 import {AttachmentIcon} from "@chakra-ui/icons";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
 import imageIcon from "../images/imageIcon.png";
@@ -215,14 +216,7 @@ function RegisterCard() {
 
   // MAIN UI
   return (
-    <Flex
-      w="100%"
-      flex={"1 1 auto"}
-      h="100%"
-      align="center"
-      justify="center"
-      mt="-60px"
-    >
+    <Flex w="100%" flex={"1 1 auto"} h="100%" align="center" justify="center">
       <Flex
         minWidth="400px"
         maxW={"400px"}

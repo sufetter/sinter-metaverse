@@ -1,6 +1,8 @@
 import {Box, Flex, Stack, Spacer, Text, VStack} from "@chakra-ui/react";
 import Head from "next/head";
 import Header from "./Header";
+import {AnimatePresence, motion} from "framer-motion";
+import {useRouter} from "next/router";
 
 type LayoutProps = {
   children: JSX.Element;
@@ -38,6 +40,7 @@ export default function LayoutCard({
   main = true,
   style,
 }: LayoutProps) {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -55,6 +58,41 @@ export default function LayoutCard({
       >
         <VStack overflowY="hidden" height="100vh" w="100%">
           <Header />
+
+          {/* <motion.div
+            key={router.route}
+            initial={{
+              // clipPath: "polygon(0 0, 0 0, 0 100%, 0% 100%)",
+              x: "120%",
+            }}
+            animate={{
+              // clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+              x: "0%",
+            }}
+            exit={
+              {
+                // clipPath: "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)",
+              }
+            }
+            transition={{
+              duration: 1,
+            }}
+            style={{height: "100%", width: "100"}}
+          >
+            <Flex
+              direction="column"
+              bg={mainStyles.mainBGColor}
+              w="100%"
+              h="100%"
+              maxW="1076px"
+              overflowY="hidden"
+              height="100%"
+              flex={1}
+              id="1"
+            >
+              {children}
+            </Flex>
+          </motion.div> */}
           <Flex
             direction="column"
             bg={mainStyles.mainBGColor}
@@ -67,9 +105,9 @@ export default function LayoutCard({
             flex={1}
             id="1"
           >
-            {/* {main && <Header />} */}
             {children}
           </Flex>
+
           {/* <Footer /> */}
         </VStack>
       </Flex>

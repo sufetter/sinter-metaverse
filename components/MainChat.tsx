@@ -4,17 +4,6 @@ import {InputChat} from "../components/InputChat";
 import {MessageChat} from "./MessageChat";
 import {mainStyles} from "./LayoutCard";
 
-export const TopBarChat = () => {
-  return (
-    <Flex w="100%" h="81px" align="center" p={5} pt={0}>
-      <Avatar src="" marginEnd={3}></Avatar>
-      <Heading color="white" p={0}>
-        user@fisting.com
-      </Heading>
-    </Flex>
-  );
-};
-
 export const BottomBarChat = () => {
   return (
     <Flex px={4}>
@@ -38,7 +27,6 @@ export const MainChat = () => {
         },
       }}
     >
-      <TopBarChat />
       <Flex
         flex={1}
         px={10}

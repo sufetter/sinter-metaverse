@@ -7,6 +7,7 @@ import Sidebar from "../../components/Sidebar";
 import {ChatSettings} from "../../components/ChatSettings";
 import ChatList from "../../components/ChatList";
 import {mainStyles} from "../../components/LayoutCard";
+import ChatHeader from "../../components/ChatHeader";
 
 const id: React.FC = () => {
   return (
@@ -14,9 +15,19 @@ const id: React.FC = () => {
       <ChakraProvider>
         <Flex bg={mainStyles.mainBGColor} overflowY="hidden" my={3}>
           <Sidebar />
-          <Flex bg={mainStyles.chatCardBG} w="100%" borderRadius="10px">
-            <ChatList />
-            <MainChat />
+          <Flex
+            bg={mainStyles.chatCardBG}
+            w="100%"
+            borderRadius="10px"
+            direction="column"
+          >
+            <Flex>
+              <ChatHeader />
+            </Flex>
+            <Flex>
+              <ChatList />
+              <MainChat />
+            </Flex>
           </Flex>
 
           {/* <ChatSettings /> */}
