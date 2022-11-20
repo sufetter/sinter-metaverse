@@ -63,7 +63,12 @@ export default function LayoutCard({
           <Header />
           {card && (
             <motion.div
-              style={{height: "100%", overflow: "hidden"}}
+              style={{
+                height: "100%",
+                overflow: "hidden",
+                display: "flex",
+                alignItems: "center",
+              }}
               initial={{x: -100, opacity: 0}}
               animate={{x: 0, opacity: 1}}
               transition={{duration: 0.3}}

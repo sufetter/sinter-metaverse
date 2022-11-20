@@ -87,7 +87,7 @@ export const MainChat = () => {
       <Flex
         flex={1}
         px={10}
-        direction="column-reverse"
+        direction="column"
         overflowY="scroll"
         height="100px"
         sx={{scrollbarWidth: "none"}}

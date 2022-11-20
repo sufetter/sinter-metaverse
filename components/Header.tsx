@@ -2,7 +2,7 @@ import React from "react";
 import {
   Box,
   Flex,
-  Stack,
+  HStack,
   Spacer,
   Text,
   Avatar,
@@ -64,12 +64,14 @@ const Header = () => {
           </Flex>
           <Flex>
             <HeaderSearch />
-            <Link href="/chat/fisting">
-              <a>CHAT</a>
-            </Link>
-            <Link href="/register">
-              <a>REG</a>
-            </Link>
+            <HStack align="center">
+              <Link href="/chat/fisting">
+                <a>CHAT</a>
+              </Link>
+              <Link href="/register">
+                <a>REG</a>
+              </Link>
+            </HStack>
           </Flex>
           <Spacer />
           <Flex align="center" _hover={{cursor: "pointer"}}>

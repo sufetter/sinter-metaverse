@@ -115,8 +115,8 @@ function RegisterCard() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    fileCheck = inputFile.current!.files![0];
-    fileName = fileCheck.name;
+    fileCheck = inputFile?.current!.files![0];
+    fileName = fileCheck?.name;
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
