@@ -38,12 +38,17 @@ export const mainStyles = {
   rel="stylesheet"
 />;
 
+const router = useRouter();
+export const navigate = (href: string) => {
+  router.push(`${href}`);
+};
 export default function LayoutCard({
   children,
   card = false,
   style,
 }: LayoutProps) {
   const router = useRouter();
+
   return (
     <>
       <Head>

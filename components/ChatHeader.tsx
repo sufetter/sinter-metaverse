@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React from "react";
 import {
   Flex,
   Input,
@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {mainStyles} from "./LayoutCard";
-import {AuthContext} from "../context/AuthContext";
 
 export const ChatSearch = () => {
   return (

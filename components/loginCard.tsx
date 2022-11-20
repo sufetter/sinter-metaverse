@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import Link from "next/link";
 import {
   Heading,
@@ -29,6 +29,8 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import {useRouter} from "next/router";
+import {AuthContext} from "../context/AuthContext";
+import {navigate} from "./LayoutCard";
 
 function loginCard() {
   const [email, setEmail] = useState("");
@@ -41,15 +43,17 @@ function loginCard() {
     setPassword(e.target.value);
   };
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
-    } else {
-      // navigate();
-    }
-  });
+  // onAuthStateChanged(auth, (user) => {
+  //   if (user) {
+  //     // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
+  //   } else {
+  //     // navigate();
+  //   }
+  // });
 
   const handleShow = () => setShow(!show);
+  const currentUser = useContext(AuthContext);
+  console.log(currentUser);
 
   const isErrorEmail = email === "";
   const isErrorPssword = password === "";

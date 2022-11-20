@@ -1,7 +1,7 @@
 import {auth} from "../firebaseconfig";
 import {onAuthStateChanged, sendEmailVerification} from "firebase/auth";
 import {useRouter} from "next/router";
-import {useEffect} from "react";
+import {useEffect, useContext} from "react";
 
 import {
   Flex,
@@ -13,26 +13,20 @@ import {
   useRadio,
 } from "@chakra-ui/react";
 import {checkCustomRoutes} from "next/dist/lib/load-custom-routes";
+import {AuthContext} from "../context/AuthContext";
+import {navigate} from "./LayoutCard";
 
 const VereficationCard = () => {
-  const navigate = (href: string) => {
-    router.push(`${href}`);
-  };
-  const router = useRouter();
+  const currentUser: any = useContext(AuthContext);
+  if (currentUser != Object) {
+    // navigate("/register");
+  }
+  if (currentUser.emailVerified)
+    navigate(
+      "/chat/" + currentUser?.displayName + "." + currentUser?.uid.slice(0, 5)
+    );
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      if (user.emailVerified) {
-        navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
-      }
-
-      console.log(user.emailVerified);
-      console.log(user);
-    } else {
-      // navigate("/register");
-      console.log("No user");
-    }
-  });
+  console.log(currentUser);
 
   const checkEmail = () => {
     auth.currentUser?.reload();
