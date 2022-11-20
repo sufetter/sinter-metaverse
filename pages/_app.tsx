@@ -9,6 +9,7 @@ function MyApp({Component, pageProps}: AppProps) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
+        style={{overflowY: "hidden"}}
         key={router.route}
         initial={{
           opacity: 0.9,
