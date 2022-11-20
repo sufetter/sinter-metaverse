@@ -62,7 +62,11 @@ function loginCard() {
       justify="center"
       bg={mainStyles.mainBGColor}
     >
-      <Flex>
+      <Flex
+        border="2px solid"
+        borderColor={mainStyles.cardBorder}
+        borderRadius="10px"
+      >
         <Box
           maxW={"470px"}
           w={"full"}

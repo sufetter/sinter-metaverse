@@ -61,20 +61,26 @@ export default function LayoutCard({
       >
         <VStack overflowY="hidden" height="100vh" w="100%">
           <Header />
-          <Flex
-            direction="column"
-            bg={mainStyles.mainBGColor}
-            w="100%"
-            h="100%"
-            maxW="1076px"
-            overflowY="hidden"
-            mx="60px"
-            height="100%"
-            flex={1}
-            id="1"
+          <motion.div
+            style={{height: "100%"}}
+            initial={{x: -100, opacity: 0}}
+            animate={{x: 0, opacity: 1}}
+            transition={{duration: 0.5}}
           >
-            {children}
-          </Flex>
+            <Flex
+              direction="column"
+              w="100%"
+              h="100%"
+              maxW="1076px"
+              overflowY="hidden"
+              mx="60px"
+              height="100%"
+              flex={1}
+              id="1"
+            >
+              {children}
+            </Flex>
+          </motion.div>
 
           {/* <Footer /> */}
         </VStack>
