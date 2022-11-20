@@ -33,21 +33,16 @@ export const mainStyles = {
   reservTextColor: "#534E93",
 };
 
-<link
-  href="https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic"
-  rel="stylesheet"
-/>;
-
-const router = useRouter();
-export const navigate = (href: string) => {
-  router.push(`${href}`);
-};
+export let navigate: any;
 export default function LayoutCard({
   children,
   card = false,
   style,
 }: LayoutProps) {
   const router = useRouter();
+  navigate = (href: string) => {
+    router.push(`${href}`);
+  };
 
   return (
     <>
