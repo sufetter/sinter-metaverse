@@ -15,6 +15,7 @@ import {
 import {BiSearchAlt2} from "react-icons/bi";
 import {IoIosArrowDown} from "react-icons/io";
 import {mainStyles} from "./LayoutCard";
+import Link from "next/link";
 
 export const HeaderSearch = () => {
   return (
@@ -63,6 +64,12 @@ const Header = () => {
           </Flex>
           <Flex>
             <HeaderSearch />
+            <Link href="/chat/fisting">
+              <a>CHAT</a>
+            </Link>
+            <Link href="/register">
+              <a>REG</a>
+            </Link>
           </Flex>
           <Spacer />
           <Flex align="center" _hover={{cursor: "pointer"}}>

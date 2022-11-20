@@ -4,7 +4,7 @@ import {ChakraProvider} from "@chakra-ui/react";
 
 const verefication = () => {
   return (
-    <LayoutCard>
+    <LayoutCard card>
       <ChakraProvider>
         <VereficationCard />
       </ChakraProvider>

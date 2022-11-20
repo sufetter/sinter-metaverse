@@ -6,7 +6,7 @@ import {useRouter} from "next/router";
 
 type LayoutProps = {
   children: JSX.Element;
-  main?: boolean;
+  card?: boolean;
   style?: object;
 };
 
@@ -40,7 +40,7 @@ export const mainStyles = {
 
 export default function LayoutCard({
   children,
-  main = true,
+  card = false,
   style,
 }: LayoutProps) {
   const router = useRouter();
@@ -61,12 +61,29 @@ export default function LayoutCard({
       >
         <VStack overflowY="hidden" height="100vh" w="100%">
           <Header />
-          <motion.div
-            style={{height: "100%"}}
-            initial={{x: -100, opacity: 0}}
-            animate={{x: 0, opacity: 1}}
-            transition={{duration: 0.5}}
-          >
+          {card && (
+            <motion.div
+              style={{height: "100%", overflow: "hidden"}}
+              initial={{x: -100, opacity: 0}}
+              animate={{x: 0, opacity: 1}}
+              transition={{duration: 0.3}}
+            >
+              <Flex
+                direction="column"
+                w="100%"
+                h="100%"
+                maxW="1076px"
+                overflowY="hidden"
+                mx="60px"
+                height="100%"
+                flex={1}
+                id="1"
+              >
+                {children}
+              </Flex>
+            </motion.div>
+          )}
+          {!card && (
             <Flex
               direction="column"
               w="100%"
@@ -80,8 +97,7 @@ export default function LayoutCard({
             >
               {children}
             </Flex>
-          </motion.div>
-
+          )}
           {/* <Footer /> */}
         </VStack>
       </Flex>

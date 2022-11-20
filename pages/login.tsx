@@ -6,7 +6,7 @@ import LayoutCard from "../components/LayoutCard";
 
 export default function login() {
   return (
-    <LayoutCard>
+    <LayoutCard card>
       <ChakraProvider>
         <LoginCard />
       </ChakraProvider>
