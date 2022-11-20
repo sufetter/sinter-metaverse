@@ -53,7 +53,6 @@ function RegisterCard() {
   );
   const [fileChecked, setFileChecked] = useState(false);
   const currentUser = useContext(AuthContext);
-  console.log(currentUser);
   const inputFile: any = useRef(null);
 
   // MAIN FUNCTIONS
@@ -149,14 +148,14 @@ function RegisterCard() {
                   displayName: displayName,
                   photoURL: downloadURL,
                 });
-                // await setDoc(doc(db, "users", res.user.uid), {
-                //   userID: res.user.uid,
-                //   displayName,
-                //   email,
-                //   photoURL: downloadURL,
-                // });
+                await setDoc(doc(db, "users", res.user.uid), {
+                  userID: res.user.uid,
+                  displayName,
+                  email,
+                  photoURL: downloadURL,
+                });
 
-                // await setDoc(doc(db, "userChats", res.user.uid), {});
+                await setDoc(doc(db, "userChats", res.user.uid), {});
               }
             );
           }
@@ -165,14 +164,14 @@ function RegisterCard() {
         await updateProfile(res.user, {
           displayName: displayName,
         });
-        // await setDoc(doc(db, "users", res.user.uid), {
-        //   userID: res.user.uid,
-        //   displayName,
-        //   email,
-        // });
+        await setDoc(doc(db, "users", res.user.uid), {
+          userID: res.user.uid,
+          displayName,
+          email,
+        });
       }
 
-      // await setDoc(doc(db, "userChats", res.user.uid), {});
+      await setDoc(doc(db, "userChats", res.user.uid), {});
 
       // navigate(displayName + "." + res.user.uid.slice(0, 5));
       navigate("/verefication");

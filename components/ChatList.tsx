@@ -7,11 +7,22 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, {useState} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {mainStyles} from "./LayoutCard";
+import {db} from "../firebaseconfig";
+import {collection, query, where, getDocs} from "firebase/firestore";
+import {type} from "os";
 
-export const ChatItem = () => {
+type ChatItemProps = {
+  searchedAvatar?: string;
+  searchedName?: string;
+};
+
+export const ChatItem = ({
+  searchedAvatar = "",
+  searchedName = "User",
+}: ChatItemProps) => {
   return (
     <Flex
       align="center"
@@ -21,15 +32,39 @@ export const ChatItem = () => {
       px={3}
       py={2}
     >
-      <Avatar src="" />
+      <Avatar src={searchedAvatar} />
       <Text ms={3} color="white">
-        User
+        {searchedName}
       </Text>
     </Flex>
   );
 };
 
 export const ChatSearch = () => {
+  const [username, setUsername] = useState("");
+  const [users, setUsers] = useState(null);
+  const [error, setError] = useState<boolean>(false);
+
+  const handleSearch = async () => {
+    const queryDB = query(
+      collection(db, "users"),
+      where("displayName", "==", username)
+    );
+    try {
+      const querySnapshot: any = getDocs(queryDB);
+      querySnapshot.forEach((doc: any) => {
+        setUsers(doc.data);
+      });
+    } catch (err: any) {
+      setError(true);
+      console.log(err);
+      console.log(err.message);
+    }
+  };
+
+  const handleKey = (e: any) => {
+    e.code === "Enter" && handleSearch();
+  };
   return (
     <Flex
       px={3}
@@ -48,6 +83,8 @@ export const ChatSearch = () => {
           color="white"
           placeholder="Search"
           borderRadius="5px"
+          onChange={(e) => setUsername(e.target.value)}
+          onKeyDown={handleKey}
         />
       </InputGroup>
     </Flex>
@@ -63,7 +100,7 @@ const ChatList = () => {
       borderColor={mainStyles.chatListBorderColor}
     >
       <ChatSearch />
-      <ChatItem />
+      <ChatItem searchedAvatar={""} />
       <ChatItem />
       <ChatItem />
       <ChatItem />

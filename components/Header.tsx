@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {
   Box,
   Flex,
@@ -16,6 +16,7 @@ import {BiSearchAlt2} from "react-icons/bi";
 import {IoIosArrowDown} from "react-icons/io";
 import {mainStyles} from "./LayoutCard";
 import Link from "next/link";
+import {AuthContext} from "../context/AuthContext";
 
 export const HeaderSearch = () => {
   return (
@@ -45,6 +46,16 @@ export const HeaderSearch = () => {
 };
 
 const Header = () => {
+  const [userAvatarSRC, setUserAvatarSRC] = useState("");
+  const currentUser: any = useContext(AuthContext);
+  useEffect(() => {
+    if (typeof currentUser == "object") {
+      setUserAvatarSRC(currentUser.photoURL);
+    } else {
+      setUserAvatarSRC("");
+    }
+  }, [currentUser]);
+
   return (
     <ChakraProvider>
       <Flex
@@ -75,7 +86,7 @@ const Header = () => {
           </Flex>
           <Spacer />
           <Flex align="center" _hover={{cursor: "pointer"}}>
-            <Avatar src="" boxSize="35px"></Avatar>
+            <Avatar src={userAvatarSRC} boxSize="35px"></Avatar>
             <Icon as={IoIosArrowDown} ml={1} boxSize="17px" />
           </Flex>
         </Flex>

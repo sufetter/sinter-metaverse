@@ -22,12 +22,7 @@ import {
 } from "@chakra-ui/react";
 import {mainStyles} from "./LayoutCard";
 import {auth} from "../firebaseconfig";
-import {
-  createUserWithEmailAndPassword,
-  updateProfile,
-  onAuthStateChanged,
-  sendEmailVerification,
-} from "firebase/auth";
+import {signInWithEmailAndPassword} from "firebase/auth";
 import {useRouter} from "next/router";
 import {AuthContext} from "../context/AuthContext";
 import {navigate} from "./LayoutCard";
@@ -36,6 +31,7 @@ function loginCard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
+  const [error, setError] = useState<boolean>(false);
   const [submit, setSubmit] = useState(false);
 
   const handleEmailChange = (e: any) => setEmail(e.target.value);
@@ -53,7 +49,24 @@ function loginCard() {
 
   const handleShow = () => setShow(!show);
   const currentUser = useContext(AuthContext);
-  console.log(currentUser);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password).then(
+        (userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          navigate("/chat/" + user?.displayName + "." + user?.uid.slice(0, 5));
+        }
+      );
+    } catch (error: any) {
+      setError(true);
+      console.log(error.message);
+      console.log(error.code);
+    }
+  };
 
   const isErrorEmail = email === "";
   const isErrorPssword = password === "";
@@ -89,11 +102,7 @@ function loginCard() {
             >
               Login
             </Heading>
-            <form
-              onSubmit={(e: any) => {
-                e.preventDefault();
-              }}
-            >
+            <form onSubmit={handleSubmit}>
               <FormControl isInvalid={isErrorEmail}>
                 <Input
                   type="email"

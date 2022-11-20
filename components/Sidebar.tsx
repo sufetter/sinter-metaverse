@@ -14,7 +14,7 @@ import {BsNewspaper} from "react-icons/bs";
 import {FaUserFriends} from "react-icons/fa";
 import {GoFileMedia} from "react-icons/go";
 import {MdOutlineLogout} from "react-icons/md";
-import {mainStyles} from "./LayoutCard";
+import {mainStyles, navigate} from "./LayoutCard";
 import {signOut} from "firebase/auth";
 import {auth} from "../firebaseconfig";
 import {AuthContext} from "../context/AuthContext";
@@ -52,7 +52,7 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
 
 const Sidebar = () => {
   const currentUser = useContext(AuthContext);
-  console.log(currentUser);
+
   return (
     <Flex direction="column">
       <SidebarItem icon={CgProfile} desc="My Profile" />
@@ -66,9 +66,8 @@ const Sidebar = () => {
         icon={MdOutlineLogout}
         desc="Logout"
         onClick={() => {
-          console.log(auth.currentUser);
           signOut(auth);
-          console.log(auth.currentUser);
+          navigate("/login");
         }}
       />
     </Flex>
