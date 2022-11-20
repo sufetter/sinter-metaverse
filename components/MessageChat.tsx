@@ -9,31 +9,40 @@ export interface StandardProps {
 export const MessageChat = ({children, type}: StandardProps) => {
   let position;
   let date = new Date();
+  let displayTime: string = date.getHours() + ":" + date.getMinutes();
 
   return (
-    <Flex alignSelf={position} direction="row">
+    <Flex alignSelf={position} direction="row" my={1.5}>
       <Flex direction="column">
-        <Avatar src="" mr="15px" />
+        <Avatar src="" mr="10px" boxSize="40px" />
       </Flex>
       <Flex direction="column">
         <Flex direction="column">
-          <Flex>
-            <Text color="gray" mr="10px" fontWeight={500}>
+          <Flex align="center">
+            <Text
+              color={mainStyles.messageTextColor}
+              mr="10px"
+              fontWeight={500}
+              fontSize="14px"
+            >
               User Name
             </Text>
-            <Text color="gray.600" fontWeight={500}>
-              {date.getHours() + ":" + date.getMinutes()}
+            <Text
+              color={mainStyles.secondTextColor}
+              fontWeight={400}
+              fontSize="14px"
+            >
+              {displayTime}
             </Text>
           </Flex>
 
           <Text
             color="white"
             w="fit-content"
-            px={3}
             py={0.5}
             borderRadius="5px"
-            marginBottom={4}
             textAlign="justify"
+            fontSize="14px"
           >
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore
             tenetur sed quidem qui veniam aliquid, cum obcaecati soluta facere,

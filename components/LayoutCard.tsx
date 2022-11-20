@@ -1,6 +1,8 @@
 import {Box, Flex, Stack, Spacer, Text, VStack} from "@chakra-ui/react";
 import Head from "next/head";
 import Header from "./Header";
+import {AnimatePresence, motion} from "framer-motion";
+import {useRouter} from "next/router";
 
 type LayoutProps = {
   children: JSX.Element;
@@ -13,7 +15,9 @@ export const mainStyles = {
   mainItemColor: "#5A83E1",
   mainBGColor: "#141923",
   mainTextColor: "#B5BFD6",
-  secondTextColor: "#FE6060",
+  secondTextColor: "#A4A6A8",
+  messageTextColor: "#9BB0DE",
+  chatHeaderTextColor: "#BBC7E4",
   sidebarBTNS: "",
   sidebarBTNSHover: "#224957",
   sidebarBTNSBBorder: secondBGColor,
@@ -21,6 +25,7 @@ export const mainStyles = {
   sendMessages: "#C1402F",
   cardBorder: "#224957",
   headerBG: "#222836",
+  headerSearchBGColor: "#677596",
   chatCardBG: "#222836",
   chatListItemHover: "#224957",
   chatListBorderColor: "#534E93",
@@ -38,6 +43,7 @@ export default function LayoutCard({
   main = true,
   style,
 }: LayoutProps) {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -67,9 +73,9 @@ export default function LayoutCard({
             flex={1}
             id="1"
           >
-            {/* {main && <Header />} */}
             {children}
           </Flex>
+
           {/* <Footer /> */}
         </VStack>
       </Flex>

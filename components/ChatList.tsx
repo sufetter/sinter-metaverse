@@ -5,6 +5,7 @@ import {
   InputGroup,
   InputRightElement,
   Input,
+  Stack,
 } from "@chakra-ui/react";
 import React from "react";
 import {BiSearchAlt2} from "react-icons/bi";
@@ -30,13 +31,24 @@ export const ChatItem = () => {
 
 export const ChatSearch = () => {
   return (
-    <Flex p={3}>
-      <InputGroup>
+    <Flex
+      px={3}
+      h="55px"
+      align="center"
+      borderBottom="3px solid"
+      borderColor={mainStyles.chatInputBorderColor}
+    >
+      <InputGroup size="sm">
         <InputRightElement
           pointerEvents="none"
-          children={<BiSearchAlt2 color="white" size="20px" />}
+          children={<BiSearchAlt2 color="white" size="18px" />}
         />
-        <Input type="tel" placeholder="Search Chat" />
+        <Input
+          type="tel"
+          color="white"
+          placeholder="Search"
+          borderRadius="5px"
+        />
       </InputGroup>
     </Flex>
   );
@@ -45,9 +57,9 @@ export const ChatSearch = () => {
 const ChatList = () => {
   return (
     <Flex
-      flex={0.4}
+      flex={0.5}
       direction="column"
-      borderEnd="2px solid"
+      borderEnd="3px solid"
       borderColor={mainStyles.chatListBorderColor}
     >
       <ChatSearch />

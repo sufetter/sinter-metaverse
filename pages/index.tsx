@@ -3,6 +3,7 @@ import Head from "next/head";
 import Login from "./login";
 import {ChakraProvider} from "@chakra-ui/react";
 import Register from "./register";
+import Test from "../components/test";
 
 import Link from "next/link";
 
@@ -15,7 +16,9 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ChakraProvider>{/* <Register /> */}</ChakraProvider>
+      <ChakraProvider>
+        <Test />
+      </ChakraProvider>
     </div>
   );
 };
