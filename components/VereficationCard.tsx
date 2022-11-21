@@ -25,7 +25,6 @@ const VereficationCard = () => {
       if (user.emailVerified) {
         navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
       }
-
       console.log(user.emailVerified);
       console.log(user);
     } else {
