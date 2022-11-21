@@ -42,7 +42,7 @@ export const ChatItem = ({
 
 export const ChatSearch = () => {
   const [username, setUsername] = useState("");
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState([{}]);
   const [error, setError] = useState<boolean>(false);
   const currentUser: any = useContext(AuthContext);
 
@@ -55,14 +55,11 @@ export const ChatSearch = () => {
     );
     try {
       const querySnapshot: any = await getDocs(queryDB);
-      let results: any = [];
       await querySnapshot.forEach((doc: any) => {
-        const result = doc.data();
-        results.pop(result);
-        console.log(results);
+        setUsers(doc.data());
+        console.log(doc.data());
+        console.log(users);
       });
-      setUsers(results);
-      console.log(users);
     } catch (err: any) {
       setError(true);
       console.log(err);
