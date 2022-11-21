@@ -7,12 +7,12 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {mainStyles} from "./LayoutCard";
 import {db} from "../firebaseconfig";
 import {collection, query, where, getDocs} from "firebase/firestore";
-import {type} from "os";
+import {AuthContext} from "../context/AuthContext";
 
 type ChatItemProps = {
   searchedAvatar?: string;
@@ -44,17 +44,25 @@ export const ChatSearch = () => {
   const [username, setUsername] = useState("");
   const [users, setUsers] = useState(null);
   const [error, setError] = useState<boolean>(false);
+  const currentUser: any = useContext(AuthContext);
 
+  // Почему дважды нужно вызвать?
   const handleSearch = async () => {
     const queryDB = query(
       collection(db, "users"),
-      where("displayName", "==", username)
+      where("displayName", "==", username),
+      where("userID", "!=", currentUser.uid)
     );
     try {
-      const querySnapshot: any = getDocs(queryDB);
-      querySnapshot.forEach((doc: any) => {
-        setUsers(doc.data);
+      const querySnapshot: any = await getDocs(queryDB);
+      let results: any = [];
+      await querySnapshot.forEach((doc: any) => {
+        const result = doc.data();
+        results.pop(result);
+        console.log(results);
       });
+      setUsers(results);
+      console.log(users);
     } catch (err: any) {
       setError(true);
       console.log(err);
@@ -62,7 +70,7 @@ export const ChatSearch = () => {
     }
   };
 
-  const handleKey = (e: any) => {
+  const handleKey = async (e: any) => {
     e.code === "Enter" && handleSearch();
   };
   return (
@@ -83,7 +91,10 @@ export const ChatSearch = () => {
           color="white"
           placeholder="Search"
           borderRadius="5px"
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e: any) => {
+            setUsername(e.target.value!);
+            // handleSearch();
+          }}
           onKeyDown={handleKey}
         />
       </InputGroup>

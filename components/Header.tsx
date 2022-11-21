@@ -82,6 +82,7 @@ const Header = () => {
               <Link href="/register">
                 <a>REG</a>
               </Link>
+              <Text color="white">{currentUser.displayName}</Text>
             </HStack>
           </Flex>
           <Spacer />
