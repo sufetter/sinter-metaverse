@@ -197,7 +197,8 @@ function RegisterCard() {
       (Number(areBigLetters) + Number(areLittleLetters) + Number(areNumbers))) /
       3;
   const isErrorPassword: boolean = isPassowordShort || !isPasswordReliable;
-  const isErrorPasswordRepeat: boolean = passwordRepeat != password;
+  const isErrorPasswordRepeat: boolean =
+    passwordRepeat != password || password === "";
   const isErrorNickname: boolean = displayName === "";
   let file: Array<File> = [];
   let fileName: string | any = "";
@@ -322,7 +323,9 @@ function RegisterCard() {
                   </FormHelperText>
                 ) : (
                   <FormErrorMessage mb={2}>
-                    Please repeat your password.
+                    {password == ""
+                      ? "Please enter a password"
+                      : "The entered passwords doesn't match each other."}
                   </FormErrorMessage>
                 )}
               </FormControl>
