@@ -6,7 +6,7 @@ import {useRouter} from "next/router";
 
 type LayoutProps = {
   children: JSX.Element;
-  main?: boolean;
+  card?: boolean;
   style?: object;
 };
 
@@ -33,17 +33,17 @@ export const mainStyles = {
   reservTextColor: "#534E93",
 };
 
-<link
-  href="https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic"
-  rel="stylesheet"
-/>;
-
+export let navigate: any;
 export default function LayoutCard({
   children,
-  main = true,
+  card = false,
   style,
 }: LayoutProps) {
   const router = useRouter();
+  navigate = (href: string) => {
+    router.push(`${href}`);
+  };
+
   return (
     <>
       <Head>
@@ -61,12 +61,34 @@ export default function LayoutCard({
       >
         <VStack overflowY="hidden" height="100vh" w="100%">
           <Header />
-          <motion.div
-            style={{height: "100%"}}
-            initial={{x: -100, opacity: 0}}
-            animate={{x: 0, opacity: 1}}
-            transition={{duration: 0.5}}
-          >
+          {card && (
+            <motion.div
+              style={{
+                height: "100%",
+                overflow: "hidden",
+                display: "flex",
+                alignItems: "center",
+              }}
+              initial={{x: -100, opacity: 0}}
+              animate={{x: 0, opacity: 1}}
+              transition={{duration: 0.3}}
+            >
+              <Flex
+                direction="column"
+                w="100%"
+                h="100%"
+                maxW="1076px"
+                overflowY="hidden"
+                mx="60px"
+                height="100%"
+                flex={1}
+                id="1"
+              >
+                {children}
+              </Flex>
+            </motion.div>
+          )}
+          {!card && (
             <Flex
               direction="column"
               w="100%"
@@ -80,8 +102,7 @@ export default function LayoutCard({
             >
               {children}
             </Flex>
-          </motion.div>
-
+          )}
           {/* <Footer /> */}
         </VStack>
       </Flex>

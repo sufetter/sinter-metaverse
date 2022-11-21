@@ -7,11 +7,22 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, {useState, useContext} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {mainStyles} from "./LayoutCard";
+import {db} from "../firebaseconfig";
+import {collection, query, where, getDocs} from "firebase/firestore";
+import {AuthContext} from "../context/AuthContext";
 
-export const ChatItem = () => {
+type ChatItemProps = {
+  searchedAvatar?: string;
+  searchedName?: string;
+};
+
+export const ChatItem = ({
+  searchedAvatar = "",
+  searchedName = "User",
+}: ChatItemProps) => {
   return (
     <Flex
       align="center"
@@ -21,15 +32,47 @@ export const ChatItem = () => {
       px={3}
       py={2}
     >
-      <Avatar src="" />
+      <Avatar src={searchedAvatar} />
       <Text ms={3} color="white">
-        User
+        {searchedName}
       </Text>
     </Flex>
   );
 };
 
 export const ChatSearch = () => {
+  const [username, setUsername] = useState("");
+  const [users, setUsers] = useState<Array<Object>>([{}]);
+  const [error, setError] = useState<boolean>(false);
+  const currentUser: any = useContext(AuthContext);
+
+  // Почему дважды нужно вызвать?
+  const handleSearch = async () => {
+    const queryDB = query(
+      collection(db, "users"),
+      where("displayName", "==", username),
+      where("userID", "!=", currentUser.uid)
+    );
+    try {
+      const querySnapshot: any = await getDocs(queryDB);
+      let results: any = [];
+      await querySnapshot.forEach((doc: any) => {
+        const result = doc.data();
+        results.push(result);
+        setUsers(results);
+      });
+
+      console.log(users);
+    } catch (err: any) {
+      setError(true);
+      console.log(err);
+      console.log(err.message);
+    }
+  };
+
+  const handleKey = async (e: any) => {
+    e.code === "Enter" && handleSearch();
+  };
   return (
     <Flex
       px={3}
@@ -48,6 +91,11 @@ export const ChatSearch = () => {
           color="white"
           placeholder="Search"
           borderRadius="5px"
+          onChange={(e: any) => {
+            setUsername(e.target.value!);
+            // handleSearch();
+          }}
+          onKeyDown={handleKey}
         />
       </InputGroup>
     </Flex>
@@ -63,7 +111,7 @@ const ChatList = () => {
       borderColor={mainStyles.chatListBorderColor}
     >
       <ChatSearch />
-      <ChatItem />
+      <ChatItem searchedAvatar={""} />
       <ChatItem />
       <ChatItem />
       <ChatItem />

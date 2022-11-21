@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState, useRef, useContext} from "react";
 import Link from "next/link";
 import {
   Heading,
@@ -30,8 +30,10 @@ import {
 } from "firebase/auth";
 import {auth, storage, db} from "../firebaseconfig";
 import {doc, setDoc} from "firebase/firestore";
+import {AuthContext} from "../context/AuthContext";
 import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
+import {navigate} from "./LayoutCard";
 import {mainStyles} from "./LayoutCard";
 
 function RegisterCard() {
@@ -50,7 +52,7 @@ function RegisterCard() {
     "Please, enter your password. Min length 6 is required."
   );
   const [fileChecked, setFileChecked] = useState(false);
-  const router = useRouter();
+  const currentUser = useContext(AuthContext);
   const inputFile: any = useRef(null);
 
   // MAIN FUNCTIONS
@@ -63,20 +65,7 @@ function RegisterCard() {
 
   const handleShow = () => setShow(!show);
 
-  const navigate = (href: string) => {
-    router.push(`${href}`);
-  };
-
   const handleDisplayNameChange = (e: any) => setDisplayName(e.target.value);
-
-  // FB State Locator
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
-    } else {
-      // navigate();
-    }
-  });
 
   const handlePasswordChange = (e: any) => {
     let str: string = e.target.value;
@@ -115,8 +104,8 @@ function RegisterCard() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    fileCheck = inputFile.current!.files![0];
-    fileName = fileCheck.name;
+    fileCheck = inputFile?.current!.files![0];
+    fileName = fileCheck?.name;
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -159,14 +148,14 @@ function RegisterCard() {
                   displayName: displayName,
                   photoURL: downloadURL,
                 });
-                // await setDoc(doc(db, "users", res.user.uid), {
-                //   userID: res.user.uid,
-                //   displayName,
-                //   email,
-                //   photoURL: downloadURL,
-                // });
+                await setDoc(doc(db, "users", res.user.uid), {
+                  userID: res.user.uid,
+                  displayName,
+                  email,
+                  photoURL: downloadURL,
+                });
 
-                // await setDoc(doc(db, "userChats", res.user.uid), {});
+                await setDoc(doc(db, "userChats", res.user.uid), {});
               }
             );
           }
@@ -175,14 +164,14 @@ function RegisterCard() {
         await updateProfile(res.user, {
           displayName: displayName,
         });
-        // await setDoc(doc(db, "users", res.user.uid), {
-        //   userID: res.user.uid,
-        //   displayName,
-        //   email,
-        // });
+        await setDoc(doc(db, "users", res.user.uid), {
+          userID: res.user.uid,
+          displayName,
+          email,
+        });
       }
 
-      // await setDoc(doc(db, "userChats", res.user.uid), {});
+      await setDoc(doc(db, "userChats", res.user.uid), {});
 
       // navigate(displayName + "." + res.user.uid.slice(0, 5));
       navigate("/verefication");

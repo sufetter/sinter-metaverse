@@ -7,21 +7,25 @@ import {
   ChakraProvider,
   Spacer,
 } from "@chakra-ui/react";
-import React from "react";
+import React, {useContext} from "react";
 import {CgProfile} from "react-icons/cg";
 import {FiMessageSquare, FiSettings} from "react-icons/fi";
 import {BsNewspaper} from "react-icons/bs";
 import {FaUserFriends} from "react-icons/fa";
 import {GoFileMedia} from "react-icons/go";
 import {MdOutlineLogout} from "react-icons/md";
-import {mainStyles} from "./LayoutCard";
+import {mainStyles, navigate} from "./LayoutCard";
+import {signOut} from "firebase/auth";
+import {auth} from "../firebaseconfig";
+import {AuthContext} from "../context/AuthContext";
 
 type SideBarItemProps = {
   icon?: JSX.Element | any;
   desc?: string;
+  onClick?: any;
 };
 
-export const SidebarItem = ({icon, desc}: SideBarItemProps) => {
+export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
   return (
     <Flex
       w="140px"
@@ -36,6 +40,7 @@ export const SidebarItem = ({icon, desc}: SideBarItemProps) => {
         cursor: "pointer",
         bg: mainStyles.sidebarBTNSHover,
       }}
+      onClick={onClick}
     >
       <Icon boxSize={"20px"} color={mainStyles.mainItemColor} as={icon} />
       <Text color={mainStyles.mainTextColor} pl={3} fontSize="14px">
@@ -46,6 +51,8 @@ export const SidebarItem = ({icon, desc}: SideBarItemProps) => {
 };
 
 const Sidebar = () => {
+  const currentUser = useContext(AuthContext);
+
   return (
     <Flex direction="column">
       <SidebarItem icon={CgProfile} desc="My Profile" />
@@ -55,7 +62,14 @@ const Sidebar = () => {
       <SidebarItem icon={GoFileMedia} desc="Media Files" />
       <Spacer />
       <SidebarItem icon={FiSettings} desc="Settings" />
-      <SidebarItem icon={MdOutlineLogout} desc="Logout" />
+      <SidebarItem
+        icon={MdOutlineLogout}
+        desc="Logout"
+        onClick={() => {
+          signOut(auth);
+          navigate("/login");
+        }}
+      />
     </Flex>
   );
 };

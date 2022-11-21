@@ -6,7 +6,7 @@ import RegisterCard from "../components/RegisterCard";
 
 const Register = () => {
   return (
-    <LayoutCard>
+    <LayoutCard card>
       <ChakraProvider>
         <RegisterCard />
       </ChakraProvider>

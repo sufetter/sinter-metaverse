@@ -10,7 +10,7 @@ import {mainStyles} from "../../components/LayoutCard";
 
 const id: React.FC = () => {
   return (
-    <LayoutCard style={{height: "100vh", overflow: "hidden"}} main>
+    <LayoutCard style={{height: "100vh", overflow: "hidden"}}>
       <ChakraProvider>
         <Flex bg={mainStyles.mainBGColor} overflowY="hidden" my={3}>
           <Sidebar />
