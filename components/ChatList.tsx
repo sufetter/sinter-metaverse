@@ -40,13 +40,15 @@ export const ChatItem = ({
   );
 };
 
-export const ChatSearch = () => {
-  const [username, setUsername] = useState("");
-  const [users, setUsers] = useState<Array<Object>>([{}]);
+export const ChatSearch = ({handleSearchedUsers}: any) => {
+  const [username, setUsername] = useState<any>("");
   const [error, setError] = useState<boolean>(false);
   const currentUser: any = useContext(AuthContext);
 
-  // Почему дважды нужно вызвать?
+  const handleInput = (e: any) => {
+    setUsername(e.target.value!);
+    handleSearch();
+  };
   const handleSearch = async () => {
     const queryDB = query(
       collection(db, "users"),
@@ -60,7 +62,8 @@ export const ChatSearch = () => {
         const result = doc.data();
         results.push(result);
       });
-      setUsers(results);
+
+      handleSearchedUsers(results);
     } catch (err: any) {
       setError(true);
       console.log(err);
@@ -89,10 +92,7 @@ export const ChatSearch = () => {
           color="white"
           placeholder="Search"
           borderRadius="5px"
-          onChange={(e: any) => {
-            setUsername(e.target.value!);
-            // handleSearch();
-          }}
+          onChange={handleInput}
           onKeyDown={handleKey}
         />
       </InputGroup>
@@ -100,7 +100,51 @@ export const ChatSearch = () => {
   );
 };
 
+const Render = ({searchedUsers}: any) => {
+  let borderWidth = 0;
+  let notFoundMessage = "No user found";
+
+  let result = searchedUsers?.map((user: any) => {
+    return (
+      <ChatItem
+        searchedAvatar={user.photoURL}
+        searchedName={user.displayName}
+        key={Math.random()}
+      />
+    );
+  });
+  if (result?.length > 0) {
+    borderWidth = 3;
+    notFoundMessage = "";
+  }
+  if (notFoundMessage != "") {
+    borderWidth = 3;
+  }
+
+  return (
+    <Flex
+      direction="column"
+      borderBottom={`${borderWidth}px solid`}
+      borderColor={mainStyles.chatListBorderColor}
+      sx={{scrollbarWidth: "none"}}
+      css={{
+        "&::-webkit-scrollbar": {
+          display: "none",
+          width: "30px",
+        },
+      }}
+    >
+      <Flex>
+        <Text color="white">{notFoundMessage}</Text>
+      </Flex>
+      <Flex direction="column">{result}</Flex>
+    </Flex>
+  );
+};
+
 const ChatList = () => {
+  const [searchedUsers, setSearchedUsers] = useState<any>();
+
   return (
     <Flex
       flex={0.5}
@@ -108,14 +152,28 @@ const ChatList = () => {
       borderEnd="3px solid"
       borderColor={mainStyles.chatListBorderColor}
     >
-      <ChatSearch />
-      <ChatItem searchedAvatar={""} />
-      <ChatItem />
-      <ChatItem />
-      <ChatItem />
-      <ChatItem />
-      <ChatItem />
-      <ChatItem />
+      <ChatSearch
+        handleSearchedUsers={(users: any) => setSearchedUsers(users)}
+      />
+      <Render searchedUsers={searchedUsers} />
+      <Flex
+        direction="column"
+        sx={{scrollbarWidth: "none"}}
+        css={{
+          "&::-webkit-scrollbar": {
+            display: "none",
+            width: "30px",
+          },
+        }}
+      >
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+      </Flex>
     </Flex>
   );
 };
