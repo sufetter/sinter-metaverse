@@ -7,7 +7,7 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {mainStyles} from "./LayoutCard";
 import {db} from "../firebaseconfig";
@@ -40,14 +40,20 @@ export const ChatItem = ({
   );
 };
 
-export const ChatSearch = ({handleSearchedUsers}: any) => {
-  const [username, setUsername] = useState<any>("");
+export const ChatSearch = ({
+  handleSearchedUsers,
+  username,
+  setUsername,
+}: any) => {
   const [error, setError] = useState<boolean>(false);
   const currentUser: any = useContext(AuthContext);
 
+  useEffect(() => {
+    if (username !== undefined && currentUser.uid !== undefined) handleSearch();
+  }, [username]);
+
   const handleInput = (e: any) => {
     setUsername(e.target.value!);
-    handleSearch();
   };
   const handleSearch = async () => {
     const queryDB = query(
@@ -74,10 +80,11 @@ export const ChatSearch = ({handleSearchedUsers}: any) => {
   const handleKey = async (e: any) => {
     e.code === "Enter" && handleSearch();
   };
+
   return (
     <Flex
       px={3}
-      h="55px"
+      minH="55px"
       align="center"
       borderBottom="3px solid"
       borderColor={mainStyles.chatInputBorderColor}
@@ -100,9 +107,10 @@ export const ChatSearch = ({handleSearchedUsers}: any) => {
   );
 };
 
-const Render = ({searchedUsers}: any) => {
+const Render = ({searchedUsers, username}: any) => {
   let borderWidth = 0;
-  let notFoundMessage = "No user found";
+  let supMessage = "No user found";
+  let type = 2;
 
   let result = searchedUsers?.map((user: any) => {
     return (
@@ -115,10 +123,15 @@ const Render = ({searchedUsers}: any) => {
   });
   if (result?.length > 0) {
     borderWidth = 3;
-    notFoundMessage = "";
+    supMessage = "Users found:";
+    type = 0;
   }
-  if (notFoundMessage != "") {
+  if (supMessage != "") {
     borderWidth = 3;
+  }
+  if (username == "") {
+    supMessage = "";
+    borderWidth = 0;
   }
 
   return (
@@ -135,7 +148,9 @@ const Render = ({searchedUsers}: any) => {
       }}
     >
       <Flex>
-        <Text color="white">{notFoundMessage}</Text>
+        <Text color="white" px={2} pt={2} pb={type}>
+          {supMessage}
+        </Text>
       </Flex>
       <Flex direction="column">{result}</Flex>
     </Flex>
@@ -144,7 +159,7 @@ const Render = ({searchedUsers}: any) => {
 
 const ChatList = () => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
-
+  const [username, setUsername] = useState("");
   return (
     <Flex
       flex={0.5}
@@ -154,9 +169,12 @@ const ChatList = () => {
     >
       <ChatSearch
         handleSearchedUsers={(users: any) => setSearchedUsers(users)}
+        username={username}
+        setUsername={setUsername}
       />
-      <Render searchedUsers={searchedUsers} />
+      <Render searchedUsers={searchedUsers} username={username} />
       <Flex
+        overflowY="scroll"
         direction="column"
         sx={{scrollbarWidth: "none"}}
         css={{
@@ -166,6 +184,20 @@ const ChatList = () => {
           },
         }}
       >
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
         <ChatItem />
         <ChatItem />
         <ChatItem />
