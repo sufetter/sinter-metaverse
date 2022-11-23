@@ -60,17 +60,27 @@ export const ChatSearch = () => {
         const result = doc.data();
         results.push(result);
       });
+
       setUsers(results);
     } catch (err: any) {
       setError(true);
       console.log(err);
       console.log(err.message);
     }
+    searchRender();
   };
 
   const handleKey = async (e: any) => {
     e.code === "Enter" && handleSearch();
   };
+
+  const searchRender = () => {
+    users.map((user: any) => {
+      console.log(users);
+      return <Flex>{user.displayName}</Flex>;
+    });
+  };
+
   return (
     <Flex
       px={3}
@@ -91,7 +101,6 @@ export const ChatSearch = () => {
           borderRadius="5px"
           onChange={(e: any) => {
             setUsername(e.target.value!);
-            // handleSearch();
           }}
           onKeyDown={handleKey}
         />
