@@ -7,7 +7,7 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {mainStyles} from "./LayoutCard";
 import {db} from "../firebaseconfig";
@@ -27,7 +27,10 @@ export const ChatItem = ({
     <Flex
       align="center"
       p="2"
-      _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
+      _hover={{
+        bg: mainStyles.chatListItemHover,
+        cursor: "pointer",
+      }}
       w="100%"
       px={3}
       py={2}
@@ -40,13 +43,21 @@ export const ChatItem = ({
   );
 };
 
-export const ChatSearch = () => {
-  const [username, setUsername] = useState("");
-  const [users, setUsers] = useState<Array<Object>>([{}]);
+export const ChatSearch = ({
+  handleSearchedUsers,
+  username,
+  setUsername,
+}: any) => {
   const [error, setError] = useState<boolean>(false);
   const currentUser: any = useContext(AuthContext);
 
-  // Почему дважды нужно вызвать?
+  useEffect(() => {
+    if (username !== undefined && currentUser.uid !== undefined) handleSearch();
+  }, [username]);
+
+  const handleInput = (e: any) => {
+    setUsername(e.target.value!);
+  };
   const handleSearch = async () => {
     const queryDB = query(
       collection(db, "users"),
@@ -60,33 +71,23 @@ export const ChatSearch = () => {
         const result = doc.data();
         results.push(result);
       });
-
-      setUsers(results);
+      handleSearchedUsers(results);
     } catch (err: any) {
       setError(true);
       console.log(err);
       console.log(err.message);
     }
-    searchRender();
   };
 
   const handleKey = async (e: any) => {
     e.code === "Enter" && handleSearch();
   };
-
-  const searchRender = () => {
-    users.map((user: any) => {
-      console.log(users);
-      return <Flex>{user.displayName}</Flex>;
-    });
-  };
-
   return (
     <Flex
       px={3}
-      h="55px"
+      minH="55px"
       align="center"
-      borderBottom="3px solid"
+      borderBottom="1px solid"
       borderColor={mainStyles.chatInputBorderColor}
     >
       <InputGroup size="sm">
@@ -99,9 +100,7 @@ export const ChatSearch = () => {
           color="white"
           placeholder="Search"
           borderRadius="5px"
-          onChange={(e: any) => {
-            setUsername(e.target.value!);
-          }}
+          onChange={handleInput}
           onKeyDown={handleKey}
         />
       </InputGroup>
@@ -109,22 +108,108 @@ export const ChatSearch = () => {
   );
 };
 
+const Render = ({searchedUsers, username}: any) => {
+  let borderWidth = 0;
+  let supMessage = "No user found";
+  let type = 2;
+  let display = "block";
+
+  let result = searchedUsers?.map((user: any) => {
+    return (
+      <ChatItem
+        searchedAvatar={user.photoURL}
+        searchedName={user.displayName}
+        key={Math.random()}
+      />
+    );
+  });
+  if (result?.length > 0) {
+    borderWidth = 3;
+    supMessage = "Users found:";
+    type = 0;
+  }
+  if (supMessage != "") {
+    borderWidth = 1;
+  }
+  if (username == "") {
+    display = "none";
+    supMessage = "";
+    borderWidth = 0;
+  }
+
+  return (
+    <Flex
+      direction="column"
+      borderBottom={`${borderWidth}px solid`}
+      borderColor={mainStyles.chatListBorderColor}
+      display={display}
+      sx={{scrollbarWidth: "none"}}
+      css={{
+        "&::-webkit-scrollbar": {
+          display: "none",
+          width: "30px",
+        },
+      }}
+    >
+      <Flex>
+        <Text color="white" px={2} pt={2} pb={type}>
+          {supMessage}
+        </Text>
+      </Flex>
+      <Flex direction="column">{result}</Flex>
+    </Flex>
+  );
+};
+
 const ChatList = () => {
+  const [searchedUsers, setSearchedUsers] = useState<any>();
+  const [username, setUsername] = useState("");
   return (
     <Flex
       flex={0.5}
       direction="column"
-      borderEnd="3px solid"
+      borderEnd="1px solid"
       borderColor={mainStyles.chatListBorderColor}
     >
-      <ChatSearch />
-      <ChatItem searchedAvatar={""} />
-      <ChatItem />
-      <ChatItem />
-      <ChatItem />
-      <ChatItem />
-      <ChatItem />
-      <ChatItem />
+      <ChatSearch
+        handleSearchedUsers={(users: any) => setSearchedUsers(users)}
+        username={username}
+        setUsername={setUsername}
+      />
+      <Render searchedUsers={searchedUsers} username={username} />
+      <Flex
+        overflowY="scroll"
+        direction="column"
+        sx={{scrollbarWidth: "none"}}
+        css={{
+          "&::-webkit-scrollbar": {
+            display: "none",
+            width: "30px",
+          },
+        }}
+      >
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+        <ChatItem />
+      </Flex>
     </Flex>
   );
 };

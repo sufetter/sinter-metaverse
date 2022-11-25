@@ -13,8 +13,8 @@ type LayoutProps = {
 let secondBGColor = "#9D0039";
 export const mainStyles = {
   mainItemColor: "#5A83E1",
-  mainBGColor: "#141923",
-  mainTextColor: "#B5BFD6",
+  mainBGColor: "#0e0e10",
+  mainTextColor: "#fff",
   secondTextColor: "#A4A6A8",
   messageTextColor: "#9BB0DE",
   chatHeaderTextColor: "#BBC7E4",
@@ -24,12 +24,12 @@ export const mainStyles = {
   getMessages: "#224957",
   sendMessages: "#C1402F",
   cardBorder: "#224957",
-  headerBG: "#222836",
+  headerBG: "#18181b",
   headerSearchBGColor: "#677596",
-  chatCardBG: "#222836",
+  chatCardBG: "#18181b",
   chatListItemHover: "#224957",
-  chatListBorderColor: "#534E93",
-  chatInputBorderColor: "#534E93",
+  chatListBorderColor: "#606060",
+  chatInputBorderColor: "#606060",
   reservTextColor: "#534E93",
 };
 

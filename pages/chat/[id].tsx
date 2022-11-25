@@ -14,7 +14,13 @@ const id: React.FC = () => {
       <ChakraProvider>
         <Flex bg={mainStyles.mainBGColor} overflowY="hidden" my={3}>
           <Sidebar />
-          <Flex bg={mainStyles.chatCardBG} w="100%" borderRadius="10px">
+          <Flex
+            bg={mainStyles.chatCardBG}
+            w="100%"
+            borderRadius="10px"
+            border="1px solid"
+            borderColor={mainStyles.chatListBorderColor}
+          >
             <ChatList />
             <MainChat />
           </Flex>

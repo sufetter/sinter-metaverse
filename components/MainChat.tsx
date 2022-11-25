@@ -25,7 +25,7 @@ export const TopBarChat = () => {
       p={2}
       px={4}
       h="55px"
-      borderBottom="3px solid"
+      borderBottom="1px solid"
       borderColor={mainStyles.chatInputBorderColor}
     >
       <HStack align="center" spacing="10px">
