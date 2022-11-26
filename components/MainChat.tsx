@@ -27,6 +27,8 @@ export const TopBarChat = () => {
       h="55px"
       borderBottom="1px solid"
       borderColor={mainStyles.chatInputBorderColor}
+      bg={mainStyles.chatCardSecondBGColor}
+      borderRadius="0 9px 0 0"
     >
       <HStack align="center" spacing="10px">
         <Text
@@ -62,7 +64,12 @@ export const TopBarChat = () => {
 
 export const BottomBarChat = () => {
   return (
-    <Flex px={4}>
+    <Flex
+      px={4}
+      bg={mainStyles.chatCardSecondBGColor}
+      borderRadius="0 0 9px 0"
+      h="60px"
+    >
       <InputChat />
     </Flex>
   );

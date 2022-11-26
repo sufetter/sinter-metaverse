@@ -3,12 +3,14 @@ import {
   Text,
   Avatar,
   InputGroup,
-  InputRightElement,
+  InputLeftElement,
   Input,
+  Icon,
   Stack,
 } from "@chakra-ui/react";
 import React, {useState, useContext, useEffect} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
+import {CiSettings} from "react-icons/ci";
 import {mainStyles} from "./LayoutCard";
 import {db} from "../firebaseconfig";
 import {collection, query, where, getDocs} from "firebase/firestore";
@@ -27,12 +29,9 @@ export const ChatItem = ({
     <Flex
       align="center"
       p="2"
-      _hover={{
-        bg: mainStyles.chatListItemHover,
-        cursor: "pointer",
-      }}
+      _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
       w="100%"
-      px={3}
+      px={4}
       py={2}
     >
       <Avatar src={searchedAvatar} />
@@ -63,6 +62,8 @@ export const ChatSearch = ({
       collection(db, "users"),
       where("displayName", "==", username),
       where("userID", "!=", currentUser.uid)
+      // where("displayName", ">=", username),
+      // where("displayName", "<=", username + "~")
     );
     try {
       let results: Array<Object> = [];
@@ -71,6 +72,7 @@ export const ChatSearch = ({
         const result = doc.data();
         results.push(result);
       });
+
       handleSearchedUsers(results);
     } catch (err: any) {
       setError(true);
@@ -82,28 +84,40 @@ export const ChatSearch = ({
   const handleKey = async (e: any) => {
     e.code === "Enter" && handleSearch();
   };
+
   return (
     <Flex
-      px={3}
+      px={1}
       minH="55px"
       align="center"
       borderBottom="1px solid"
       borderColor={mainStyles.chatInputBorderColor}
+      bg={mainStyles.chatCardSecondBGColor}
+      borderRadius="9px 0 0 0"
     >
-      <InputGroup size="sm">
-        <InputRightElement
-          pointerEvents="none"
-          children={<BiSearchAlt2 color="white" size="18px" />}
-        />
+      <InputGroup size="md">
         <Input
-          type="tel"
-          color="white"
+          borderColor={mainStyles.chatCardSecondBGColor}
+          focusBorderColor={mainStyles.chatCardSecondBGColor}
+          _hover={{borderColor: mainStyles.chatCardSecondBGColor}}
           placeholder="Search"
-          borderRadius="5px"
+          color="white"
           onChange={handleInput}
           onKeyDown={handleKey}
         />
+        <InputLeftElement
+          pointerEvents="none"
+          children={<BiSearchAlt2 color="white" size="18px" />}
+        />
       </InputGroup>
+      <Flex pr={1.5}>
+        <Icon
+          as={CiSettings}
+          color="white"
+          boxSize={6}
+          _hover={{cursor: "pointer"}}
+        />
+      </Flex>
     </Flex>
   );
 };
@@ -124,7 +138,7 @@ const Render = ({searchedUsers, username}: any) => {
     );
   });
   if (result?.length > 0) {
-    borderWidth = 3;
+    borderWidth = 1;
     supMessage = "Users found:";
     type = 0;
   }
@@ -132,9 +146,9 @@ const Render = ({searchedUsers, username}: any) => {
     borderWidth = 1;
   }
   if (username == "") {
-    display = "none";
     supMessage = "";
     borderWidth = 0;
+    display = "none";
   }
 
   return (
@@ -178,6 +192,7 @@ const ChatList = () => {
       />
       <Render searchedUsers={searchedUsers} username={username} />
       <Flex
+        pt={0}
         overflowY="scroll"
         direction="column"
         sx={{scrollbarWidth: "none"}}

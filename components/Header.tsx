@@ -32,10 +32,12 @@ export const HeaderSearch = () => {
           placeholder="Search"
           borderRadius="5px"
           borderColor={mainStyles.headerBG}
+          focusBorderColor={mainStyles.headerBG}
+          _hover={{borderColor: mainStyles.headerBG}}
           bg={mainStyles.headerSearchBGColor}
           css={{
             "::placeholder": {
-              color: mainStyles.headerBG,
+              color: mainStyles.secondTextColor,
               opacity: 1,
             },
           }}
@@ -82,11 +84,13 @@ const Header = () => {
               <Link href="/register">
                 <a>REG</a>
               </Link>
-              <Text color="white">{currentUser.displayName}</Text>
             </HStack>
           </Flex>
           <Spacer />
           <Flex align="center" _hover={{cursor: "pointer"}}>
+            <Text color="white" pr={3}>
+              {currentUser.displayName}
+            </Text>
             <Avatar src={userAvatarSRC} boxSize="35px"></Avatar>
             <Icon as={IoIosArrowDown} ml={1} boxSize="17px" />
           </Flex>
