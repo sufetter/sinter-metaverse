@@ -88,9 +88,9 @@ export const ChatSearch = ({
   return (
     <Flex
       px={1}
-      minH="55px"
+      minH="50px"
       align="center"
-      borderBottom="1px solid"
+      borderBottom="2px solid"
       borderColor={mainStyles.chatInputBorderColor}
       bg={mainStyles.chatCardSecondBGColor}
       borderRadius="9px 0 0 0"

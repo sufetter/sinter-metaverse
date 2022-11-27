@@ -17,10 +17,11 @@ import {IoIosArrowDown} from "react-icons/io";
 import {mainStyles} from "./LayoutCard";
 import Link from "next/link";
 import {AuthContext} from "../context/AuthContext";
+import {auth} from "../firebaseconfig";
 
 export const HeaderSearch = () => {
   return (
-    <Flex px={3} h="55px" align="center">
+    <Flex pr={3} h="55px" align="center">
       <InputGroup size="sm">
         <InputLeftElement
           pointerEvents="none"
@@ -50,13 +51,19 @@ export const HeaderSearch = () => {
 const Header = () => {
   const [userAvatarSRC, setUserAvatarSRC] = useState("");
   const currentUser: any = useContext(AuthContext);
-  useEffect(() => {
-    if (typeof currentUser == "object") {
-      setUserAvatarSRC(currentUser.photoURL);
-    } else {
-      setUserAvatarSRC("");
-    }
-  }, [currentUser]);
+  // useEffect(() => {
+  //   console.log(currentUser);
+  //   if (Object.keys(currentUser).length !== 0) {
+  //     if (
+  //       userAvatarSRC != currentUser.photoURL &&
+  //       currentUser.photoURL !== undefined
+  //     ) {
+  //       console.log(userAvatarSRC);
+  //       console.log(currentUser.photoURL);
+  //       setUserAvatarSRC(currentUser.photoURL);
+  //     }
+  //   }
+  // }, [currentUser]);
 
   return (
     <ChakraProvider>
@@ -88,10 +95,10 @@ const Header = () => {
           </Flex>
           <Spacer />
           <Flex align="center" _hover={{cursor: "pointer"}}>
-            <Text color="white" pr={3}>
+            <Text color="white" pr={5}>
               {currentUser.displayName}
             </Text>
-            <Avatar src={userAvatarSRC} boxSize="35px"></Avatar>
+            <Avatar src={currentUser.photoURL} boxSize="35px"></Avatar>
             <Icon as={IoIosArrowDown} ml={1} boxSize="17px" />
           </Flex>
         </Flex>
