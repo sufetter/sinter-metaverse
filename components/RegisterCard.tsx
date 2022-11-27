@@ -22,7 +22,7 @@ import {
 import {motion} from "framer-motion";
 import {AttachmentIcon} from "@chakra-ui/icons";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
-import imageIcon from "../images/imageIcon.png";
+import userIcon from "../images/user.png";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -46,7 +46,7 @@ function RegisterCard() {
   const [avatar, setAvatar] = useState<string>(
     "Please, choose your avatar (optional)"
   );
-  const [imagePreview, setImagePreview] = useState<string>(imageIcon.src);
+  const [imagePreview, setImagePreview] = useState<string>(userIcon.src);
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [passwordAlerter, setPasswordAlerter] = useState<string>(

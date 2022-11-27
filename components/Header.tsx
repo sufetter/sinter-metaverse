@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
+  Image,
 } from "@chakra-ui/react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {IoIosArrowDown} from "react-icons/io";
@@ -18,6 +19,7 @@ import {mainStyles} from "./LayoutCard";
 import Link from "next/link";
 import {AuthContext} from "../context/AuthContext";
 import {auth} from "../firebaseconfig";
+import userIcon from "../images/user.png";
 
 export const HeaderSearch = () => {
   return (
@@ -49,21 +51,28 @@ export const HeaderSearch = () => {
 };
 
 const Header = () => {
-  const [userAvatarSRC, setUserAvatarSRC] = useState("");
+  const [userAvatarSRC, setUserAvatarSRC] = useState(userIcon.src);
   const currentUser: any = useContext(AuthContext);
-  // useEffect(() => {
-  //   console.log(currentUser);
-  //   if (Object.keys(currentUser).length !== 0) {
-  //     if (
-  //       userAvatarSRC != currentUser.photoURL &&
-  //       currentUser.photoURL !== undefined
-  //     ) {
-  //       console.log(userAvatarSRC);
-  //       console.log(currentUser.photoURL);
-  //       setUserAvatarSRC(currentUser.photoURL);
-  //     }
-  //   }
-  // }, [currentUser]);
+  if (
+    Object.keys(currentUser).length !== 0 &&
+    userAvatarSRC != currentUser.photoURL &&
+    userAvatarSRC != undefined &&
+    currentUser.photoURL != undefined &&
+    userAvatarSRC == ""
+  ) {
+    console.log("fff");
+    setUserAvatarSRC(currentUser.photoURL);
+  }
+  useEffect(() => {
+    if (
+      Object.keys(currentUser).length == 0 ||
+      typeof currentUser == "string"
+    ) {
+      setUserAvatarSRC(userIcon.src);
+    } else if (currentUser.photoURL != undefined) {
+      setUserAvatarSRC(currentUser.photoURL);
+    }
+  }, [currentUser]);
 
   return (
     <ChakraProvider>
@@ -75,6 +84,7 @@ const Header = () => {
         zIndex={10}
         w="100%"
         justify="center"
+        // onClick={() => console.log(userAvatarSRC)}
       >
         <Flex maxW="1076px" w="100%" align="center" mx="60px">
           <Flex _hover={{cursor: "pointer"}} w="148px">
@@ -98,7 +108,7 @@ const Header = () => {
             <Text color="white" pr={5}>
               {currentUser.displayName}
             </Text>
-            <Avatar src={currentUser.photoURL} boxSize="35px"></Avatar>
+            <Image src={userAvatarSRC} h="35px" borderRadius="20px"></Image>
             <Icon as={IoIosArrowDown} ml={1} boxSize="17px" />
           </Flex>
         </Flex>
