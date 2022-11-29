@@ -6,8 +6,9 @@ import {
   Icon,
   HStack,
   Text,
+  SlideFade,
 } from "@chakra-ui/react";
-import React from "react";
+import React, {useState} from "react";
 import {InputChat} from "../components/InputChat";
 import {MessageChat} from "./MessageChat";
 import {mainStyles} from "./LayoutCard";
@@ -63,17 +64,70 @@ export const TopBarChat = () => {
 };
 
 export const BottomBarChat = () => {
+  const [message, setMessage] = useState<string>("");
+  const [smileIsOpen, changeSmileOpen] = useState<boolean>(false);
+  let symbols: string[] = [];
+  let i: number = 0;
+  while (i < 80) {
+    symbols[i] = String.fromCodePoint(128512 + i);
+    i++;
+  }
   return (
-    <Flex
-      px={4}
-      bg={mainStyles.chatCardSecondBGColor}
-      borderTop="1px solid"
-      borderColor={mainStyles.chatInputBorderColor}
-      borderRadius="0 0 9px 0"
-      h="60px"
-    >
-      <InputChat />
-    </Flex>
+    <div>
+      <SlideFade
+        style={{position: "relative", zIndex: "10"}}
+        in={smileIsOpen}
+        offsetY="20px"
+      >
+        <Flex
+          color="white"
+          bgGradient="linear(to-br, rgba(14, 13, 13, 1), rgba(53, 51, 51, 1))"
+          borderRadius="15px"
+          h="150px"
+          flexWrap="wrap"
+          overflowY="scroll"
+          // display="none"
+          mt={-151}
+          zIndex={10}
+          mx={1}
+          mb={1}
+          sx={{scrollbarWidth: "none"}}
+          fontSize="40px"
+          css={{
+            "&::-webkit-scrollbar": {
+              display: "none",
+              width: "30px",
+            },
+          }}
+          textAlign="justify"
+          user-select="none"
+          transition
+        >
+          {symbols.map((symbol) => (
+            <div
+              onClick={() => setMessage(message + symbol)}
+              style={{cursor: "pointer", margin: "10px 10px"}}
+            >
+              {symbol}
+            </div>
+          ))}
+        </Flex>
+      </SlideFade>
+      <Flex
+        px={4}
+        bg={mainStyles.chatCardSecondBGColor}
+        borderTop="1px solid"
+        borderColor={mainStyles.chatInputBorderColor}
+        borderRadius="0 0 9px 0"
+        h="60px"
+      >
+        <InputChat
+          changeSmileOpen={() => changeSmileOpen(!smileIsOpen)}
+          setMessage={(value: string) => setMessage(value)}
+          message={message}
+        />
+      </Flex>
+    </div>
   );
 };
 
