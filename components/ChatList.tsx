@@ -62,14 +62,15 @@ export const ChatSearch = ({
       collection(db, "users"),
       // where("displayNameLC", "==", username.toLocaleLowerCase()),
       // where("userID", "!=", currentUser.uid)
-      where("displayNameLC", ">=", username.toLocaleLowerCase())
-      // where("displayNameLC", "<=", username.toLocaleLowerCase() + "~")
+      // where("displayNameLC", ">=", username.toLowerCase())
+      where("displayNameLC", "<=", username.toLocaleLowerCase() + "~")
     );
     try {
       let results: Array<Object> = [];
       const querySnapshot: any = await getDocs(queryDB);
       await querySnapshot.forEach((doc: any) => {
         const result = doc.data();
+        console.log(result);
         if (result.userID != currentUser.uid) results.push(result);
       });
 

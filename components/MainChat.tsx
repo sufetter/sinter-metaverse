@@ -101,7 +101,6 @@ export const BottomBarChat = () => {
           }}
           textAlign="justify"
           user-select="none"
-          transition
         >
           {symbols.map((symbol) => (
             <div
