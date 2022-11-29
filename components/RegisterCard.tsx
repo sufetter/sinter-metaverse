@@ -17,11 +17,12 @@ import {
   Spacer,
   Image,
   Progress,
+  Divider,
 } from "@chakra-ui/react";
 import {motion} from "framer-motion";
 import {AttachmentIcon} from "@chakra-ui/icons";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
-import imageIcon from "../images/imageIcon.png";
+import userIcon from "../images/user.png";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -30,11 +31,12 @@ import {
 } from "firebase/auth";
 import {auth, storage, db} from "../firebaseconfig";
 import {doc, setDoc} from "firebase/firestore";
+import {collection, query, where, getDocs} from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
 import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
-import {navigate} from "./LayoutCard";
-import {mainStyles} from "./LayoutCard";
+import {navigate, mainStyles} from "./LayoutCard";
+import SingupGoogle from "../components/SingupGoogle";
 
 function RegisterCard() {
   const [email, setEmail] = useState<string>("");
@@ -45,7 +47,7 @@ function RegisterCard() {
   const [avatar, setAvatar] = useState<string>(
     "Please, choose your avatar (optional)"
   );
-  const [imagePreview, setImagePreview] = useState<string>(imageIcon.src);
+  const [imagePreview, setImagePreview] = useState<string>(userIcon.src);
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [passwordAlerter, setPasswordAlerter] = useState<string>(
@@ -53,6 +55,7 @@ function RegisterCard() {
   );
   const [fileChecked, setFileChecked] = useState(false);
   const currentUser = useContext(AuthContext);
+
   const inputFile: any = useRef(null);
 
   // MAIN FUNCTIONS
@@ -108,73 +111,90 @@ function RegisterCard() {
     fileName = fileCheck?.name;
 
     try {
-      const res = await createUserWithEmailAndPassword(auth, email, password);
-
-      await sendEmailVerification(res.user);
-      const storageRef = ref(
-        storage,
-        displayName + "." + res.user.uid.slice(0, 5) + "." + fileName
+      let existed: Array<Object> = [];
+      const queryDB = query(
+        collection(db, "users"),
+        where("email", "==", email)
       );
+      const querySnapshot: any = await getDocs(queryDB);
+      querySnapshot.forEach((doc: any) => {
+        existed.push(doc.data());
+      });
 
-      if (fileCheck && fileChecked) {
-        const uploadTask = uploadBytesResumable(storageRef, fileCheck);
+      if (existed.length! == 0) {
+        const res = await createUserWithEmailAndPassword(auth, email, password);
+        const user = res.user;
 
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-            switch (snapshot.state) {
-              case "paused":
-                console.log("Upload is paused");
-                break;
-              case "running":
-                console.log("Upload is running");
-                break;
-            }
-          },
-          (err) => {
-            setError(true);
-            console.log(err);
-            console.log(err.message);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(
-              async (downloadURL) => {
-                // console.log("File available at", downloadURL);
-                // console.log(res.user);
-                await updateProfile(res.user, {
-                  displayName: displayName,
-                  photoURL: downloadURL,
-                });
-                await setDoc(doc(db, "users", res.user.uid), {
-                  userID: res.user.uid,
-                  displayName,
-                  email,
-                  photoURL: downloadURL,
-                });
-
-                await setDoc(doc(db, "userChats", res.user.uid), {});
-              }
-            );
-          }
+        await sendEmailVerification(user);
+        const storageRef = ref(
+          storage,
+          displayName + "." + user.uid.slice(0, 5) + "." + fileName
         );
+
+        if (fileCheck && fileChecked) {
+          const uploadTask = uploadBytesResumable(storageRef, fileCheck);
+
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Upload is " + progress + "% done");
+              switch (snapshot.state) {
+                case "paused":
+                  console.log("Upload is paused");
+                  break;
+                case "running":
+                  console.log("Upload is running");
+                  break;
+              }
+            },
+            (err) => {
+              setError(true);
+              console.log(err);
+              console.log(err.message);
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then(
+                async (downloadURL) => {
+                  // console.log("File available at", downloadURL);
+                  // console.log(res.user);
+                  await updateProfile(user, {
+                    displayName: displayName,
+                    photoURL: downloadURL,
+                  });
+                  await setDoc(doc(db, "users", user.uid), {
+                    userID: res.user.uid,
+                    displayName: displayName,
+                    displayNameLC: user.displayName?.toLowerCase(),
+                    email,
+                    photoURL: downloadURL,
+                  });
+
+                  await setDoc(doc(db, "userChats", user.uid), {});
+                }
+              );
+            }
+          );
+        } else {
+          await updateProfile(user, {
+            displayName: displayName,
+          });
+          await setDoc(doc(db, "users", user.uid), {
+            userID: res.user.uid,
+            displayName: displayName,
+            displayNameLC: user.displayName?.toLowerCase(),
+            email,
+          });
+        }
+
+        await setDoc(doc(db, "userChats", user.uid), {});
+
+        // navigate(displayName + "." + res.user.uid.slice(0, 5));
+        navigate("/verefication");
       } else {
-        await updateProfile(res.user, {
-          displayName: displayName,
-        });
-        await setDoc(doc(db, "users", res.user.uid), {
-          userID: res.user.uid,
-          displayName,
-          email,
-        });
+        console.log("user exist");
       }
-
-      await setDoc(doc(db, "userChats", res.user.uid), {});
-
-      // navigate(displayName + "." + res.user.uid.slice(0, 5));
-      navigate("/verefication");
     } catch (error: any) {
       setError(true);
       console.log(error.message);
@@ -208,8 +228,8 @@ function RegisterCard() {
   return (
     <Flex w="100%" flex={"1 1 auto"} h="100%" align="center" justify="center">
       <Flex
-        minWidth="400px"
-        maxW={"400px"}
+        minWidth="370px"
+        maxW={"370px"}
         border="2px solid"
         borderColor={mainStyles.cardBorder}
         borderRadius="10px"
@@ -380,21 +400,34 @@ function RegisterCard() {
                   </a>
                 </Link>
               </Stack>
-              <Button
-                type="submit"
-                w={"full"}
-                mt={5}
-                bg={mainStyles.mainItemColor}
-                color={"white"}
-                rounded={"md"}
-                disabled={submit}
-                _hover={{
-                  transform: "translateY(-2px)",
-                  boxShadow: "lg",
-                }}
-              >
-                Register
-              </Button>
+              <Flex align="center" direction="column">
+                <Button
+                  type="submit"
+                  w={"full"}
+                  mt={5}
+                  bg={mainStyles.mainItemColor}
+                  color={"white"}
+                  rounded={"md"}
+                  disabled={submit}
+                  _hover={{
+                    transform: "translateY(-2px)",
+                    boxShadow: "lg",
+                  }}
+                >
+                  <Text fontWeight="500">Register</Text>
+                </Button>
+                <Flex h="35px" align="center" justify="center">
+                  <Text
+                    color={mainStyles.mainTextColor}
+                    textAlign="center"
+                    pb={1}
+                  >
+                    or
+                  </Text>
+                </Flex>
+
+                <SingupGoogle />
+              </Flex>
             </form>
           </Box>
         </Box>

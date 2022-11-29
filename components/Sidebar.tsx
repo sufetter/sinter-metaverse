@@ -67,7 +67,7 @@ const Sidebar = () => {
         desc="Logout"
         onClick={() => {
           signOut(auth);
-          navigate("/login");
+          // navigate("/login");
         }}
       />
     </Flex>

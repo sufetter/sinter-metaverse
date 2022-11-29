@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from "react";
+import React, {useState, useContext, useEffect, useRef} from "react";
 import {
   Box,
   Flex,
@@ -11,16 +11,21 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
+  Image,
 } from "@chakra-ui/react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {IoIosArrowDown} from "react-icons/io";
 import {mainStyles} from "./LayoutCard";
 import Link from "next/link";
 import {AuthContext} from "../context/AuthContext";
+import {auth} from "../firebaseconfig";
+import userIcon from "../images/user.png";
+import mainLOGO from "../images/mainLOGO.png";
+import {motion} from "framer-motion";
 
 export const HeaderSearch = () => {
   return (
-    <Flex px={3} h="55px" align="center">
+    <Flex pr={3} h="55px" align="center">
       <InputGroup size="sm">
         <InputLeftElement
           pointerEvents="none"
@@ -48,13 +53,80 @@ export const HeaderSearch = () => {
 };
 
 const Header = () => {
-  const [userAvatarSRC, setUserAvatarSRC] = useState("");
   const currentUser: any = useContext(AuthContext);
+  // const userAvatar: any = useRef(null);
+  // let currentSRC: any;
+  // if (
+  //   ((currentUser == undefined ||
+  //     currentUser == null ||
+  //     currentUser.photoURL == "" ||
+  //     typeof currentUser == "string") &&
+  //     userAvatar.current?.src != null) ||
+  //   userAvatar.current?.src != userIcon.src
+  // ) {
+  //   console.log("icon");
+  //   // console.log(userAvatar?.current.src);
+  //   currentSRC = userIcon.src;
+  // } else if (
+  //   currentUser !== undefined &&
+  //   currentUser !== null &&
+  //   currentUser.photoURL !== "" &&
+  //   typeof currentUser !== "string" &&
+  //   Object.keys(currentUser).length !== 0
+  // ) {
+  //   console.log("photo");
+  //   currentSRC = currentUser.photoURL;
+  // }
+  // const [userAvatarSRC, setUserAvatarSRC] = useState(currentSRC);
+  // useEffect(() => {
+  //   if (
+  //     currentUser !== undefined &&
+  //     currentUser !== null &&
+  //     currentUser.photoURL !== "" &&
+  //     typeof currentUser !== "string" &&
+  //     Object.keys(currentUser).length !== 0
+  //   ) {
+  //     setUserAvatarSRC(currentUser.photoURL);
+  //   } else if (
+  //     (currentUser == undefined ||
+  //       currentUser == null ||
+  //       currentUser.photoURL == "" ||
+  //       typeof currentUser == "string") &&
+  //     userAvatarSRC != userIcon.src
+  //   ) {
+  //     console.log("wtf");
+  //     console.log(userAvatarSRC);
+  //     setUserAvatarSRC(userIcon.src);
+  //   }
+  // }, [currentUser]);
+
+  const [userAvatarSRC, setUserAvatarSRC] = useState(currentUser.photoURL);
+
+  if (
+    Object.keys(currentUser).length !== 0 &&
+    userAvatarSRC != currentUser.photoURL &&
+    userAvatarSRC != undefined &&
+    currentUser.photoURL != undefined &&
+    userAvatarSRC == ""
+  ) {
+    console.log("a");
+    setUserAvatarSRC(currentUser.photoURL);
+  }
   useEffect(() => {
-    if (typeof currentUser == "object") {
-      setUserAvatarSRC(currentUser.photoURL);
-    } else {
-      setUserAvatarSRC("");
+    if (
+      currentUser.photoURL != undefined &&
+      userAvatarSRC != currentUser.photoURL
+    ) {
+      console.log("agg");
+      // setUserAvatarSRC(currentUser.photoURL);
+    } else if (
+      // Object.keys(currentUser).length == 0 ||
+      typeof currentUser == "string"
+    ) {
+      console.log("wtf");
+      // setUserAvatarSRC(userIcon.src);
+    } else if (userAvatarSRC == currentUser.photoURL) {
+      return;
     }
   }, [currentUser]);
 
@@ -68,10 +140,20 @@ const Header = () => {
         zIndex={10}
         w="100%"
         justify="center"
+        // onClick={() => console.log(userAvatarSRC)}
       >
         <Flex maxW="1076px" w="100%" align="center" mx="60px">
-          <Flex _hover={{cursor: "pointer"}} w="148px">
-            <Text fontFamily="Roboto" fontSize="24px">
+          <Flex _hover={{cursor: "pointer"}} w="148px" align="center">
+            <motion.div
+              whileHover={{scale: 0.8, rotate: 90}}
+              transition={{
+                duration: 0.7,
+              }}
+            >
+              <Image src={mainLOGO.src} h="35px" />
+            </motion.div>
+
+            <Text fontFamily="Roboto" fontSize="20px" pl={2}>
               Sinter
             </Text>
           </Flex>
@@ -88,10 +170,15 @@ const Header = () => {
           </Flex>
           <Spacer />
           <Flex align="center" _hover={{cursor: "pointer"}}>
-            <Text color="white" pr={3}>
+            <Text color="white" pr={5}>
               {currentUser.displayName}
             </Text>
-            <Avatar src={userAvatarSRC} boxSize="35px"></Avatar>
+            <Image
+              // ref={userAvatar}
+              src={userAvatarSRC}
+              h="35px"
+              borderRadius="20px"
+            />
             <Icon as={IoIosArrowDown} ml={1} boxSize="17px" />
           </Flex>
         </Flex>

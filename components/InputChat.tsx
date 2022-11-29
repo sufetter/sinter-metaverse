@@ -11,8 +11,11 @@ import {
   Image,
 } from "@chakra-ui/react";
 import React, {useState, useEffect} from "react";
-import {FiSend} from "react-icons/fi";
-import {HiOutlineEmojiHappy, HiOutlinePaperClip} from "react-icons/hi";
+import {
+  HiOutlineEmojiHappy,
+  HiOutlineMicrophone,
+  HiOutlinePaperClip,
+} from "react-icons/hi";
 import {mainStyles} from "./LayoutCard";
 
 export const InputChat = () => {
@@ -28,20 +31,32 @@ export const InputChat = () => {
 
   return (
     <Flex justify="space-between" w="100%" align="center">
-      <InputGroup>
+      <Flex align="center">
+        <Icon
+          as={HiOutlinePaperClip}
+          color={mainStyles.mainIconColor}
+          boxSize="23px"
+          _hover={{cursor: "pointer"}}
+        />
+      </Flex>
+      <InputGroup px={2}>
         <Input
           placeholder="Type a message....."
-          borderColor="white"
+          border="1px solid"
+          borderColor={mainStyles.chatInputBorderColor}
+          _focus={{borderWidth: "1px"}}
           focusBorderColor={mainStyles.chatInputBorderColor}
           autoComplete="off"
           color="white"
           onChange={handleMessageChange}
+          _hover={{borderColor: mainStyles.chatInputBorderColor}}
         ></Input>
         <InputRightElement
+          pr={3}
           children={
             <Icon
               as={HiOutlineEmojiHappy}
-              color="white"
+              color={mainStyles.mainIconColor}
               boxSize="25px"
               onClick={() => setDisplay("block")}
               _hover={{cursor: "pointer"}}
@@ -50,10 +65,10 @@ export const InputChat = () => {
         />
       </InputGroup>
 
-      <Flex align="center" pl={2}>
+      <Flex align="center">
         <Icon
-          as={HiOutlinePaperClip}
-          color="white"
+          as={HiOutlineMicrophone}
+          color={mainStyles.mainIconColor}
           boxSize="23px"
           _hover={{cursor: "pointer"}}
         />

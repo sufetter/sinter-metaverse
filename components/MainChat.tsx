@@ -24,8 +24,8 @@ export const TopBarChat = () => {
       justify="space-between"
       p={2}
       px={4}
-      h="55px"
-      borderBottom="1px solid"
+      h="50px"
+      borderBottom="2px solid"
       borderColor={mainStyles.chatInputBorderColor}
       bg={mainStyles.chatCardSecondBGColor}
       borderRadius="0 9px 0 0"
@@ -33,13 +33,13 @@ export const TopBarChat = () => {
       <HStack align="center" spacing="10px">
         <Text
           color={mainStyles.chatHeaderTextColor}
-          fontSize="18px"
+          fontSize="16px"
           fontWeight="500"
           _hover={{cursor: "pointer"}}
         >
           Gigachad
         </Text>
-        <Text color="white" fontSize="">
+        <Text color="white" fontSize="16">
           Last time online: {displayTime}
         </Text>
       </HStack>
@@ -47,16 +47,16 @@ export const TopBarChat = () => {
         <Icon
           as={BiSearchAlt2}
           color="white"
-          boxSize="22px"
+          boxSize="20px"
           _hover={{cursor: "pointer"}}
         />
         <Icon
           as={FiMoreHorizontal}
           color="white"
-          boxSize="30px"
+          boxSize="28px"
           _hover={{cursor: "pointer"}}
         />
-        <Avatar src="" boxSize="35px" _hover={{cursor: "pointer"}}></Avatar>
+        <Avatar src="" boxSize="33px" _hover={{cursor: "pointer"}}></Avatar>
       </HStack>
     </Flex>
   );
@@ -67,6 +67,8 @@ export const BottomBarChat = () => {
     <Flex
       px={4}
       bg={mainStyles.chatCardSecondBGColor}
+      borderTop="1px solid"
+      borderColor={mainStyles.chatInputBorderColor}
       borderRadius="0 0 9px 0"
       h="60px"
     >

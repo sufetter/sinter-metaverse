@@ -12,9 +12,10 @@ type LayoutProps = {
 
 let secondBGColor = "#9D0039";
 export const mainStyles = {
-  mainItemColor: "#5A83E1",
-  mainBGColor: "#0e0e10",
+  mainItemColor: "#21C25E",
+  mainBGColor: "#141414",
   mainTextColor: "#fff",
+  mainIconColor: "#999a9c",
   secondTextColor: "#A4A6A8",
   messageTextColor: "#9BB0DE",
   chatHeaderTextColor: "#BBC7E4",
@@ -24,14 +25,16 @@ export const mainStyles = {
   getMessages: "#224957",
   sendMessages: "#C1402F",
   cardBorder: "#224957",
-  headerBG: "#26262A",
+  headerBG: "#222222",
   headerSearchBGColor: "#3F3F3F",
-  chatCardBG: "#26262A",
-  chatCardSecondBGColor: "#37373D",
+  chatCardBG: "#222222",
+  chatCardSecondBGColor: "#292929",
   chatListItemHover: "#224957",
-  chatListBorderColor: "#606060",
-  chatInputBorderColor: "#606060",
+  chatListBorderColor: "#494949",
+  chatInputBorderColor: "#494949",
   reservTextColor: "#534E93",
+  singupGoogleBG: "#fff",
+  singupGoogleBorderColor: "#fff",
 };
 
 export let navigate: any;
@@ -80,7 +83,6 @@ export default function LayoutCard({
                 h="100%"
                 maxW="1076px"
                 overflowY="hidden"
-                mx="60px"
                 height="100%"
                 flex={1}
                 id="1"
