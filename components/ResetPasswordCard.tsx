@@ -106,6 +106,7 @@ const ResetPasswordCard = () => {
                   transform: "translateY(-2px)",
                   boxShadow: "lg",
                 }}
+                onClick={handleReset}
               >
                 Reset
               </Button>
