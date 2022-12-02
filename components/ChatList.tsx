@@ -60,10 +60,10 @@ export const ChatSearch = ({
   const handleSearch = async () => {
     const queryDB = query(
       collection(db, "users"),
-      // where("displayNameLC", "==", username.toLocaleLowerCase()),
+      where("displayNameLC", "==", username.toLocaleLowerCase())
       // where("userID", "!=", currentUser.uid)
       // where("displayNameLC", ">=", username.toLowerCase())
-      where("displayNameLC", "<=", username.toLocaleLowerCase() + "~")
+      // where("displayNameLC", "<=", username.toLocaleLowerCase() + "~")
     );
     try {
       let results: Array<Object> = [];

@@ -26,6 +26,7 @@ import {signInWithEmailAndPassword} from "firebase/auth";
 import {useRouter} from "next/router";
 import {AuthContext} from "../context/AuthContext";
 import {navigate} from "./LayoutCard";
+import SingupGoogle from "./SingupGoogle";
 
 function loginCard() {
   const [email, setEmail] = useState("");
@@ -38,14 +39,6 @@ function loginCard() {
   const handlePasswordChange = (e: any) => {
     setPassword(e.target.value);
   };
-
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     // navigate("/chat/" + user.displayName + "." + user.uid.slice(0, 5));
-  //   } else {
-  //     // navigate();
-  //   }
-  // });
 
   const handleShow = () => setShow(!show);
   const currentUser = useContext(AuthContext);
@@ -154,7 +147,7 @@ function loginCard() {
                   Remember me
                 </Checkbox>
                 <Spacer />
-                <Link color="#FFE927" href="">
+                <Link color="#FFE927" href="/reset">
                   <a>
                     <Text
                       color={mainStyles.reservTextColor}
@@ -198,6 +191,10 @@ function loginCard() {
               >
                 Login
               </Button>
+              <Flex justify="center" mt={1} mb={1.5}>
+                <Text color={mainStyles.mainTextColor}>or</Text>
+              </Flex>
+              <SingupGoogle />
             </form>
           </Box>
         </Box>

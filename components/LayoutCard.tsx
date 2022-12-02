@@ -35,6 +35,7 @@ export const mainStyles = {
   reservTextColor: "#534E93",
   singupGoogleBG: "#fff",
   singupGoogleBorderColor: "#fff",
+  emojiDashboardColor: "#292929",
 };
 
 export let navigate: any;

@@ -118,13 +118,13 @@ const Header = () => {
       userAvatarSRC != currentUser.photoURL
     ) {
       console.log("agg");
-      // setUserAvatarSRC(currentUser.photoURL);
+      setUserAvatarSRC(currentUser.photoURL);
     } else if (
       // Object.keys(currentUser).length == 0 ||
       typeof currentUser == "string"
     ) {
       console.log("wtf");
-      // setUserAvatarSRC(userIcon.src);
+      setUserAvatarSRC(userIcon.src);
     } else if (userAvatarSRC == currentUser.photoURL) {
       return;
     }

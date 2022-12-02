@@ -73,26 +73,25 @@ export const BottomBarChat = () => {
     i++;
   }
   return (
-    <div>
+    <Flex direction="column">
       <SlideFade
         style={{position: "relative", zIndex: "10"}}
         in={smileIsOpen}
         offsetY="20px"
       >
         <Flex
+          direction="row"
           color="white"
-          bgGradient="linear(to-br, rgba(14, 13, 13, 1), rgba(53, 51, 51, 1))"
+          bg={mainStyles.emojiDashboardColor}
           borderRadius="15px"
           h="150px"
           flexWrap="wrap"
           overflowY="scroll"
-          // display="none"
-          mt={-151}
+          display={smileIsOpen ? "flex" : "none"}
+          fontSize="20px"
           zIndex={10}
           mx={1}
-          mb={1}
           sx={{scrollbarWidth: "none"}}
-          fontSize="40px"
           css={{
             "&::-webkit-scrollbar": {
               display: "none",
@@ -103,12 +102,14 @@ export const BottomBarChat = () => {
           user-select="none"
         >
           {symbols.map((symbol) => (
-            <div
+            <Flex
+              key={symbol}
               onClick={() => setMessage(message + symbol)}
-              style={{cursor: "pointer", margin: "10px 10px"}}
+              m="10px 10px"
+              _hover={{cursor: "pointer"}}
             >
               {symbol}
-            </div>
+            </Flex>
           ))}
         </Flex>
       </SlideFade>
@@ -126,7 +127,7 @@ export const BottomBarChat = () => {
           message={message}
         />
       </Flex>
-    </div>
+    </Flex>
   );
 };
 
