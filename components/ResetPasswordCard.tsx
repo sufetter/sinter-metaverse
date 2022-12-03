@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState, useEffect} from "react";
 import Link from "next/link";
 import {
   Flex,
@@ -12,26 +12,66 @@ import {
   Button,
   Icon,
   Image,
+  useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  extendTheme,
 } from "@chakra-ui/react";
 import {mainStyles} from "./LayoutCard";
 import {AuthContext} from "../context/AuthContext";
 import resetPasswordIcon from "../images/resetPasswordIcon.png";
 import {auth} from "../firebaseconfig";
 import {sendPasswordResetEmail} from "firebase/auth";
+import ModalCard from "./ModalCard";
 
 const ResetPasswordCard = () => {
   const currentUser: any = useContext(AuthContext);
+  const [modal, setModal] = useState<any>();
+  const [disabled, setDisabled] = useState(false);
+
   const handleReset = () => {
-    sendPasswordResetEmail(auth, currentUser.email)
-      .then(() => {
-        // Password reset email sent!
-        // ..
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
+    if (!currentUser.providerData) return;
+    if (currentUser.providerData[0].providerId.includes("google")) {
+      let components = (
+        <Flex justify="space-between" mt={3}>
+          <Text color="white">You can go to chat page</Text>
+          <Link
+            href={currentUser.displayName + "." + currentUser.uid.slice(0, 5)}
+          >
+            <a>
+              <Text color="white">Go</Text>
+            </a>
+          </Link>
+        </Flex>
+      );
+      setModal(
+        <ModalCard
+          open
+          header={"Reset error"}
+          body={`You are logged by ${currentUser.providerData[0].providerId}, unfortunately we cannot reset your password. Please contact support ${currentUser.providerData[0].providerId} to resolve this issue.`}
+          components={components}
+          modal={modal}
+        />
+      );
+      setDisabled(true);
+    } else
+      sendPasswordResetEmail(auth, currentUser.email)
+        .then(() => {
+          // Password reset email sent!
+          // ..
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(error);
+          // ..
+        });
   };
   return (
     <Flex
@@ -63,6 +103,7 @@ const ResetPasswordCard = () => {
             >
               Reset Password
             </Heading>
+            {modal}
             <form>
               <Flex align="center" justify="center" my={3}>
                 <Image src={resetPasswordIcon.src} boxSize="100px" />
@@ -80,28 +121,28 @@ const ResetPasswordCard = () => {
               </Flex>
               <Stack direction="row" my={3}>
                 <Text color="#224957" fontSize={14} fontWeight="bold">
-                  Do you want to register?
+                  Do you want to login?
                 </Text>
                 <Spacer />
-                <Link href="/register">
+                <Link href="/login">
                   <a>
                     <Text
                       color={mainStyles.secondTextColor}
                       fontWeight="660"
                       _hover={{textDecoration: "underline"}}
                     >
-                      Register
+                      Login
                     </Text>
                   </a>
                 </Link>
               </Stack>
 
               <Button
-                type="submit"
                 w={"full"}
                 bg={mainStyles.mainItemColor}
                 color={"white"}
                 rounded={"md"}
+                disabled={disabled}
                 _hover={{
                   transform: "translateY(-2px)",
                   boxShadow: "lg",

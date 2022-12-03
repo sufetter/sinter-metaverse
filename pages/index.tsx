@@ -6,6 +6,7 @@ import Register from "./register";
 import Test from "../components/test";
 
 import Link from "next/link";
+import ModalCard from "../components/ModalCard";
 
 const Home: NextPage = () => {
   return (
@@ -17,8 +18,7 @@ const Home: NextPage = () => {
       </Head>
       <ChakraProvider>
         <Flex flex={1} align="center" justify="center" w="!00%" h="100%">
-          <Divider colorScheme={"red"} />
-          ff
+          <ModalCard open />
         </Flex>
       </ChakraProvider>
     </div>

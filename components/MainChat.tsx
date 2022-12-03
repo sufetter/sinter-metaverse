@@ -14,6 +14,7 @@ import {MessageChat} from "./MessageChat";
 import {mainStyles} from "./LayoutCard";
 import {FiMoreHorizontal} from "react-icons/fi";
 import {BiSearchAlt2} from "react-icons/bi";
+import EmojiCard from "./EmojiCard";
 
 export const TopBarChat = () => {
   let date = new Date();
@@ -66,53 +67,14 @@ export const TopBarChat = () => {
 export const BottomBarChat = () => {
   const [message, setMessage] = useState<string>("");
   const [smileIsOpen, changeSmileOpen] = useState<boolean>(false);
-  let symbols: string[] = [];
-  let i: number = 0;
-  while (i < 80) {
-    symbols[i] = String.fromCodePoint(128512 + i);
-    i++;
-  }
+
   return (
     <Flex direction="column">
-      <SlideFade
-        style={{position: "relative", zIndex: "10"}}
-        in={smileIsOpen}
-        offsetY="20px"
-      >
-        <Flex
-          direction="row"
-          color="white"
-          bg={mainStyles.emojiDashboardColor}
-          borderRadius="15px"
-          h="150px"
-          flexWrap="wrap"
-          overflowY="scroll"
-          display={smileIsOpen ? "flex" : "none"}
-          fontSize="20px"
-          zIndex={10}
-          mx={1}
-          sx={{scrollbarWidth: "none"}}
-          css={{
-            "&::-webkit-scrollbar": {
-              display: "none",
-              width: "30px",
-            },
-          }}
-          textAlign="justify"
-          user-select="none"
-        >
-          {symbols.map((symbol) => (
-            <Flex
-              key={symbol}
-              onClick={() => setMessage(message + symbol)}
-              m="10px 10px"
-              _hover={{cursor: "pointer"}}
-            >
-              {symbol}
-            </Flex>
-          ))}
-        </Flex>
-      </SlideFade>
+      <EmojiCard
+        smileIsOpen={smileIsOpen}
+        setMessage={setMessage}
+        message={message}
+      />
       <Flex
         px={4}
         bg={mainStyles.chatCardSecondBGColor}
