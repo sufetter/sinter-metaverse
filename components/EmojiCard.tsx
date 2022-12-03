@@ -19,21 +19,22 @@ const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
     i++;
   }
   return (
-    <Flex w="100%">
+    <Flex direction="column" align="flex-end" w="100%">
       <Flex
-        alignSelf="stretch"
         direction="row"
         color="white"
         w="200px"
+        align-self="flex-end"
         bg={mainStyles.emojiDashboardColor}
         borderRadius="15px"
         h="250px"
-        flexWrap="wrap"
+        wrap="wrap"
         overflowY="scroll"
         display={smileIsOpen ? "flex" : "none"}
         fontSize="20px"
         zIndex={10}
         mx={1}
+        mt="-250px"
         sx={{scrollbarWidth: "none"}}
         css={{
           "&::-webkit-scrollbar": {
