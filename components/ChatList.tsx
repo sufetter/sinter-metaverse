@@ -8,7 +8,7 @@ import {
   Icon,
   Stack,
 } from "@chakra-ui/react";
-import React, {useState, useContext, useEffect} from "react";
+import React, {useState, useContext, useEffect, memo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {CiSettings} from "react-icons/ci";
 import {mainStyles} from "./LayoutCard";
@@ -21,26 +21,25 @@ type ChatItemProps = {
   searchedName?: string;
 };
 
-export const ChatItem = ({
-  searchedAvatar = "",
-  searchedName = "User",
-}: ChatItemProps) => {
-  return (
-    <Flex
-      align="center"
-      p="2"
-      _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
-      w="100%"
-      px={4}
-      py={2}
-    >
-      <Avatar src={searchedAvatar} />
-      <Text ms={3} color="white">
-        {searchedName}
-      </Text>
-    </Flex>
-  );
-};
+export const ChatItem = memo(
+  ({searchedAvatar = "", searchedName = "User"}: ChatItemProps) => {
+    return (
+      <Flex
+        align="center"
+        p="2"
+        _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
+        w="100%"
+        px={4}
+        py={2}
+      >
+        <Avatar src={searchedAvatar} />
+        <Text ms={3} color="white">
+          {searchedName}
+        </Text>
+      </Flex>
+    );
+  }
+);
 
 export const ChatSearch = ({
   handleSearchedUsers,

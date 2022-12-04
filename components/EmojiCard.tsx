@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo, useEffect, useState} from "react";
 import {
   Flex,
   Avatar,
@@ -12,21 +12,56 @@ import {
 import {mainStyles} from "./LayoutCard";
 
 const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
+  const [browserStyles, setBrowserStyles] = useState({});
+  let userAgent;
+  let browserName;
+  useEffect(() => {
+    userAgent = navigator.userAgent;
+    if (userAgent.match(/chrome|chromium|crios/i)) {
+      browserName = "chrome";
+      setBrowserStyles({
+        "&::-webkit-scrollbar": {
+          width: "10px",
+        },
+        "::-webkit-scrollbar-thumb": {
+          background: mainStyles.mainIconColor,
+          borderRadius: "10px",
+        },
+      });
+    } else {
+      setBrowserStyles({scrollbarWidth: "none", width: "200px"});
+    }
+  }, [browserName]);
+
+  browserName == "chrome"
+    ? {
+        "&::-webkit-scrollbar": {
+          width: "10px",
+        },
+        "::-webkit-scrollbar-thumb": {
+          background: mainStyles.mainIconColor,
+          borderRadius: "10px",
+        },
+      }
+    : {scrollbarWidth: "none", width: "200px"};
+
   let symbols: string[] = [];
   let i: number = 0;
-  while (i < 80) {
-    symbols[i] = String.fromCodePoint(128512 + i);
-    i++;
-  }
+  const fillSymbols = useMemo(() => {
+    while (i < 120) {
+      symbols[i] = String.fromCodePoint(128512 + i);
+      i++;
+    }
+  }, [symbols]);
   return (
     <Flex direction="column" align="flex-end" w="100%">
       <Flex
         direction="row"
         color="white"
-        w="200px"
+        w="210px"
         align-self="flex-end"
         bg={mainStyles.emojiDashboardColor}
-        borderRadius="15px"
+        borderRadius="7px"
         h="250px"
         wrap="wrap"
         overflowY="scroll"
@@ -35,13 +70,7 @@ const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
         zIndex={10}
         mx={1}
         mt="-250px"
-        sx={{scrollbarWidth: "none"}}
-        css={{
-          "&::-webkit-scrollbar": {
-            display: "none",
-            width: "30px",
-          },
-        }}
+        css={browserStyles}
         textAlign="justify"
         user-select="none"
       >

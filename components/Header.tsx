@@ -77,7 +77,7 @@ const Header = () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       const uid = user.uid;
-      console.log(userAvatarSRC);
+
       if (userAvatarSRC != user.photoURL) setUserAvatarSRC(user.photoURL);
     } else {
       if (userAvatarSRC != userIcon) {

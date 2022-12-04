@@ -17,12 +17,12 @@ import {
   HiOutlinePaperClip,
 } from "react-icons/hi";
 import {mainStyles} from "./LayoutCard";
-interface IInput {
+interface MainInput {
   changeSmileOpen: () => void;
   setMessage: (value: string) => void;
   message: string;
 }
-export const InputChat: React.FC<IInput> = ({
+export const InputChat: React.FC<MainInput> = ({
   changeSmileOpen,
   setMessage,
   message,
