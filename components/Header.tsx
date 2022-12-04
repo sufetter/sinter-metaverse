@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from "react";
+import React, {useState, useContext, useEffect, useRef, memo} from "react";
 import {
   Box,
   Flex,
@@ -19,7 +19,8 @@ import {mainStyles} from "./LayoutCard";
 import Link from "next/link";
 import {AuthContext} from "../context/AuthContext";
 import {auth} from "../firebaseconfig";
-import userIcon from "../images/user.png";
+import {onAuthStateChanged} from "firebase/auth";
+import {motion} from "framer-motion";
 
 export const HeaderSearch = () => {
   return (
@@ -50,30 +51,44 @@ export const HeaderSearch = () => {
   );
 };
 
-const Header = () => {
-  const [userAvatarSRC, setUserAvatarSRC] = useState(userIcon.src);
+const Logo = memo(() => {
   const currentUser: any = useContext(AuthContext);
-  if (
-    Object.keys(currentUser).length !== 0 &&
-    userAvatarSRC != currentUser.photoURL &&
-    userAvatarSRC != undefined &&
-    currentUser.photoURL != undefined &&
-    userAvatarSRC == ""
-  ) {
-    console.log("fff");
-    setUserAvatarSRC(currentUser.photoURL);
-  }
-  useEffect(() => {
-    if (
-      Object.keys(currentUser).length == 0 ||
-      typeof currentUser == "string"
-    ) {
-      setUserAvatarSRC(userIcon.src);
-    } else if (currentUser.photoURL != undefined) {
-      setUserAvatarSRC(currentUser.photoURL);
-    }
-  }, [currentUser]);
+  const [logoSRC, setLogoSRC] = useState(
+    "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/mainLOGO.png?alt=media&token=7a5344ac-0842-4ee6-b542-b1bddbbe8bb1"
+  );
 
+  return (
+    <motion.div
+      whileHover={{scale: 0.8, rotate: 90}}
+      transition={{
+        duration: 0.7,
+      }}
+    >
+      <Image src={logoSRC} h="35px" />
+    </motion.div>
+  );
+});
+
+const Header = () => {
+  const currentUser: any = useContext(AuthContext);
+
+  const userIcon =
+    "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      console.log(userAvatarSRC);
+      if (userAvatarSRC != user.photoURL) setUserAvatarSRC(user.photoURL);
+    } else {
+      if (userAvatarSRC != userIcon) {
+        setUserAvatarSRC(userIcon);
+      }
+    }
+  });
+
+  const [userAvatarSRC, setUserAvatarSRC] = useState(
+    () => currentUser.photoURL || userIcon
+  );
   return (
     <ChakraProvider>
       <Flex
@@ -87,8 +102,9 @@ const Header = () => {
         // onClick={() => console.log(userAvatarSRC)}
       >
         <Flex maxW="1076px" w="100%" align="center" mx="60px">
-          <Flex _hover={{cursor: "pointer"}} w="148px">
-            <Text fontFamily="Roboto" fontSize="24px">
+          <Flex _hover={{cursor: "pointer"}} w="148px" align="center">
+            <Logo />
+            <Text fontFamily="Roboto" fontSize="20px" pl={2}>
               Sinter
             </Text>
           </Flex>
@@ -108,7 +124,12 @@ const Header = () => {
             <Text color="white" pr={5}>
               {currentUser.displayName}
             </Text>
-            <Image src={userAvatarSRC} h="35px" borderRadius="20px"></Image>
+            <Image
+              // ref={userAvatar}
+              src={userAvatarSRC}
+              h="35px"
+              borderRadius="20px"
+            />
             <Icon as={IoIosArrowDown} ml={1} boxSize="17px" />
           </Flex>
         </Flex>
@@ -117,4 +138,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);

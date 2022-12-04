@@ -31,6 +31,7 @@ import {
 } from "firebase/auth";
 import {auth, storage, db} from "../firebaseconfig";
 import {doc, setDoc} from "firebase/firestore";
+import {collection, query, where, getDocs} from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
 import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
@@ -110,73 +111,90 @@ function RegisterCard() {
     fileName = fileCheck?.name;
 
     try {
-      const res = await createUserWithEmailAndPassword(auth, email, password);
-
-      await sendEmailVerification(res.user);
-      const storageRef = ref(
-        storage,
-        displayName + "." + res.user.uid.slice(0, 5) + "." + fileName
+      let existed: Array<Object> = [];
+      const queryDB = query(
+        collection(db, "users"),
+        where("email", "==", email)
       );
+      const querySnapshot: any = await getDocs(queryDB);
+      querySnapshot.forEach((doc: any) => {
+        existed.push(doc.data());
+      });
 
-      if (fileCheck && fileChecked) {
-        const uploadTask = uploadBytesResumable(storageRef, fileCheck);
+      if (existed.length! == 0) {
+        const res = await createUserWithEmailAndPassword(auth, email, password);
+        const user = res.user;
 
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-            switch (snapshot.state) {
-              case "paused":
-                console.log("Upload is paused");
-                break;
-              case "running":
-                console.log("Upload is running");
-                break;
-            }
-          },
-          (err) => {
-            setError(true);
-            console.log(err);
-            console.log(err.message);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(
-              async (downloadURL) => {
-                // console.log("File available at", downloadURL);
-                // console.log(res.user);
-                await updateProfile(res.user, {
-                  displayName: displayName,
-                  photoURL: downloadURL,
-                });
-                await setDoc(doc(db, "users", res.user.uid), {
-                  userID: res.user.uid,
-                  displayName,
-                  email,
-                  photoURL: downloadURL,
-                });
-
-                await setDoc(doc(db, "userChats", res.user.uid), {});
-              }
-            );
-          }
+        await sendEmailVerification(user);
+        const storageRef = ref(
+          storage,
+          displayName + "." + user.uid.slice(0, 5) + "." + fileName
         );
+
+        if (fileCheck && fileChecked) {
+          const uploadTask = uploadBytesResumable(storageRef, fileCheck);
+
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Upload is " + progress + "% done");
+              switch (snapshot.state) {
+                case "paused":
+                  console.log("Upload is paused");
+                  break;
+                case "running":
+                  console.log("Upload is running");
+                  break;
+              }
+            },
+            (err) => {
+              setError(true);
+              console.log(err);
+              console.log(err.message);
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then(
+                async (downloadURL) => {
+                  // console.log("File available at", downloadURL);
+                  // console.log(res.user);
+                  await updateProfile(user, {
+                    displayName: displayName,
+                    photoURL: downloadURL,
+                  });
+                  await setDoc(doc(db, "users", user.uid), {
+                    userID: res.user.uid,
+                    displayName: displayName,
+                    displayNameLC: user.displayName?.toLowerCase(),
+                    email,
+                    photoURL: downloadURL,
+                  });
+
+                  await setDoc(doc(db, "userChats", user.uid), {});
+                }
+              );
+            }
+          );
+        } else {
+          await updateProfile(user, {
+            displayName: displayName,
+          });
+          await setDoc(doc(db, "users", user.uid), {
+            userID: res.user.uid,
+            displayName: displayName,
+            displayNameLC: user.displayName?.toLowerCase(),
+            email,
+          });
+        }
+
+        await setDoc(doc(db, "userChats", user.uid), {});
+
+        // navigate(displayName + "." + res.user.uid.slice(0, 5));
+        navigate("/verefication");
       } else {
-        await updateProfile(res.user, {
-          displayName: displayName,
-        });
-        await setDoc(doc(db, "users", res.user.uid), {
-          userID: res.user.uid,
-          displayName,
-          email,
-        });
+        console.log("user exist");
       }
-
-      await setDoc(doc(db, "userChats", res.user.uid), {});
-
-      // navigate(displayName + "." + res.user.uid.slice(0, 5));
-      navigate("/verefication");
     } catch (error: any) {
       setError(true);
       console.log(error.message);

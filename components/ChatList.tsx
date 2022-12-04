@@ -60,17 +60,17 @@ export const ChatSearch = ({
   const handleSearch = async () => {
     const queryDB = query(
       collection(db, "users"),
-      where("displayName", "==", username),
-      where("userID", "!=", currentUser.uid)
-      // where("displayName", ">=", username),
-      // where("displayName", "<=", username + "~")
+      // where("displayNameLC", "==", username.toLocaleLowerCase()),
+      // where("userID", "!=", currentUser.uid)
+      where("displayNameLC", ">=", username.toLocaleLowerCase())
+      // where("displayNameLC", "<=", username.toLocaleLowerCase() + "~")
     );
     try {
       let results: Array<Object> = [];
       const querySnapshot: any = await getDocs(queryDB);
       await querySnapshot.forEach((doc: any) => {
         const result = doc.data();
-        results.push(result);
+        if (result.userID != currentUser.uid) results.push(result);
       });
 
       handleSearchedUsers(results);
