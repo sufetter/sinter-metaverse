@@ -6,13 +6,15 @@ import {
   Icon,
   HStack,
   Text,
+  SlideFade,
 } from "@chakra-ui/react";
-import React from "react";
+import React, {useState} from "react";
 import {InputChat} from "../components/InputChat";
 import {MessageChat} from "./MessageChat";
 import {mainStyles} from "./LayoutCard";
 import {FiMoreHorizontal} from "react-icons/fi";
 import {BiSearchAlt2} from "react-icons/bi";
+import EmojiCard from "./EmojiCard";
 
 export const TopBarChat = () => {
   let date = new Date();
@@ -63,16 +65,30 @@ export const TopBarChat = () => {
 };
 
 export const BottomBarChat = () => {
+  const [message, setMessage] = useState<string>("");
+  const [smileIsOpen, changeSmileOpen] = useState<boolean>(false);
+
   return (
-    <Flex
-      px={4}
-      bg={mainStyles.chatCardSecondBGColor}
-      borderTop="1px solid"
-      borderColor={mainStyles.chatInputBorderColor}
-      borderRadius="0 0 9px 0"
-      h="60px"
-    >
-      <InputChat />
+    <Flex direction="column">
+      <EmojiCard
+        smileIsOpen={smileIsOpen}
+        setMessage={setMessage}
+        message={message}
+      />
+      <Flex
+        px={4}
+        bg={mainStyles.chatCardSecondBGColor}
+        borderTop="1px solid"
+        borderColor={mainStyles.chatInputBorderColor}
+        borderRadius="0 0 9px 0"
+        h="60px"
+      >
+        <InputChat
+          changeSmileOpen={() => changeSmileOpen(!smileIsOpen)}
+          setMessage={(value: string) => setMessage(value)}
+          message={message}
+        />
+      </Flex>
     </Flex>
   );
 };

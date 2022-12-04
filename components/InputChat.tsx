@@ -17,16 +17,16 @@ import {
   HiOutlinePaperClip,
 } from "react-icons/hi";
 import {mainStyles} from "./LayoutCard";
-
-export const InputChat = () => {
-  const [message, setMessage] = useState("");
-  const [emoji, setEmoji] = useState();
-  const [display, setDisplay] = useState("none");
-
-  const onEmojiClick = ({event, emojiObject}: any) => {
-    setEmoji(emojiObject);
-  };
-
+interface IInput {
+  changeSmileOpen: () => void;
+  setMessage: (value: string) => void;
+  message: string;
+}
+export const InputChat: React.FC<IInput> = ({
+  changeSmileOpen,
+  setMessage,
+  message,
+}) => {
   const handleMessageChange = (e: any) => setMessage(e.target.value);
 
   return (
@@ -50,6 +50,7 @@ export const InputChat = () => {
           color="white"
           onChange={handleMessageChange}
           _hover={{borderColor: mainStyles.chatInputBorderColor}}
+          value={message}
         ></Input>
         <InputRightElement
           pr={3}
@@ -58,7 +59,7 @@ export const InputChat = () => {
               as={HiOutlineEmojiHappy}
               color={mainStyles.mainIconColor}
               boxSize="25px"
-              onClick={() => setDisplay("block")}
+              onClick={changeSmileOpen}
               _hover={{cursor: "pointer"}}
             />
           }
