@@ -34,6 +34,8 @@ type ChatItemProps = {
   searchedName?: string;
   searchedUser?: any;
   options?: boolean;
+  setAddedUsers?: any;
+  addedUsers?: any;
 };
 
 export const ChatItem = memo(
@@ -42,16 +44,20 @@ export const ChatItem = memo(
     searchedName = "User",
     searchedUser,
     options,
+    setAddedUsers,
+    addedUsers,
   }: ChatItemProps) => {
     const currentUser: any = useContext(AuthContext);
     const setToChatList = async () => {
       const combinedUid: any =
-        currentUser.uid.slice(0, 5) + "." + searchedUser?.userID!.slice(0, 5);
+        currentUser.uid.slice(0, 5) + "" + searchedUser?.userID!.slice(0, 5);
       const docRef: any = doc(db, "chats", combinedUid);
       const existed: any = await getDoc(docRef);
+      let results: Array<Object> = [];
 
-      if (true) {
+      if (!existed.exists()) {
         console.log("yes");
+        console.log(combinedUid);
         await setDoc(doc(db, "chats", combinedUid), {messages: []});
         await updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedUid + ".userInfo"]: {
@@ -61,6 +67,12 @@ export const ChatItem = memo(
           },
           [combinedUid + ".date"]: serverTimestamp(),
         });
+        console.log(addedUsers);
+      } else {
+        let newArr = addedUsers;
+        newArr.push(searchedUser);
+        setAddedUsers(newArr);
+        console.log(addedUsers);
       }
     };
 
@@ -73,6 +85,7 @@ export const ChatItem = memo(
         w="100%"
         px={4}
         py={2}
+        onClick={() => console.log(addedUsers)}
       >
         <Flex align="center">
           <Avatar src={searchedAvatar} />
@@ -184,7 +197,7 @@ export const ChatSearch = ({
   );
 };
 
-const Render = ({searchedUsers, username}: any) => {
+const Render = ({searchedUsers, username, setAddedUsers, addedUsers}: any) => {
   let borderWidth = 0;
   let supMessage = "No user found";
   let type = 2;
@@ -197,6 +210,8 @@ const Render = ({searchedUsers, username}: any) => {
         searchedName={user.displayName}
         searchedUser={user}
         options
+        setAddedUsers={setAddedUsers}
+        addedUsers={addedUsers}
         key={Math.random()}
       />
     );
@@ -239,9 +254,24 @@ const Render = ({searchedUsers, username}: any) => {
   );
 };
 
+const ChatItemsList = ({addedUsers}: any) => {
+  let result = addedUsers?.map((user: any) => {
+    return (
+      <ChatItem
+        searchedAvatar={user.photoURL}
+        searchedName={user.displayName}
+        searchedUser={user}
+        key={Math.random()}
+      />
+    );
+  });
+  return <Flex direction="column">{result}</Flex>;
+};
+
 const ChatList = () => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
   const [username, setUsername] = useState("");
+  const [addedUsers, setAddedUsers] = useState([]);
   return (
     <Flex
       flex={0.5}
@@ -254,7 +284,12 @@ const ChatList = () => {
         username={username}
         setUsername={setUsername}
       />
-      <Render searchedUsers={searchedUsers} username={username} />
+      <Render
+        searchedUsers={searchedUsers}
+        username={username}
+        setAddedUsers={setAddedUsers}
+        addedUsers={addedUsers}
+      />
       <Flex
         pt={0}
         overflowY="scroll"
@@ -267,27 +302,7 @@ const ChatList = () => {
           },
         }}
       >
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
-        <ChatItem />
+        <ChatItemsList addedUsers={addedUsers} />
       </Flex>
     </Flex>
   );
