@@ -190,7 +190,7 @@ function RegisterCard() {
 
         await setDoc(doc(db, "userChats", user.uid), {});
 
-        // navigate(displayName + "." + res.user.uid.slice(0, 5));
+        navigate("/chat/" + displayName + "." + res.user.uid.slice(0, 5));
         // navigate("/verefication");
       } else {
         console.log("user exist");
