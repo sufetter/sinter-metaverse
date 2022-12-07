@@ -119,7 +119,7 @@ const Header = () => {
   const [userAvatarSRC, setUserAvatarSRC] = useState(
     () => currentUser.photoURL || userIcon
   );
-  const [username, setUsername] = useState<any>("");
+  const [username, setUsername] = useState<any>(currentUser.displayName);
   return (
     <ChakraProvider>
       <Flex
