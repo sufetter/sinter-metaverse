@@ -97,7 +97,7 @@ export const MainChat = () => {
   return (
     <Flex
       flex={1}
-      w="100%"
+      w={"100%"}
       direction="column"
       overflowY="scroll"
       sx={{scrollbarWidth: "none"}}

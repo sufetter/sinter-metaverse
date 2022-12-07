@@ -83,7 +83,6 @@ const Logo = memo(() => {
 
 const Header = () => {
   const currentUser: any = useContext(AuthContext);
-  let results: Array<Object> = [];
   let dbUser: any;
 
   const userIcon =
