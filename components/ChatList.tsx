@@ -26,53 +26,57 @@ import {
   doc,
   updateDoc,
   serverTimestamp,
+  onSnapshot,
 } from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
+import {MainChat} from "./MainChat";
 
 type ChatItemProps = {
   searchedAvatar?: string;
   searchedName?: string;
   searchedUser?: any;
   options?: boolean;
-  setAddedUsers?: any;
-  addedUsers?: any;
+  setChatCard?: any;
 };
 
 export const ChatItem = memo(
-  ({
-    searchedAvatar = "",
-    searchedName = "User",
-    searchedUser,
-    options,
-    setAddedUsers,
-    addedUsers,
-  }: ChatItemProps) => {
+  ({searchedUser, options, setChatCard}: ChatItemProps) => {
     const currentUser: any = useContext(AuthContext);
-    const setToChatList = async () => {
-      const combinedUid: any =
-        currentUser.uid.slice(0, 5) + "" + searchedUser?.userID!.slice(0, 5);
-      const docRef: any = doc(db, "chats", combinedUid);
-      const existed: any = await getDoc(docRef);
-      let results: Array<Object> = [];
+    let searchedAvatar: string = "";
+    if (searchedUser?.photoURL != undefined) {
+      searchedAvatar = searchedUser.photoURL;
+    }
 
-      if (!existed.exists()) {
-        console.log("yes");
+    const setToChatList = async () => {
+      try {
+        const combinedUid: any =
+          currentUser.uid.slice(0, 5) + "" + searchedUser?.userID!.slice(0, 5);
         console.log(combinedUid);
-        await setDoc(doc(db, "chats", combinedUid), {messages: []});
-        await updateDoc(doc(db, "userChats", currentUser.uid), {
-          [combinedUid + ".userInfo"]: {
-            uid: searchedUser.userID,
-            displayName: searchedUser.displayName,
-            photoURL: searchedUser.photoURL,
-          },
-          [combinedUid + ".date"]: serverTimestamp(),
-        });
-        console.log(addedUsers);
-      } else {
-        let newArr = addedUsers;
-        newArr.push(searchedUser);
-        setAddedUsers(newArr);
-        console.log(addedUsers);
+        const docRef: any = doc(db, "chats", combinedUid);
+        const existed: any = await getDoc(docRef);
+        let photoCheck = "";
+        if (searchedUser?.photoURL != undefined) {
+          photoCheck = searchedUser.photoURL;
+        }
+
+        if (!existed.exists()) {
+          console.log("added");
+          console.log(combinedUid);
+          await setDoc(doc(db, "chats", combinedUid), {messages: []});
+          await updateDoc(doc(db, "userChats", currentUser.uid), {
+            [combinedUid + ".userInfo"]: {
+              uid: searchedUser.userID,
+              displayName: searchedUser.displayName,
+              photoURL: photoCheck,
+            },
+            [combinedUid + ".date"]: serverTimestamp(),
+          });
+        } else {
+          console.log("exists");
+          console.log(existed.data());
+        }
+      } catch (err) {
+        console.log(err);
       }
     };
 
@@ -85,12 +89,17 @@ export const ChatItem = memo(
         w="100%"
         px={4}
         py={2}
-        onClick={() => console.log(addedUsers)}
       >
-        <Flex align="center">
+        <Flex
+          align="center"
+          w="100%"
+          onClick={() => {
+            setChatCard(<MainChat user={searchedUser} />);
+          }}
+        >
           <Avatar src={searchedAvatar} />
           <Text ms={3} color="white">
-            {searchedName}
+            {searchedUser.displayName}
           </Text>
         </Flex>
         <Flex align="center">
@@ -121,6 +130,7 @@ export const ChatSearch = ({
   handleSearchedUsers,
   username,
   setUsername,
+  searchInput,
 }: any) => {
   const [error, setError] = useState<boolean>(false);
   const currentUser: any = useContext(AuthContext);
@@ -179,6 +189,7 @@ export const ChatSearch = ({
           color="white"
           onChange={handleInput}
           onKeyDown={handleKey}
+          ref={searchInput}
         />
         <InputLeftElement
           pointerEvents="none"
@@ -197,7 +208,7 @@ export const ChatSearch = ({
   );
 };
 
-const Render = ({searchedUsers, username, setAddedUsers, addedUsers}: any) => {
+const Render = ({searchedUsers, username}: any) => {
   let borderWidth = 0;
   let supMessage = "No user found";
   let type = 2;
@@ -210,8 +221,6 @@ const Render = ({searchedUsers, username, setAddedUsers, addedUsers}: any) => {
         searchedName={user.displayName}
         searchedUser={user}
         options
-        setAddedUsers={setAddedUsers}
-        addedUsers={addedUsers}
         key={Math.random()}
       />
     );
@@ -254,21 +263,47 @@ const Render = ({searchedUsers, username, setAddedUsers, addedUsers}: any) => {
   );
 };
 
-const ChatItemsList = ({addedUsers}: any) => {
-  let result = addedUsers?.map((user: any) => {
-    return (
-      <ChatItem
-        searchedAvatar={user.photoURL}
-        searchedName={user.displayName}
-        searchedUser={user}
-        key={Math.random()}
-      />
-    );
-  });
-  return <Flex direction="column">{result}</Flex>;
+const ChatItemsList = memo(({setChatCard}: any) => {
+  const currentUser: any = useContext(AuthContext);
+  const [chats, setChats] = useState<any>([]);
+  useEffect(() => {
+    const getChats = () => {
+      const newChat = onSnapshot(
+        doc(db, "userChats", currentUser.uid),
+        (doc) => {
+          setChats(doc.data());
+        }
+      );
+
+      return () => {
+        newChat();
+      };
+    };
+
+    currentUser.uid && getChats();
+  }, [currentUser.uid]);
+
+  return (
+    <Flex direction="column">
+      {Object.entries(chats).map((chat: any) => {
+        return (
+          <ChatItem
+            key={Math.random()}
+            searchedUser={chat[1].userInfo}
+            setChatCard={setChatCard}
+          />
+        );
+      })}
+    </Flex>
+  );
+});
+
+type ChatListProps = {
+  searchInput: any;
+  setChatCard: any;
 };
 
-const ChatList = () => {
+const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
   const [username, setUsername] = useState("");
   const [addedUsers, setAddedUsers] = useState([]);
@@ -283,13 +318,9 @@ const ChatList = () => {
         handleSearchedUsers={(users: any) => setSearchedUsers(users)}
         username={username}
         setUsername={setUsername}
+        searchInput={searchInput}
       />
-      <Render
-        searchedUsers={searchedUsers}
-        username={username}
-        setAddedUsers={setAddedUsers}
-        addedUsers={addedUsers}
-      />
+      <Render searchedUsers={searchedUsers} username={username} />
       <Flex
         pt={0}
         overflowY="scroll"
@@ -302,7 +333,7 @@ const ChatList = () => {
           },
         }}
       >
-        <ChatItemsList addedUsers={addedUsers} />
+        <ChatItemsList setChatCard={setChatCard} />
       </Flex>
     </Flex>
   );

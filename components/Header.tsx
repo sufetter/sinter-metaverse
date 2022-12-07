@@ -83,7 +83,6 @@ const Logo = memo(() => {
 
 const Header = () => {
   const currentUser: any = useContext(AuthContext);
-  let results: Array<Object> = [];
   let dbUser: any;
 
   const userIcon =
@@ -120,7 +119,7 @@ const Header = () => {
   const [userAvatarSRC, setUserAvatarSRC] = useState(
     () => currentUser.photoURL || userIcon
   );
-  const [username, setUsername] = useState<any>("");
+  const [username, setUsername] = useState<any>(currentUser.displayName);
   return (
     <ChakraProvider>
       <Flex

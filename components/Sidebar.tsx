@@ -7,7 +7,7 @@ import {
   ChakraProvider,
   Spacer,
 } from "@chakra-ui/react";
-import React, {useContext} from "react";
+import React, {useContext, memo} from "react";
 import {CgProfile} from "react-icons/cg";
 import {FiMessageSquare, FiSettings} from "react-icons/fi";
 import {BsNewspaper} from "react-icons/bs";
@@ -74,4 +74,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default memo(Sidebar);

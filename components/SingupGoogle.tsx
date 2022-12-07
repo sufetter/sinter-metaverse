@@ -7,7 +7,6 @@ import {AuthContext} from "../context/AuthContext";
 import {Button, Flex, Icon, Text} from "@chakra-ui/react";
 import {mainStyles} from "./LayoutCard";
 import {FcGoogle} from "react-icons/fc";
-import {info} from "console";
 
 const provider = new GoogleAuthProvider();
 
