@@ -48,6 +48,7 @@ export const ChatItem = memo(
     }
 
     const setToChatList = async () => {
+      console.log("hh");
       try {
         const combinedUid: any =
           currentUser.uid.slice(0, 5) + "" + searchedUser?.userID!.slice(0, 5);
@@ -99,7 +100,7 @@ export const ChatItem = memo(
         >
           <Avatar src={searchedAvatar} />
           <Text ms={3} color="white">
-            {searchedUser.displayName}
+            {searchedUser?.displayName}
           </Text>
         </Flex>
         <Flex align="center">
@@ -166,10 +167,6 @@ export const ChatSearch = ({
     }
   };
 
-  const handleKey = async (e: any) => {
-    e.code === "Enter" && handleSearch();
-  };
-
   return (
     <Flex
       px={1}
@@ -188,7 +185,6 @@ export const ChatSearch = ({
           placeholder="Search"
           color="white"
           onChange={handleInput}
-          onKeyDown={handleKey}
           ref={searchInput}
         />
         <InputLeftElement
@@ -271,6 +267,7 @@ const ChatItemsList = memo(({setChatCard}: any) => {
       const newChat = onSnapshot(
         doc(db, "userChats", currentUser.uid),
         (doc) => {
+          console.log(Object.entries(chats));
           setChats(doc.data());
         }
       );
@@ -285,7 +282,7 @@ const ChatItemsList = memo(({setChatCard}: any) => {
 
   return (
     <Flex direction="column">
-      {Object.entries(chats).map((chat: any) => {
+      {Object.entries(chats)?.map((chat: any) => {
         return (
           <ChatItem
             key={Math.random()}

@@ -23,9 +23,6 @@ const id: React.FC = () => {
         justify="center"
         w="100%"
         direction="column"
-        onClick={() => {
-          console.log(chatCard);
-        }}
       >
         <Icon as={HiOutlineChatAlt2} color="white" boxSize="70px" />
         <Text color="white" as="span">

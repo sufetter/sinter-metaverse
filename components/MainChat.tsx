@@ -68,7 +68,7 @@ export const TopBarChat = memo(({displayName, avatarSRC}: any) => {
   );
 });
 
-export const BottomBarChat = memo(() => {
+export const BottomBarChat = memo(({user}: any) => {
   const [message, setMessage] = useState<string>("");
   const [smileIsOpen, changeSmileOpen] = useState<boolean>(false);
 
@@ -91,6 +91,7 @@ export const BottomBarChat = memo(() => {
           changeSmileOpen={() => changeSmileOpen(!smileIsOpen)}
           setMessage={(value: string) => setMessage(value)}
           message={message}
+          user={user}
         />
       </Flex>
     </Flex>
@@ -112,7 +113,7 @@ export const MainChat = ({user}: any) => {
         },
       }}
     >
-      <TopBarChat displayName={user.displayName} avatarSRC={user.photoURL} />
+      <TopBarChat displayName={user?.displayName} avatarSRC={user?.photoURL} />
       <Flex
         flex={1}
         px={10}
@@ -144,7 +145,7 @@ export const MainChat = ({user}: any) => {
         <MessageChat type="send" />
         <MessageChat type="get" />
       </Flex>
-      <BottomBarChat />
+      <BottomBarChat user={user} />
     </Flex>
   );
 };

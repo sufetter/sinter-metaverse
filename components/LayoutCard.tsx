@@ -1,5 +1,6 @@
 import {Box, Flex, Stack, Spacer, Text, VStack} from "@chakra-ui/react";
 import Head from "next/head";
+import {Html} from "next/document";
 import Header from "./Header";
 import {AnimatePresence, motion} from "framer-motion";
 import {useRouter} from "next/router";
@@ -52,10 +53,10 @@ export default function LayoutCard({
   return (
     <>
       <Head>
-        <link
+        {/* <link
           href="https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic"
           rel="stylesheet"
-        />
+        /> */}
       </Head>
 
       <Flex
