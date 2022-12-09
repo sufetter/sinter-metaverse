@@ -48,27 +48,38 @@ export const ChatItem = memo(
     }
 
     const setToChatList = async () => {
-      console.log("hh");
       try {
         const combinedUid: any =
-          currentUser.uid.slice(0, 5) + "" + searchedUser?.userID!.slice(0, 5);
-        console.log(combinedUid);
+          currentUser.uid.slice(0, 5) + "" + searchedUser?.userID?.slice(0, 5);
+
         const docRef: any = doc(db, "chats", combinedUid);
         const existed: any = await getDoc(docRef);
-        let photoCheck = "";
-        if (searchedUser?.photoURL != undefined) {
-          photoCheck = searchedUser.photoURL;
-        }
+
+        const check = (user: any) => {
+          if (user?.photoURL != undefined) {
+            return user.photoURL;
+          } else return "";
+        };
 
         if (!existed.exists()) {
           console.log("added");
           console.log(combinedUid);
+          console.log(searchedUser.userID);
+          console.log(currentUser.uid);
           await setDoc(doc(db, "chats", combinedUid), {messages: []});
           await updateDoc(doc(db, "userChats", currentUser.uid), {
             [combinedUid + ".userInfo"]: {
               uid: searchedUser.userID,
               displayName: searchedUser.displayName,
-              photoURL: photoCheck,
+              photoURL: check(searchedUser),
+            },
+            [combinedUid + ".date"]: serverTimestamp(),
+          });
+          await updateDoc(doc(db, "userChats", searchedUser.userID), {
+            [combinedUid + ".userInfo"]: {
+              uid: currentUser.uid,
+              displayName: currentUser.displayName,
+              photoURL: check(currentUser),
             },
             [combinedUid + ".date"]: serverTimestamp(),
           });
@@ -262,13 +273,45 @@ const Render = ({searchedUsers, username}: any) => {
 const ChatItemsList = memo(({setChatCard}: any) => {
   const currentUser: any = useContext(AuthContext);
   const [chats, setChats] = useState<any>([]);
+  let resArr: any = [];
   useEffect(() => {
     const getChats = () => {
       const newChat = onSnapshot(
         doc(db, "userChats", currentUser.uid),
         (doc) => {
-          console.log(Object.entries(chats));
-          setChats(doc.data());
+          let resChats: any = doc.data();
+          let chatsArr = Object.entries(resChats);
+
+          chatsArr.map((chat) => {
+            if (chat[1].userInfo != undefined) {
+              resArr.push(chat[1].userInfo);
+            }
+          });
+          let sort = ({a, b}: any) => {
+            console.log(a);
+            if (a?.displayName > b?.displayName) {
+              return 1;
+            }
+            if (a?.displayName < b?.displayName) {
+              return -1;
+            }
+            return 0;
+          };
+
+          resArr.sort(sort);
+
+          let res = resArr.map((chat: any) => {
+            return (
+              <ChatItem
+                key={Math.random()}
+                searchedUser={chat}
+                setChatCard={setChatCard}
+              />
+            );
+          });
+
+          resArr = [];
+          setChats(res);
         }
       );
 
@@ -277,22 +320,12 @@ const ChatItemsList = memo(({setChatCard}: any) => {
       };
     };
 
+    const chatListItemrender = () => chats.map((chat: any) => {});
+
     currentUser.uid && getChats();
   }, [currentUser.uid]);
 
-  return (
-    <Flex direction="column">
-      {Object.entries(chats)?.map((chat: any) => {
-        return (
-          <ChatItem
-            key={Math.random()}
-            searchedUser={chat[1].userInfo}
-            setChatCard={setChatCard}
-          />
-        );
-      })}
-    </Flex>
-  );
+  return <Flex direction="column">{chats}</Flex>;
 });
 
 type ChatListProps = {
