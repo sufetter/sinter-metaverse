@@ -30,7 +30,7 @@ import {v4 as uuid} from "uuid";
 import {RiSpace} from "react-icons/ri";
 
 const HandleFileChange = ({e}: any) => {
-  if (e.target.files[0]?.type == undefined) {
+  if (e?.target?.files[0]?.type == undefined) {
   }
   let file = e.target.files![0];
   return (
@@ -105,39 +105,34 @@ export const InputChat: React.FC<MainInput> = ({
     setMainComponent(<HandleFileChange e={e} />);
   };
 
-  const [mainComponent, setMainComponent] = useState<any>(
-    <InputGroup px={2}>
-      <Input
-        placeholder="Type a message....."
-        border="1px solid"
-        borderColor={mainStyles.chatInputBorderColor}
-        _focus={{borderWidth: "1px"}}
-        focusBorderColor={mainStyles.chatInputBorderColor}
-        autoComplete="off"
-        color="white"
-        onChange={handleMessageChange}
-        _hover={{borderColor: mainStyles.chatInputBorderColor}}
-        value={message}
-        onKeyDown={handleKey}
-      ></Input>
-      <InputRightElement
-        pr={3}
-        children={
-          <Icon
-            as={HiOutlineEmojiHappy}
-            color={mainStyles.mainIconColor}
-            boxSize="25px"
-            onClick={changeSmileOpen}
-            _hover={{cursor: "pointer"}}
-          />
-        }
-      />
-    </InputGroup>
-  );
+  const [mainComponent, setMainComponent] = useState<any>();
 
   return (
     <Flex justify="space-between" w="100%" align="center">
       <Flex align="center">
+        {/* <FormLabel htmlFor="Avatar" w="100%">
+          <Input
+            type="file"
+            color="white"
+            border="white"
+            cursor="pointer"
+            onChange={handleFileChange}
+            display="none"
+            id="Avatar"
+            ref={inputFile}
+          ></Input>
+          <Text
+            align="center"
+            color="white"
+            _hover={{
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            flexWrap="wrap"
+          >
+            {avatar}
+          </Text>
+        </FormLabel> */}
         <Icon
           as={HiOutlinePaperClip}
           color={mainStyles.mainIconColor}
@@ -146,7 +141,34 @@ export const InputChat: React.FC<MainInput> = ({
           onClick={(e) => handleFileComponent(e)}
         />
       </Flex>
-      {mainComponent}
+      {/* {mainComponent} */}
+      <InputGroup px={2}>
+        <Input
+          placeholder="Type a message....."
+          border="1px solid"
+          borderColor={mainStyles.chatInputBorderColor}
+          _focus={{borderWidth: "1px"}}
+          focusBorderColor={mainStyles.chatInputBorderColor}
+          autoComplete="off"
+          color="white"
+          onChange={handleMessageChange}
+          _hover={{borderColor: mainStyles.chatInputBorderColor}}
+          value={message}
+          onKeyDown={handleKey}
+        ></Input>
+        <InputRightElement
+          pr={3}
+          children={
+            <Icon
+              as={HiOutlineEmojiHappy}
+              color={mainStyles.mainIconColor}
+              boxSize="25px"
+              onClick={changeSmileOpen}
+              _hover={{cursor: "pointer"}}
+            />
+          }
+        />
+      </InputGroup>
       <Flex align="center">
         <Icon
           as={HiOutlineMicrophone}
