@@ -68,6 +68,7 @@ export const InputChat: React.FC<MainInput> = ({
       },
       [chatId + ".date"]: serverTimestamp(),
     });
+    setMessage("");
   };
 
   const handleKey = async (e: any) => {

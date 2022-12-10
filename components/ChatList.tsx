@@ -27,6 +27,7 @@ import {
   updateDoc,
   serverTimestamp,
   onSnapshot,
+  orderBy,
 } from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
 import {MainChat} from "./MainChat";
@@ -274,40 +275,42 @@ const ChatItemsList = memo(({setChatCard}: any) => {
   const currentUser: any = useContext(AuthContext);
   const [chats, setChats] = useState<any>([]);
   let resArr: any = [];
+  let sort = ({a, b}: any) => {
+    if (a?.displayName > b?.displayName) {
+      return 1;
+    }
+    if (a?.displayName < b?.displayName) {
+      return -1;
+    }
+    return 0;
+  };
   useEffect(() => {
     const getChats = () => {
       const newChat = onSnapshot(
         doc(db, "userChats", currentUser.uid),
         (doc) => {
           let resChats: any = doc.data();
-          let chatsArr = Object.entries(resChats);
+
+          let chatsArr = Object.entries(resChats).sort();
 
           chatsArr.map((chat) => {
             if (chat[1].userInfo != undefined) {
               resArr.push(chat[1].userInfo);
             }
           });
-          let sort = ({a, b}: any) => {
-            console.log(a);
-            if (a?.displayName > b?.displayName) {
-              return 1;
-            }
-            if (a?.displayName < b?.displayName) {
-              return -1;
-            }
-            return 0;
-          };
 
-          resArr.sort(sort);
-
-          let res = resArr.map((chat: any) => {
-            return (
-              <ChatItem
-                key={Math.random()}
-                searchedUser={chat}
-                setChatCard={setChatCard}
-              />
-            );
+          let res = chatsArr.map((chat: any) => {
+            console.log(chat[1].lastMessage?.text);
+            if (chat[1].userInfo != undefined) {
+              return (
+                <ChatItem
+                  key={Math.random()}
+                  searchedUser={chat[1].userInfo}
+                  setChatCard={setChatCard}
+                />
+              );
+            } else {
+            }
           });
 
           resArr = [];
@@ -319,8 +322,6 @@ const ChatItemsList = memo(({setChatCard}: any) => {
         newChat();
       };
     };
-
-    const chatListItemrender = () => chats.map((chat: any) => {});
 
     currentUser.uid && getChats();
   }, [currentUser.uid]);
