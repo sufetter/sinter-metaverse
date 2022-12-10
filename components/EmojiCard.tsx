@@ -48,7 +48,7 @@ const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
   let symbols: string[] = [];
   let i: number = 0;
   const fillSymbols = useMemo(() => {
-    while (i < 120) {
+    while (i < 140) {
       symbols[i] = String.fromCodePoint(128512 + i);
       i++;
     }

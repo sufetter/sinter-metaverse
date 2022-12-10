@@ -10,7 +10,7 @@ import {
   Tooltip,
   Box,
 } from "@chakra-ui/react";
-import React, {useState, useContext, useEffect, memo} from "react";
+import React, {useState, useContext, useEffect, memo, useMemo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {CiSettings} from "react-icons/ci";
 import {MdAdd} from "react-icons/md";
@@ -51,7 +51,10 @@ export const ChatItem = memo(
       try {
         const combinedUid: any =
           currentUser.uid.slice(0, 5) + "" + searchedUser?.userID?.slice(0, 5);
-
+        const combinedUidReverse =
+          searchedUser?.userID?.slice(0, 5) +
+          currentUser?.uid?.slice(0, 5) +
+          "";
         const docRef: any = doc(db, "chats", combinedUid);
         const existed: any = await getDoc(docRef);
 
@@ -67,6 +70,7 @@ export const ChatItem = memo(
           console.log(searchedUser.userID);
           console.log(currentUser.uid);
           await setDoc(doc(db, "chats", combinedUid), {messages: []});
+          await setDoc(doc(db, "chats", combinedUidReverse), {messages: []});
           await updateDoc(doc(db, "userChats", currentUser.uid), {
             [combinedUid + ".userInfo"]: {
               uid: searchedUser.userID,
@@ -273,7 +277,7 @@ const Render = ({searchedUsers, username}: any) => {
 const ChatItemsList = memo(({setChatCard}: any) => {
   const currentUser: any = useContext(AuthContext);
   const [chats, setChats] = useState<any>([]);
-  let resArr: any = [];
+  let chatsLength = 0;
   useEffect(() => {
     const getChats = () => {
       const newChat = onSnapshot(
@@ -282,36 +286,20 @@ const ChatItemsList = memo(({setChatCard}: any) => {
           let resChats: any = doc.data();
           let chatsArr = Object.entries(resChats);
 
-          chatsArr.map((chat) => {
-            if (chat[1].userInfo != undefined) {
-              resArr.push(chat[1].userInfo);
-            }
-          });
-          let sort = ({a, b}: any) => {
-            console.log(a);
-            if (a?.displayName > b?.displayName) {
-              return 1;
-            }
-            if (a?.displayName < b?.displayName) {
-              return -1;
-            }
-            return 0;
-          };
-
-          resArr.sort(sort);
-
-          let res = resArr.map((chat: any) => {
+          let res = chatsArr.map((chat: any) => {
             return (
               <ChatItem
                 key={Math.random()}
-                searchedUser={chat}
+                searchedUser={chat[1].userInfo}
                 setChatCard={setChatCard}
               />
             );
           });
 
-          resArr = [];
-          setChats(res);
+          if (chatsLength != chatsArr.length) {
+            setChats(res);
+            chatsLength = chatsArr.length;
+          }
         }
       );
 

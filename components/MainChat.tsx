@@ -98,6 +98,10 @@ export const BottomBarChat = memo(({user}: any) => {
   );
 });
 
+const ChatMessges = () => {
+  return <MessageChat />;
+};
+
 export const MainChat = ({user}: any) => {
   return (
     <Flex
@@ -128,22 +132,7 @@ export const MainChat = ({user}: any) => {
           },
         }}
       >
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
+        <ChatMessges />
       </Flex>
       <BottomBarChat user={user} />
     </Flex>

@@ -44,8 +44,9 @@ export const InputChat: React.FC<MainInput> = ({
 
   const handleMessageChange = (e: any) => setMessage(e.target.value);
   const combinedUid: any =
-    currentUser.uid.slice(0, 5) + "" + user?.uid!.slice(0, 5);
-  const chatId = currentUser.uid + user?.uid;
+    currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
+  const combinedUidReverse =
+    user?.uid!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
 
   const handleSend = async () => {
     await updateDoc(doc(db, "chats", combinedUid), {
@@ -56,17 +57,27 @@ export const InputChat: React.FC<MainInput> = ({
         date: Timestamp.now(),
       }),
     });
-    await updateDoc(doc(db, "userChats", currentUser.uid), {
-      [chatId + ".lastMessage"]: {
+    await updateDoc(doc(db, "chats", combinedUidReverse), {
+      messages: arrayUnion({
+        id: uuid(),
         message,
+        senderId: user.uid,
+        date: Timestamp.now(),
+      }),
+    });
+    await updateDoc(doc(db, "userChats", currentUser.uid), {
+      [combinedUid + ".lastMessage"]: {
+        message,
+        sender: currentUser.displayName,
+        date: serverTimestamp(),
       },
-      [chatId + ".date"]: serverTimestamp(),
     });
     await updateDoc(doc(db, "userChats", user.uid), {
-      [chatId + ".lastMessage"]: {
+      [combinedUid + ".lastMessage"]: {
         message,
+        sender: currentUser.displayName,
+        date: serverTimestamp(),
       },
-      [chatId + ".date"]: serverTimestamp(),
     });
   };
 
