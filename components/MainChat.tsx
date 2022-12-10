@@ -8,12 +8,26 @@ import {
   Text,
   SlideFade,
 } from "@chakra-ui/react";
-import React, {useState, memo} from "react";
+import React, {useState, memo, useContext, useEffect} from "react";
 import {InputChat} from "../components/InputChat";
 import {MessageChat} from "./MessageChat";
 import {mainStyles} from "./LayoutCard";
 import {FiMoreHorizontal} from "react-icons/fi";
 import {BiSearchAlt2} from "react-icons/bi";
+import {db} from "../firebaseconfig";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  setDoc,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  onSnapshot,
+} from "firebase/firestore";
+import {AuthContext} from "../context/AuthContext";
 import EmojiCard from "./EmojiCard";
 
 export const TopBarChat = memo(({displayName, avatarSRC}: any) => {
@@ -98,8 +112,43 @@ export const BottomBarChat = memo(({user}: any) => {
   );
 });
 
-const ChatMessges = () => {
-  return <MessageChat />;
+const ChatMessges = ({user}: any) => {
+  const currentUser: any = useContext(AuthContext);
+  const [messages, setMessages] = useState<any>([]);
+  const combinedUid: any =
+    currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
+  useEffect(() => {
+    const getMessages = () => {
+      const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
+        let resMessages: any = doc.data();
+        let messagesArr = Object.entries(resMessages);
+
+        let res = messagesArr[0][1].map((chat: any) => {
+          return (
+            <MessageChat
+              key={Math.random()}
+              message={chat.message}
+              time={chat.data}
+              uid={chat.senderId}
+            />
+          );
+          // <Flex>jhkh</Flex>;
+        });
+        setMessages(res);
+      });
+
+      return () => {
+        newChat();
+      };
+    };
+
+    currentUser.uid && getMessages();
+  }, [currentUser.uid]);
+  return (
+    <Flex direction="column" w="100%" h="100%">
+      {messages}
+    </Flex>
+  );
 };
 
 export const MainChat = ({user}: any) => {
@@ -132,7 +181,7 @@ export const MainChat = ({user}: any) => {
           },
         }}
       >
-        <ChatMessges />
+        <ChatMessges user={user} />
       </Flex>
       <BottomBarChat user={user} />
     </Flex>
