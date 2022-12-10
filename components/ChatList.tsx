@@ -10,7 +10,7 @@ import {
   Tooltip,
   Box,
 } from "@chakra-ui/react";
-import React, {useState, useContext, useEffect, memo} from "react";
+import React, {useState, useContext, useEffect, memo, useMemo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {CiSettings} from "react-icons/ci";
 import {MdAdd} from "react-icons/md";
@@ -43,8 +43,9 @@ type ChatItemProps = {
 export const ChatItem = memo(
   ({searchedUser, options, setChatCard}: ChatItemProps) => {
     const currentUser: any = useContext(AuthContext);
-    let searchedAvatar: string = "";
-    if (searchedUser?.photoURL != undefined) {
+    let searchedAvatar: string =
+      "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
+    if (searchedUser?.photoURL != undefined && searchedUser?.photoURL != "") {
       searchedAvatar = searchedUser.photoURL;
     }
 
@@ -52,7 +53,10 @@ export const ChatItem = memo(
       try {
         const combinedUid: any =
           currentUser.uid.slice(0, 5) + "" + searchedUser?.userID?.slice(0, 5);
-
+        const combinedUidReverse =
+          searchedUser?.userID?.slice(0, 5) +
+          currentUser?.uid?.slice(0, 5) +
+          "";
         const docRef: any = doc(db, "chats", combinedUid);
         const existed: any = await getDoc(docRef);
 
@@ -68,6 +72,7 @@ export const ChatItem = memo(
           console.log(searchedUser.userID);
           console.log(currentUser.uid);
           await setDoc(doc(db, "chats", combinedUid), {messages: []});
+          await setDoc(doc(db, "chats", combinedUidReverse), {messages: []});
           await updateDoc(doc(db, "userChats", currentUser.uid), {
             [combinedUid + ".userInfo"]: {
               uid: searchedUser.userID,
@@ -77,12 +82,12 @@ export const ChatItem = memo(
             [combinedUid + ".date"]: serverTimestamp(),
           });
           await updateDoc(doc(db, "userChats", searchedUser.userID), {
-            [combinedUid + ".userInfo"]: {
+            [combinedUidReverse + ".userInfo"]: {
               uid: currentUser.uid,
               displayName: currentUser.displayName,
               photoURL: check(currentUser),
             },
-            [combinedUid + ".date"]: serverTimestamp(),
+            [combinedUidReverse + ".date"]: serverTimestamp(),
           });
         } else {
           console.log("exists");
@@ -110,7 +115,9 @@ export const ChatItem = memo(
             setChatCard(<MainChat user={searchedUser} />);
           }}
         >
-          <Avatar src={searchedAvatar} />
+          <Box mr="10px" boxSize="45px">
+            <img src={searchedAvatar} style={{borderRadius: "100px"}} />
+          </Box>
           <Text ms={3} color="white">
             {searchedUser?.displayName}
           </Text>
@@ -274,16 +281,7 @@ const Render = ({searchedUsers, username}: any) => {
 const ChatItemsList = memo(({setChatCard}: any) => {
   const currentUser: any = useContext(AuthContext);
   const [chats, setChats] = useState<any>([]);
-  let resArr: any = [];
-  let sort = ({a, b}: any) => {
-    if (a?.displayName > b?.displayName) {
-      return 1;
-    }
-    if (a?.displayName < b?.displayName) {
-      return -1;
-    }
-    return 0;
-  };
+  let chatsLength = 0;
   useEffect(() => {
     const getChats = () => {
       const newChat = onSnapshot(
@@ -293,28 +291,20 @@ const ChatItemsList = memo(({setChatCard}: any) => {
 
           let chatsArr = Object.entries(resChats).sort();
 
-          chatsArr.map((chat) => {
-            if (chat[1].userInfo != undefined) {
-              resArr.push(chat[1].userInfo);
-            }
-          });
-
           let res = chatsArr.map((chat: any) => {
-            console.log(chat[1].lastMessage?.text);
-            if (chat[1].userInfo != undefined) {
-              return (
-                <ChatItem
-                  key={Math.random()}
-                  searchedUser={chat[1].userInfo}
-                  setChatCard={setChatCard}
-                />
-              );
-            } else {
-            }
+            return (
+              <ChatItem
+                key={Math.random()}
+                searchedUser={chat[1].userInfo}
+                setChatCard={setChatCard}
+              />
+            );
           });
 
-          resArr = [];
-          setChats(res);
+          if (chatsLength != chatsArr.length) {
+            setChats(res);
+            chatsLength = chatsArr.length;
+          }
         }
       );
 

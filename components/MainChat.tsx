@@ -8,15 +8,32 @@ import {
   Text,
   SlideFade,
 } from "@chakra-ui/react";
-import React, {useState, memo} from "react";
+import React, {useState, memo, useContext, useEffect} from "react";
 import {InputChat} from "../components/InputChat";
-import {MessageChat} from "./MessageChat";
+import MessageChat from "./MessageChat";
 import {mainStyles} from "./LayoutCard";
 import {FiMoreHorizontal} from "react-icons/fi";
 import {BiSearchAlt2} from "react-icons/bi";
+import {db} from "../firebaseconfig";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  setDoc,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  onSnapshot,
+} from "firebase/firestore";
+import {AuthContext} from "../context/AuthContext";
 import EmojiCard from "./EmojiCard";
 
-export const TopBarChat = memo(({displayName, avatarSRC}: any) => {
+export const TopBarChat = ({displayName, avatarSRC}: any) => {
+  if (avatarSRC == "")
+    avatarSRC =
+      "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
   let date = new Date();
   let displayTime: string = date.getHours() + ":" + date.getMinutes();
   return (
@@ -66,7 +83,7 @@ export const TopBarChat = memo(({displayName, avatarSRC}: any) => {
       </HStack>
     </Flex>
   );
-});
+};
 
 export const BottomBarChat = memo(({user}: any) => {
   const [message, setMessage] = useState<string>("");
@@ -98,6 +115,52 @@ export const BottomBarChat = memo(({user}: any) => {
   );
 });
 
+const ChatMessges = ({user}: any) => {
+  const currentUser: any = useContext(AuthContext);
+  const [messages, setMessages] = useState<any>([]);
+  const combinedUid: any =
+    currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
+  useEffect(() => {
+    const getMessages = () => {
+      const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
+        let resMessages: any = doc.data();
+        let messagesArr = Object.entries(resMessages);
+        let sender;
+
+        let res = messagesArr[0][1].map((chat: any) => {
+          if (chat.senderId === currentUser.uid) {
+            sender = currentUser;
+          } else {
+            sender = user;
+          }
+
+          return (
+            <MessageChat
+              key={Math.random()}
+              message={chat.message}
+              time={chat.date}
+              user={sender}
+            />
+          );
+          // <Flex>jhkh</Flex>;
+        });
+        setMessages(res);
+      });
+
+      return () => {
+        newChat();
+      };
+    };
+
+    currentUser.uid && getMessages();
+  }, [user]);
+  return (
+    <Flex direction="column" w="100%" h="100%">
+      {messages}
+    </Flex>
+  );
+};
+
 export const MainChat = ({user}: any) => {
   return (
     <Flex
@@ -128,22 +191,7 @@ export const MainChat = ({user}: any) => {
           },
         }}
       >
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
-        <MessageChat type="send" />
-        <MessageChat type="get" />
+        <ChatMessges user={user} />
       </Flex>
       <BottomBarChat user={user} />
     </Flex>
