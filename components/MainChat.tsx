@@ -130,11 +130,12 @@ const ChatMessges = ({user}: any) => {
           } else {
             sender = user;
           }
+
           return (
             <MessageChat
               key={Math.random()}
               message={chat.message}
-              time={chat.data}
+              time={chat.date}
               user={sender}
             />
           );

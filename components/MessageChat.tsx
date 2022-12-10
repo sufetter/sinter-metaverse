@@ -30,7 +30,23 @@ export const MessageChat = ({
   time,
   user,
 }: StandardProps) => {
+  var dateFormat = new Date(time.seconds + time.milliseconds);
+
   let position;
+  console.log(
+    "Date: " +
+      dateFormat.getDate() +
+      "/" +
+      (dateFormat.getMonth() + 1) +
+      "/" +
+      dateFormat.getFullYear() +
+      " " +
+      dateFormat.getHours() +
+      ":" +
+      dateFormat.getMinutes() +
+      ":" +
+      dateFormat.getSeconds()
+  );
 
   return (
     <Flex alignSelf={position} direction="row" my={1.5}>
@@ -53,7 +69,7 @@ export const MessageChat = ({
               fontWeight={400}
               fontSize="14px"
             >
-              {time}
+              {/* {time} */}
             </Text>
           </Flex>
 
