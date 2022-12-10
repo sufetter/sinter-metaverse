@@ -122,14 +122,20 @@ const ChatMessges = ({user}: any) => {
       const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
         let resMessages: any = doc.data();
         let messagesArr = Object.entries(resMessages);
+        let sender;
 
         let res = messagesArr[0][1].map((chat: any) => {
+          if (chat.senderId === currentUser.uid) {
+            sender = currentUser;
+          } else {
+            sender = user;
+          }
           return (
             <MessageChat
               key={Math.random()}
               message={chat.message}
               time={chat.data}
-              uid={chat.senderId}
+              user={sender}
             />
           );
           // <Flex>jhkh</Flex>;

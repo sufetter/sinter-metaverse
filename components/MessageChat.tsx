@@ -20,21 +20,17 @@ export interface StandardProps {
   children?: React.ReactNode;
   message: string;
   time: string;
-  uid: string;
+
+  user: any;
 }
 export const MessageChat = ({
   children,
   type,
   message,
   time,
-  uid,
+  user,
 }: StandardProps) => {
   let position;
-  let user: any = async () => {
-    let docs = await getDoc(doc(db, "users", uid));
-    console.log(docs.data());
-    return docs.data();
-  };
 
   return (
     <Flex alignSelf={position} direction="row" my={1.5}>
