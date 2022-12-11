@@ -44,9 +44,15 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
     dateFormat.getMinutes().toLocaleString();
 
   return (
-    <Flex direction="row" my={1.5}>
-      <Box mr="10px" boxSize="45px">
-        <img src={src} style={{borderRadius: "20px"}} />
+    <Flex direction="row" my={1.5} width="100%">
+      <Box
+        flex={{base: "0 0 35px", md: "0 0 45px"}}
+        borderRadius={{base: "15px", md: "20px"}}
+        height={{base: "35px", md: "45px"}}
+        overflow="hidden"
+        mr="10px"
+      >
+        <img src={src} />
       </Box>
 
       <Flex direction="column">
@@ -56,14 +62,14 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
               color={mainStyles.messageTextColor}
               mr="10px"
               fontWeight={500}
-              fontSize="14px"
+              fontSize={{base: 12, md: 14}}
             >
               {user?.displayName}
             </Text>
             <Text
               color={mainStyles.secondTextColor}
               fontWeight={400}
-              fontSize="14px"
+              fontSize={{base: 10, md: 14}}
             >
               {localTime}
             </Text>
@@ -71,11 +77,12 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
 
           <Text
             color="white"
-            w="fit-content"
             py={0.5}
             borderRadius="5px"
             textAlign="justify"
             fontSize="14px"
+            overflowX="hidden"
+            wordBreak="break-all"
           >
             {message}
           </Text>

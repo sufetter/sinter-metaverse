@@ -226,12 +226,24 @@ function RegisterCard() {
 
   // MAIN UI
   return (
-    <Flex w="100%" flex={"1 1 auto"} h="100%" align="center" justify="center">
+    <Flex
+      w="100%"
+      flex={"1 1 auto"}
+      h="100%"
+      align="center"
+      justify="center"
+      // overflowY="scroll"
+      // sx={{scrollbarWidth: "none"}}
+      // css={{
+      //   "&::-webkit-scrollbar": {
+      //     display: "none",
+      //     width: "30px",
+      //   },
+      // }}
+    >
       <Flex
-        minWidth="370px"
         maxW={"370px"}
-        border="2px solid"
-        borderColor={mainStyles.cardBorder}
+        border={{base: "0px solid", sm: "2px solid " + mainStyles.cardBorder}}
         borderRadius="10px"
       >
         <Box
@@ -239,16 +251,16 @@ function RegisterCard() {
           w={"full"}
           boxShadow={"2xl"}
           rounded={"md"}
-          overflow={"hidden"}
           flex={1}
         >
           <Box p={4}>
             <Heading
-              fontSize={"38px"}
+              fontSize={{base: "30px", sm: "38px"}}
               fontWeight={500}
               fontFamily={"body"}
               color="white"
-              mb="5"
+              mb={{base: 2, sm: 5}}
+              mt={{base: -4, sm: "auto"}}
             >
               Register
             </Heading>
@@ -351,7 +363,7 @@ function RegisterCard() {
               </FormControl>
               <Stack direction="row" align="center" m={2}>
                 <Image
-                  boxSize="70px"
+                  boxSize={{base: "50px", sm: "70px"}}
                   objectFit="cover"
                   src={imagePreview}
                   borderRadius="10px"
@@ -377,6 +389,7 @@ function RegisterCard() {
                       cursor: "pointer",
                     }}
                     flexWrap="wrap"
+                    fontSize={{base: "15px", sm: "auto"}}
                   >
                     {avatar}
                   </Text>
@@ -404,7 +417,7 @@ function RegisterCard() {
                 <Button
                   type="submit"
                   w={"full"}
-                  mt={5}
+                  mt={{base: 2, sm: 5}}
                   bg={mainStyles.mainItemColor}
                   color={"white"}
                   rounded={"md"}
@@ -416,8 +429,13 @@ function RegisterCard() {
                 >
                   <Text fontWeight="500">Register</Text>
                 </Button>
-                <Flex h="35px" align="center" justify="center">
+                <Flex
+                  h={{base: "5px", sm: "35px"}}
+                  align="center"
+                  justify="center"
+                >
                   <Text
+                    display={{base: "none", sm: "block"}}
                     color={mainStyles.mainTextColor}
                     textAlign="center"
                     pb={1}

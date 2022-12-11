@@ -71,10 +71,17 @@ function loginCard() {
       align="center"
       justify="center"
       bg={mainStyles.mainBGColor}
+      overflowY="scroll"
+      sx={{scrollbarWidth: "none"}}
+      css={{
+        "&::-webkit-scrollbar": {
+          display: "none",
+          width: "30px",
+        },
+      }}
     >
       <Flex
-        border="2px solid"
-        borderColor={mainStyles.cardBorder}
+        border={{base: "0px solid", sm: "2px solid " + mainStyles.cardBorder}}
         borderRadius="10px"
       >
         <Box
@@ -87,11 +94,12 @@ function loginCard() {
         >
           <Box p={4}>
             <Heading
-              fontSize={"38px"}
+              fontSize={{base: "30px", sm: "38px"}}
               fontWeight={500}
               fontFamily={"body"}
               color="white"
-              mb="5"
+              mb={{base: 2, sm: 5}}
+              mt={{base: -4, sm: "auto"}}
             >
               Login
             </Heading>
@@ -179,7 +187,7 @@ function loginCard() {
               <Button
                 type="submit"
                 w={"full"}
-                mt={5}
+                mt={{base: 2, sm: 5}}
                 bg={mainStyles.mainItemColor}
                 color={"white"}
                 rounded={"md"}
@@ -191,8 +199,19 @@ function loginCard() {
               >
                 Login
               </Button>
-              <Flex justify="center" mt={1} mb={1.5}>
-                <Text color={mainStyles.mainTextColor}>or</Text>
+              <Flex
+                h={{base: "5px", sm: "35px"}}
+                align="center"
+                justify="center"
+              >
+                <Text
+                  display={{base: "none", sm: "block"}}
+                  color={mainStyles.mainTextColor}
+                  textAlign="center"
+                  pb={1}
+                >
+                  or
+                </Text>
               </Flex>
               <SingupGoogle />
             </form>
