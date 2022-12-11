@@ -123,6 +123,7 @@ const ChatMessges = ({user}: any) => {
   useEffect(() => {
     const getMessages = () => {
       const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
+        console.log(doc.data());
         let resMessages: any = doc.data();
         let messagesArr = Object.entries(resMessages);
         let sender;

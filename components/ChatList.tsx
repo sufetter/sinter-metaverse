@@ -42,21 +42,20 @@ type ChatItemProps = {
 
 export const ChatItem = memo(
   ({searchedUser, options, setChatCard}: ChatItemProps) => {
+    const [user, setUser] = useState(searchedUser);
     const currentUser: any = useContext(AuthContext);
     let searchedAvatar: string =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
-    if (searchedUser?.photoURL != undefined && searchedUser?.photoURL != "") {
-      searchedAvatar = searchedUser.photoURL;
+    if (user?.photoURL != undefined && user?.photoURL != "") {
+      searchedAvatar = user.photoURL;
     }
 
     const setToChatList = async () => {
       try {
         const combinedUid: any =
-          currentUser.uid.slice(0, 5) + "" + searchedUser?.userID?.slice(0, 5);
+          currentUser.uid.slice(0, 5) + "" + user?.userID?.slice(0, 5);
         const combinedUidReverse =
-          searchedUser?.userID?.slice(0, 5) +
-          currentUser?.uid?.slice(0, 5) +
-          "";
+          user?.userID?.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
         const docRef: any = doc(db, "chats", combinedUid);
         const existed: any = await getDoc(docRef);
 
@@ -69,19 +68,19 @@ export const ChatItem = memo(
         if (!existed.exists()) {
           console.log("added");
           console.log(combinedUid);
-          console.log(searchedUser.userID);
+          console.log(user.userID);
           console.log(currentUser.uid);
           await setDoc(doc(db, "chats", combinedUid), {messages: []});
           await setDoc(doc(db, "chats", combinedUidReverse), {messages: []});
           await updateDoc(doc(db, "userChats", currentUser.uid), {
             [combinedUid + ".userInfo"]: {
-              uid: searchedUser.userID,
-              displayName: searchedUser.displayName,
-              photoURL: check(searchedUser),
+              uid: user.userID,
+              displayName: user.displayName,
+              photoURL: check(user),
             },
             [combinedUid + ".date"]: serverTimestamp(),
           });
-          await updateDoc(doc(db, "userChats", searchedUser.userID), {
+          await updateDoc(doc(db, "userChats", user.userID), {
             [combinedUidReverse + ".userInfo"]: {
               uid: currentUser.uid,
               displayName: currentUser.displayName,
@@ -112,7 +111,7 @@ export const ChatItem = memo(
           align="center"
           w="100%"
           onClick={() => {
-            setChatCard(<MainChat user={searchedUser} />);
+            setChatCard(<MainChat user={user} />);
           }}
         >
           <Box mr="10px" boxSize="45px">
@@ -291,17 +290,16 @@ const ChatItemsList = memo(({setChatCard}: any) => {
 
           let chatsArr = Object.entries(resChats).sort();
 
-          let res = chatsArr.map((chat: any) => {
-            return (
-              <ChatItem
-                key={Math.random()}
-                searchedUser={chat[1].userInfo}
-                setChatCard={setChatCard}
-              />
-            );
-          });
-
           if (chatsLength != chatsArr.length) {
+            let res = chatsArr.map((chat: any) => {
+              return (
+                <ChatItem
+                  key={Math.random()}
+                  searchedUser={chat[1].userInfo}
+                  setChatCard={setChatCard}
+                />
+              );
+            });
             setChats(res);
             chatsLength = chatsArr.length;
           }
@@ -327,7 +325,7 @@ type ChatListProps = {
 const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
   const [username, setUsername] = useState("");
-  const [addedUsers, setAddedUsers] = useState([]);
+
   return (
     <Flex
       flex={0.5}

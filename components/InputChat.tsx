@@ -9,6 +9,8 @@ import {
   Icon,
   Box,
   Image,
+  FormLabel,
+  Text,
 } from "@chakra-ui/react";
 import {
   arrayUnion,
@@ -28,17 +30,6 @@ import {mainStyles} from "./LayoutCard";
 import {db} from "./../firebaseconfig";
 import {v4 as uuid} from "uuid";
 import {RiSpace} from "react-icons/ri";
-
-const HandleFileChange = ({e}: any) => {
-  if (e?.target?.files[0]?.type == undefined) {
-  }
-  let file = e.target.files![0];
-  return (
-    <Flex>
-      <Image src=""></Image>
-    </Flex>
-  );
-};
 
 interface MainInput {
   changeSmileOpen: () => void;
@@ -101,25 +92,56 @@ export const InputChat: React.FC<MainInput> = ({
     e.code === "Enter" && handleSend();
   };
 
-  const handleFileComponent = (e: any) => {
-    setMainComponent(<HandleFileChange e={e} />);
+  const handleFileComponent = () => {
+    setMainComponent(!mainComponent);
   };
 
-  const [mainComponent, setMainComponent] = useState<any>();
+  const handleFile = (e: any) => {
+    if (e.target.files[0]?.type == undefined) return;
+    let file = e.target.files![0];
+    console.log(file);
+    if (file?.type.includes("image") && Math.round(file.size / 1000) < 5000) {
+      setFileChecked(true);
+      setFileName("Your File is: " + file.name);
+      let avatarPath = URL.createObjectURL(file);
+      setImagePreview(avatarPath);
+    } else {
+      setFileName("Not valid file, please, upload Image (up to 5mb)");
+    }
+  };
+
+  const [mainComponent, setMainComponent] = useState<any>(true);
+  const [fileName, setFileName] = useState("Choose any file");
+  const [fileChecked, setFileChecked] = useState(false);
+  const [imagePreview, setImagePreview] = useState(
+    "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099"
+  );
 
   return (
     <Flex justify="space-between" w="100%" align="center">
       <Flex align="center">
-        {/* <FormLabel htmlFor="Avatar" w="100%">
+        <Icon
+          as={HiOutlinePaperClip}
+          color={mainStyles.mainIconColor}
+          boxSize="23px"
+          _hover={{cursor: "pointer"}}
+          onClick={handleFileComponent}
+        />
+      </Flex>
+      <label
+        htmlFor="Avatar"
+        style={{display: mainComponent ? "none" : "block", width: "30%"}}
+      >
+        <Flex align="center" justify="space-between">
           <Input
             type="file"
             color="white"
             border="white"
             cursor="pointer"
-            onChange={handleFileChange}
+            onChange={handleFile}
             display="none"
             id="Avatar"
-            ref={inputFile}
+            // ref={inputFile}
           ></Input>
           <Text
             align="center"
@@ -130,19 +152,12 @@ export const InputChat: React.FC<MainInput> = ({
             }}
             flexWrap="wrap"
           >
-            {avatar}
+            {fileName}
           </Text>
-        </FormLabel> */}
-        <Icon
-          as={HiOutlinePaperClip}
-          color={mainStyles.mainIconColor}
-          boxSize="23px"
-          _hover={{cursor: "pointer"}}
-          onClick={(e) => handleFileComponent(e)}
-        />
-      </Flex>
-      {/* {mainComponent} */}
-      <InputGroup px={2}>
+          <Image src={imagePreview} boxSize="60px" />
+        </Flex>
+      </label>
+      <InputGroup px={2} display={mainComponent ? "flex" : "none"}>
         <Input
           placeholder="Type a message....."
           border="1px solid"
