@@ -9,6 +9,7 @@ import {
   Icon,
   Box,
   Image,
+  Textarea,
 } from "@chakra-ui/react";
 import {
   arrayUnion,
@@ -17,7 +18,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect, useContext, useRef} from "react";
 import {AuthContext} from "../context/AuthContext";
 import {
   HiOutlineEmojiHappy,
@@ -54,8 +55,15 @@ export const InputChat: React.FC<MainInput> = ({
   user,
 }) => {
   const currentUser: any = useContext(AuthContext);
-
-  const handleMessageChange = (e: any) => setMessage(e.target.value);
+  const input = useRef(null);
+  useEffect(() => {
+    const msg: any = input.current;
+    msg.style.height = "2.5rem";
+    msg.style.height = msg.scrollHeight + 2 + "px";
+  }, [message]);
+  const handleMessageChange = (e: any) => {
+    setMessage(e.target.value);
+  };
   const combinedUid: any =
     currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
   const combinedUidReverse =
@@ -108,8 +116,8 @@ export const InputChat: React.FC<MainInput> = ({
   const [mainComponent, setMainComponent] = useState<any>();
 
   return (
-    <Flex justify="space-between" w="100%" align="center">
-      <Flex align="center">
+    <Flex justify="space-between" w="100%" align="end">
+      <Flex mb="7px" align="center">
         {/* <FormLabel htmlFor="Avatar" w="100%">
           <Input
             type="file"
@@ -136,15 +144,16 @@ export const InputChat: React.FC<MainInput> = ({
         <Icon
           as={HiOutlinePaperClip}
           color={mainStyles.mainIconColor}
-          boxSize="23px"
+          boxSize="24px"
           _hover={{cursor: "pointer"}}
           onClick={(e) => handleFileComponent(e)}
         />
       </Flex>
       {/* {mainComponent} */}
-      <InputGroup px={2}>
-        <Input
+      <Flex width="100%" align="end" px={2}>
+        <Textarea
           placeholder="Type a message....."
+          id="message"
           border="1px solid"
           borderColor={mainStyles.chatInputBorderColor}
           _focus={{borderWidth: "1px"}}
@@ -155,25 +164,34 @@ export const InputChat: React.FC<MainInput> = ({
           _hover={{borderColor: mainStyles.chatInputBorderColor}}
           value={message}
           onKeyDown={handleKey}
-        ></Input>
-        <InputRightElement
-          pr={3}
-          children={
-            <Icon
-              as={HiOutlineEmojiHappy}
-              color={mainStyles.mainIconColor}
-              boxSize="25px"
-              onClick={changeSmileOpen}
-              _hover={{cursor: "pointer"}}
-            />
-          }
-        />
-      </InputGroup>
-      <Flex align="center">
+          minH={0}
+          maxH={200}
+          pr={8}
+          resize="none"
+          ref={input}
+          sx={{scrollbarWidth: "none"}}
+          css={{
+            "&::-webkit-scrollbar": {
+              display: "none",
+              width: "30px",
+            },
+          }}
+        ></Textarea>
+        <Flex position="relative" zIndex="1" pr={3} mb="7px" ml="-30px">
+          <Icon
+            as={HiOutlineEmojiHappy}
+            color={mainStyles.mainIconColor}
+            boxSize="25px"
+            _hover={{cursor: "pointer"}}
+            onMouseOver={changeSmileOpen}
+          />
+        </Flex>
+      </Flex>
+      <Flex align="end" mb="7px">
         <Icon
           as={HiOutlineMicrophone}
           color={mainStyles.mainIconColor}
-          boxSize="23px"
+          boxSize="24px"
           _hover={{cursor: "pointer"}}
         />
       </Flex>
