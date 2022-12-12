@@ -30,6 +30,8 @@ import {
 } from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
 import EmojiCard from "./EmojiCard";
+import {mainSlice} from "../src/reducers/MainSlice";
+import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
 
 export const TopBarChat = ({displayName, avatarSRC}: any) => {
   if (avatarSRC == "")
@@ -40,6 +42,8 @@ export const TopBarChat = ({displayName, avatarSRC}: any) => {
     (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +
     ":" +
     (date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes());
+  const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
+  const dispatch = useAppDispatch();
   return (
     <Flex
       w="100%"
@@ -59,10 +63,7 @@ export const TopBarChat = ({displayName, avatarSRC}: any) => {
         boxSize="20px"
         _hover={{cursor: "pointer"}}
         onClick={() => {
-          const mainChat: any = document.getElementById("mainChat");
-          mainChat.style.display = "none";
-          const chatList: any = document.getElementById("chatList");
-          chatList.style.display = "flex";
+          dispatch(changeMainOpen("none"));
         }}
       />
       <Flex flex={1} flexDirection={{base: "column", md: "row"}} align="center">
@@ -180,10 +181,12 @@ const ChatMessges = ({user}: any) => {
 };
 
 export const MainChat = ({user}: any) => {
+  const {isOpen} = useAppSelector((state) => state.mainSlice);
   return (
     <Flex
-      flex={1}
+      flex={2}
       id="mainChat"
+      display={{base: isOpen, sm: "flex"}}
       w={"100%"}
       direction="column"
       overflowY="scroll"

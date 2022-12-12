@@ -31,6 +31,8 @@ import {
 } from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
 import {MainChat} from "./MainChat";
+import {mainSlice} from "../src/reducers/MainSlice";
+import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
 
 type ChatItemProps = {
   searchedAvatar?: string;
@@ -97,7 +99,9 @@ export const ChatItem = memo(
         console.log(err);
       }
     };
-    console.log(document.documentElement.clientWidth);
+    const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
+    const dispatch = useAppDispatch();
+
     return (
       <Flex
         align="center"
@@ -112,14 +116,7 @@ export const ChatItem = memo(
           align="center"
           w="100%"
           onClick={() => {
-            if (document.documentElement.clientWidth < 480) {
-              const chatList: any = document.getElementById("chatList");
-              chatList.style.display = "none";
-            }
-            const mainChat: any = document.getElementById("mainChat");
-            if (mainChat) {
-              mainChat.style.display = "flex";
-            }
+            dispatch(changeMainOpen("flex"));
             setChatCard(<MainChat user={searchedUser} />);
           }}
         >
@@ -336,10 +333,11 @@ const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
   const [username, setUsername] = useState("");
   const [addedUsers, setAddedUsers] = useState([]);
+  const {isOpen} = useAppSelector((state) => state.mainSlice);
   return (
     <Flex
-      id="chatList"
-      flex={0.5}
+      display={{base: isOpen === "none" ? "flex" : "none", sm: "flex"}}
+      flex={1}
       direction="column"
       borderEnd="1px solid"
       borderColor={mainStyles.chatListBorderColor}

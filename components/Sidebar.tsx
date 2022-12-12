@@ -18,6 +18,7 @@ import {mainStyles, navigate} from "./LayoutCard";
 import {signOut} from "firebase/auth";
 import {auth} from "../firebaseconfig";
 import {AuthContext} from "../context/AuthContext";
+import {useAppSelector} from "../src/hooks/redux";
 
 type SideBarItemProps = {
   icon?: JSX.Element | any;
@@ -30,7 +31,7 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
     <Flex
       w={{base: "auto", md: "140px"}}
       mb={2}
-      mr={{base: 3, lg: 2}}
+      mr={{base: 1, sm: 3, lg: 2}}
       p={1.5}
       bg={mainStyles.sidebarBTNS}
       align="center"
@@ -58,8 +59,15 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
 const Sidebar = () => {
   const currentUser = useContext(AuthContext);
 
+  const {isOpen} = useAppSelector((state) => state.mainSlice);
   return (
-    <Flex ml={{base: 3, lg: 0}} my={{base: 3, lg: 0}} direction="column">
+    <Flex
+      display={{base: isOpen === "none" ? "flex" : "none", sm: "flex"}}
+      ml={{base: 1, sm: 3, lg: 0}}
+      mt={{base: 1, sm: 3, lg: 0}}
+      mb={{base: 0, sm: 2, lg: 0}}
+      direction="column"
+    >
       <SidebarItem icon={CgProfile} desc="My Profile" />
       <SidebarItem icon={BsNewspaper} desc="News" />
       <SidebarItem icon={FiMessageSquare} desc="Messages" />
