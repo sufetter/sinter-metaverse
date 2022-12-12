@@ -90,7 +90,7 @@ export const BottomBarChat = memo(({user}: any) => {
   const [smileIsOpen, changeSmileOpen] = useState<boolean>(false);
 
   return (
-    <Flex direction="column">
+    <Flex onMouseLeave={() => changeSmileOpen(false)} direction="column">
       <EmojiCard
         smileIsOpen={smileIsOpen}
         setMessage={setMessage}
@@ -102,10 +102,10 @@ export const BottomBarChat = memo(({user}: any) => {
         borderTop="1px solid"
         borderColor={mainStyles.chatInputBorderColor}
         borderRadius="0 0 9px 0"
-        h="60px"
+        paddingY={2}
       >
         <InputChat
-          changeSmileOpen={() => changeSmileOpen(!smileIsOpen)}
+          changeSmileOpen={() => changeSmileOpen(true)}
           setMessage={(value: string) => setMessage(value)}
           message={message}
           user={user}
@@ -122,8 +122,8 @@ const ChatMessges = ({user}: any) => {
     currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
   useEffect(() => {
     const getMessages = () => {
+      console.log("chats changed");
       const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
-        console.log(doc.data());
         let resMessages: any = doc.data();
         let messagesArr = Object.entries(resMessages);
         let sender;
@@ -156,7 +156,7 @@ const ChatMessges = ({user}: any) => {
     currentUser.uid && getMessages();
   }, [user]);
   return (
-    <Flex direction="column" w="100%" h="100%">
+    <Flex direction="column" w="100%" h="100%" flex={1}>
       {messages}
     </Flex>
   );

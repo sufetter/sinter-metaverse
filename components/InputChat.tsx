@@ -11,6 +11,8 @@ import {
   Image,
   FormLabel,
   Text,
+  Textarea,
+  CircularProgress,
 } from "@chakra-ui/react";
 import {
   arrayUnion,
@@ -19,7 +21,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect, useContext, useRef} from "react";
 import {AuthContext} from "../context/AuthContext";
 import {
   HiOutlineEmojiHappy,
@@ -27,9 +29,10 @@ import {
   HiOutlinePaperClip,
 } from "react-icons/hi";
 import {mainStyles} from "./LayoutCard";
-import {db} from "./../firebaseconfig";
+import {db, storage} from "./../firebaseconfig";
+import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
 import {v4 as uuid} from "uuid";
-import {RiSpace} from "react-icons/ri";
+import {BsUpload} from "react-icons/bs";
 
 interface MainInput {
   changeSmileOpen: () => void;
@@ -46,15 +49,30 @@ export const InputChat: React.FC<MainInput> = ({
 }) => {
   const currentUser: any = useContext(AuthContext);
 
-  const handleMessageChange = (e: any) => setMessage(e.target.value);
+  const input = useRef(null);
+  const inputFile: any = useRef();
+
+  useEffect(() => {
+    const msg: any = input.current;
+    msg.style.height = "2.5rem";
+    msg.style.height = msg.scrollHeight + 2 + "px";
+  }, [message]);
+
+  const handleMessageChange = (e: any) => {
+    setMessage(e.target.value);
+  };
   const combinedUid: any =
     currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
   const combinedUidReverse =
     user?.uid!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
 
   const handleSend = async () => {
-    if (message == "") return;
-    else if (message == " ") message = "just a space...";
+    console.log("sended");
+    if (message == "") {
+      console.log("fake");
+      // return;
+    } else if (message == " ") message = "just a space...";
+
     await updateDoc(doc(db, "chats", combinedUid), {
       messages: arrayUnion({
         id: uuid(),
@@ -99,7 +117,6 @@ export const InputChat: React.FC<MainInput> = ({
   const handleFile = (e: any) => {
     if (e.target.files[0]?.type == undefined) return;
     let file = e.target.files![0];
-    console.log(file);
     if (file?.type.includes("image") && Math.round(file.size / 1000) < 5000) {
       setFileChecked(true);
       setFileName("Your File is: " + file.name);
@@ -110,29 +127,112 @@ export const InputChat: React.FC<MainInput> = ({
     }
   };
 
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    let fileCheck = inputFile?.current!.files![0];
+    let fileName = fileCheck?.name;
+
+    try {
+      const storageRef = ref(
+        storage,
+        currentUser.displayName + "." + user.uid.slice(0, 5) + "." + fileName
+      );
+
+      if (fileCheck && fileChecked) {
+        const uploadTask = uploadBytesResumable(storageRef, fileCheck);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setProgress(progress);
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (err) => {
+            console.log(err);
+            console.log(err.message);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL) => {
+                await updateDoc(doc(db, "chats", combinedUid), {
+                  messages: arrayUnion({
+                    id: uuid(),
+                    message: downloadURL,
+                    senderId: currentUser.uid,
+                    date: Timestamp.now(),
+                  }),
+                });
+                await updateDoc(doc(db, "chats", combinedUidReverse), {
+                  messages: arrayUnion({
+                    id: uuid(),
+                    message: downloadURL,
+                    senderId: currentUser.uid,
+                    date: Timestamp.now(),
+                  }),
+                });
+                await updateDoc(doc(db, "userChats", currentUser.uid), {
+                  [combinedUid + ".lastMessage"]: {
+                    message: downloadURL,
+                    sender: currentUser.displayName,
+                    date: serverTimestamp(),
+                  },
+                });
+                await updateDoc(doc(db, "userChats", user.uid), {
+                  [combinedUidReverse + ".lastMessage"]: {
+                    message: downloadURL,
+                    sender: currentUser.displayName,
+                    date: serverTimestamp(),
+                  },
+                });
+                setMessage("");
+              }
+            );
+          }
+        );
+      }
+    } catch (error: any) {
+      console.log(error.message);
+      console.log(error.message.includes("network"));
+    }
+  };
+
   const [mainComponent, setMainComponent] = useState<any>(true);
   const [fileName, setFileName] = useState("Choose any file");
   const [fileChecked, setFileChecked] = useState(false);
   const [imagePreview, setImagePreview] = useState(
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099"
   );
+  const [progress, setProgress] = useState(80);
 
   return (
-    <Flex justify="space-between" w="100%" align="center">
-      <Flex align="center">
+    <Flex w="100%" align="center">
+      <Flex mb="7px" align="center">
         <Icon
           as={HiOutlinePaperClip}
           color={mainStyles.mainIconColor}
-          boxSize="23px"
+          boxSize="24px"
           _hover={{cursor: "pointer"}}
           onClick={handleFileComponent}
         />
       </Flex>
-      <label
-        htmlFor="Avatar"
-        style={{display: mainComponent ? "none" : "block", width: "30%"}}
+      <Flex
+        display={mainComponent ? "none" : "flex"}
+        align="center"
+        justify="center"
+        w="100%"
       >
-        <Flex align="center" justify="space-between">
+        <Image src={imagePreview} maxH="50px" mr={2} />
+        <FormLabel htmlFor="Avatar">
           <Input
             type="file"
             color="white"
@@ -141,8 +241,9 @@ export const InputChat: React.FC<MainInput> = ({
             onChange={handleFile}
             display="none"
             id="Avatar"
-            // ref={inputFile}
+            ref={inputFile}
           ></Input>
+
           <Text
             align="center"
             color="white"
@@ -154,12 +255,24 @@ export const InputChat: React.FC<MainInput> = ({
           >
             {fileName}
           </Text>
-          <Image src={imagePreview} boxSize="60px" />
-        </Flex>
-      </label>
-      <InputGroup px={2} display={mainComponent ? "flex" : "none"}>
-        <Input
+        </FormLabel>
+        <Button bg={mainStyles.mainIconColor} onClick={handleSubmit}>
+          <Flex>
+            <Icon as={BsUpload} boxSize="20px" color="white" />
+            <CircularProgress value={progress} size="30px" display="none" />
+          </Flex>
+        </Button>
+      </Flex>
+      <Flex
+        width="100%"
+        px={2}
+        display={mainComponent ? "flex" : "none"}
+        align="center"
+      >
+        <Textarea
+          position="relative"
           placeholder="Type a message....."
+          id="message"
           border="1px solid"
           borderColor={mainStyles.chatInputBorderColor}
           _focus={{borderWidth: "1px"}}
@@ -170,25 +283,34 @@ export const InputChat: React.FC<MainInput> = ({
           _hover={{borderColor: mainStyles.chatInputBorderColor}}
           value={message}
           onKeyDown={handleKey}
-        ></Input>
-        <InputRightElement
-          pr={3}
-          children={
-            <Icon
-              as={HiOutlineEmojiHappy}
-              color={mainStyles.mainIconColor}
-              boxSize="25px"
-              onClick={changeSmileOpen}
-              _hover={{cursor: "pointer"}}
-            />
-          }
-        />
-      </InputGroup>
-      <Flex align="center">
+          minH={0}
+          maxH={200}
+          pr={8}
+          resize="none"
+          ref={input}
+          sx={{scrollbarWidth: "none"}}
+          css={{
+            "&::-webkit-scrollbar": {
+              display: "none",
+              width: "30px",
+            },
+          }}
+        ></Textarea>
+        <Flex zIndex="1" pl={1} align="center">
+          <Icon
+            as={HiOutlineEmojiHappy}
+            color={mainStyles.mainIconColor}
+            boxSize="25px"
+            _hover={{cursor: "pointer"}}
+            onMouseOver={changeSmileOpen}
+          />
+        </Flex>
+      </Flex>
+      <Flex align="center" mb="7px" display={mainComponent ? "flex" : "none"}>
         <Icon
           as={HiOutlineMicrophone}
           color={mainStyles.mainIconColor}
-          boxSize="23px"
+          boxSize="24px"
           _hover={{cursor: "pointer"}}
         />
       </Flex>

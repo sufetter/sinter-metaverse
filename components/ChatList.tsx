@@ -31,119 +31,51 @@ import {
 } from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
 import {MainChat} from "./MainChat";
+import {SearchItem} from "./SearchItem";
 
 type ChatItemProps = {
   searchedAvatar?: string;
   searchedName?: string;
-  searchedUser?: any;
+  user?: any;
   options?: boolean;
   setChatCard?: any;
 };
 
-export const ChatItem = memo(
-  ({searchedUser, options, setChatCard}: ChatItemProps) => {
-    const [user, setUser] = useState(searchedUser);
-    const currentUser: any = useContext(AuthContext);
-    let searchedAvatar: string =
-      "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
-    if (user?.photoURL != undefined && user?.photoURL != "") {
-      searchedAvatar = user.photoURL;
-    }
+export const ChatItem = memo(({user, setChatCard}: ChatItemProps) => {
+  let searchedAvatar: string =
+    "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
+  if (user?.photoURL != undefined && user?.photoURL != "") {
+    searchedAvatar = user.photoURL;
+  }
 
-    const setToChatList = async () => {
-      try {
-        const combinedUid: any =
-          currentUser.uid.slice(0, 5) + "" + user?.userID?.slice(0, 5);
-        const combinedUidReverse =
-          user?.userID?.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
-        const docRef: any = doc(db, "chats", combinedUid);
-        const existed: any = await getDoc(docRef);
-
-        const check = (user: any) => {
-          if (user?.photoURL != undefined) {
-            return user.photoURL;
-          } else return "";
-        };
-
-        if (!existed.exists()) {
-          console.log("added");
-          console.log(combinedUid);
-          console.log(user.userID);
-          console.log(currentUser.uid);
-          await setDoc(doc(db, "chats", combinedUid), {messages: []});
-          await setDoc(doc(db, "chats", combinedUidReverse), {messages: []});
-          await updateDoc(doc(db, "userChats", currentUser.uid), {
-            [combinedUid + ".userInfo"]: {
-              uid: user.userID,
-              displayName: user.displayName,
-              photoURL: check(user),
-            },
-            [combinedUid + ".date"]: serverTimestamp(),
-          });
-          await updateDoc(doc(db, "userChats", user.userID), {
-            [combinedUidReverse + ".userInfo"]: {
-              uid: currentUser.uid,
-              displayName: currentUser.displayName,
-              photoURL: check(currentUser),
-            },
-            [combinedUidReverse + ".date"]: serverTimestamp(),
-          });
-        } else {
-          console.log("exists");
-          console.log(existed.data());
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    return (
+  return (
+    <Flex
+      align="center"
+      justify="space-between"
+      p="2"
+      _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
+      w="100%"
+      px={4}
+      py={2}
+    >
       <Flex
         align="center"
-        justify="space-between"
-        p="2"
-        _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
         w="100%"
-        px={4}
-        py={2}
+        onClick={() => {
+          setChatCard(<MainChat user={user} />);
+        }}
       >
-        <Flex
-          align="center"
-          w="100%"
-          onClick={() => {
-            setChatCard(<MainChat user={user} />);
-          }}
-        >
-          <Box mr="10px" boxSize="45px">
-            <img src={searchedAvatar} style={{borderRadius: "100px"}} />
-          </Box>
-          <Text ms={3} color="white">
-            {searchedUser?.displayName}
-          </Text>
-        </Flex>
-        <Flex align="center">
-          {options && (
-            <Tooltip label="Add user to chat list">
-              <Flex align="center">
-                <Icon
-                  as={MdAdd}
-                  color={mainStyles.mainIconColor}
-                  boxSize="25px"
-                  transition="color 200ms linear"
-                  onClick={setToChatList}
-                  _hover={{
-                    color: mainStyles.mainItemColor,
-                    cursor: "pointer",
-                  }}
-                />
-              </Flex>
-            </Tooltip>
-          )}
-        </Flex>
+        <Box boxSize="45px">
+          <img src={searchedAvatar} style={{borderRadius: "100px"}} />
+        </Box>
+        <Text ms={3} color="white">
+          {user?.displayName}
+        </Text>
       </Flex>
-    );
-  }
-);
+      <Flex align="center"></Flex>
+    </Flex>
+  );
+});
 
 export const ChatSearch = ({
   handleSearchedUsers,
@@ -230,7 +162,7 @@ const Render = ({searchedUsers, username}: any) => {
 
   let result = searchedUsers?.map((user: any) => {
     return (
-      <ChatItem
+      <SearchItem
         searchedAvatar={user.photoURL}
         searchedName={user.displayName}
         searchedUser={user}
@@ -295,7 +227,7 @@ const ChatItemsList = memo(({setChatCard}: any) => {
               return (
                 <ChatItem
                   key={Math.random()}
-                  searchedUser={chat[1].userInfo}
+                  user={chat[1].userInfo}
                   setChatCard={setChatCard}
                 />
               );
