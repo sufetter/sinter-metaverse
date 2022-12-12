@@ -84,11 +84,17 @@ const Logo = memo(() => {
 
 const Header = () => {
   const currentUser: any = useContext(AuthContext);
-  // useEffect(() => {
-  //   updateDoc(doc(db, "users", currentUser.uid), {
-  //     lastTimeSignIn: currentUser.metadata.lastSignInTime,
-  //   });
-  // }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser.displayName != null) {
+      let date = new Date(currentUser.metadata.lastSignInTime);
+      console.log("updating");
+      console.log(currentUser.metadata);
+      updateDoc(doc(db, "users", currentUser.uid), {
+        lastTimeSignIn: date.getTime(),
+      });
+    }
+  }, [currentUser]);
 
   let dbUser: any;
 
