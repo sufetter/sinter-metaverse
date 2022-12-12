@@ -54,14 +54,14 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
               color={mainStyles.messageTextColor}
               mr="10px"
               fontWeight={500}
-              fontSize="14px"
+              fontSize={{base: 12, md: 14}}
             >
               {user?.displayName}
             </Text>
             <Text
               color={mainStyles.secondTextColor}
               fontWeight={400}
-              fontSize="14px"
+              fontSize={{base: 10, md: 14}}
             >
               {localTime}
             </Text>

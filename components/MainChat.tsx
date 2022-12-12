@@ -14,6 +14,7 @@ import MessageChat from "./MessageChat";
 import {mainStyles} from "./LayoutCard";
 import {FiMoreHorizontal} from "react-icons/fi";
 import {BiSearchAlt2} from "react-icons/bi";
+import {HiArrowLeft} from "react-icons/hi";
 import {db} from "../firebaseconfig";
 import {
   collection,
@@ -35,7 +36,10 @@ export const TopBarChat = ({displayName, avatarSRC}: any) => {
     avatarSRC =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
   let date = new Date();
-  let displayTime: string = date.getHours() + ":" + date.getMinutes();
+  let displayTime: string =
+    (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +
+    ":" +
+    (date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes());
   return (
     <Flex
       w="100%"
@@ -47,25 +51,39 @@ export const TopBarChat = ({displayName, avatarSRC}: any) => {
       borderBottom="2px solid"
       borderColor={mainStyles.chatInputBorderColor}
       bg={mainStyles.chatCardSecondBGColor}
-      borderRadius="0 9px 0 0"
     >
-      <HStack align="center" spacing="10px">
+      <Icon
+        as={HiArrowLeft}
+        color="white"
+        display={{base: "block", sm: "none"}}
+        boxSize="20px"
+        _hover={{cursor: "pointer"}}
+        onClick={() => {
+          const mainChat: any = document.getElementById("mainChat");
+          mainChat.style.display = "none";
+          const chatList: any = document.getElementById("chatList");
+          chatList.style.display = "flex";
+        }}
+      />
+      <Flex flex={1} flexDirection={{base: "column", md: "row"}} align="center">
         <Text
           color={mainStyles.chatHeaderTextColor}
-          fontSize="16px"
+          fontSize={{base: 14, md: 16}}
           fontWeight="500"
           _hover={{cursor: "pointer"}}
+          pr={{base: 0, md: "10px"}}
         >
           {displayName}
         </Text>
-        <Text color="white" fontSize="16">
+        <Text color="white" fontSize={{base: 12, md: 16}}>
           Last time online: {displayTime}
         </Text>
-      </HStack>
-      <HStack align="center" spacing="15px">
+      </Flex>
+      <HStack align="center" spacing={{base: "5px", md: "15px"}}>
         <Icon
           as={BiSearchAlt2}
           color="white"
+          display={{base: "none", md: "block"}}
           boxSize="20px"
           _hover={{cursor: "pointer"}}
         />
@@ -97,12 +115,12 @@ export const BottomBarChat = memo(({user}: any) => {
         message={message}
       />
       <Flex
-        px={4}
         bg={mainStyles.chatCardSecondBGColor}
         borderTop="1px solid"
         borderColor={mainStyles.chatInputBorderColor}
         borderRadius="0 0 9px 0"
-        paddingY={2}
+        py={{base: 0, md: 2}}
+        px={{base: 2, md: 4}}
       >
         <InputChat
           changeSmileOpen={() => changeSmileOpen(true)}
@@ -166,6 +184,7 @@ export const MainChat = ({user}: any) => {
   return (
     <Flex
       flex={1}
+      id="mainChat"
       w={"100%"}
       direction="column"
       overflowY="scroll"
@@ -180,7 +199,7 @@ export const MainChat = ({user}: any) => {
       <TopBarChat displayName={user?.displayName} avatarSRC={user?.photoURL} />
       <Flex
         flex={1}
-        px={10}
+        px={{base: 3, md: 10}}
         direction="column"
         overflowY="scroll"
         height="100px"

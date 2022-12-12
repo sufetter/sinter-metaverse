@@ -28,9 +28,9 @@ type SideBarItemProps = {
 export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
   return (
     <Flex
-      w="140px"
+      w={{base: "auto", md: "140px"}}
       mb={2}
-      mr={2}
+      mr={{base: 3, lg: 2}}
       p={1.5}
       bg={mainStyles.sidebarBTNS}
       align="center"
@@ -43,7 +43,12 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
       onClick={onClick}
     >
       <Icon boxSize={"20px"} color={mainStyles.mainItemColor} as={icon} />
-      <Text color={mainStyles.mainTextColor} pl={3} fontSize="14px">
+      <Text
+        display={{base: "none", md: "block"}}
+        color={mainStyles.mainTextColor}
+        pl={3}
+        fontSize="14px"
+      >
         {desc}
       </Text>
     </Flex>
@@ -54,7 +59,7 @@ const Sidebar = () => {
   const currentUser = useContext(AuthContext);
 
   return (
-    <Flex direction="column">
+    <Flex ml={{base: 3, lg: 0}} my={{base: 3, lg: 0}} direction="column">
       <SidebarItem icon={CgProfile} desc="My Profile" />
       <SidebarItem icon={BsNewspaper} desc="News" />
       <SidebarItem icon={FiMessageSquare} desc="Messages" />

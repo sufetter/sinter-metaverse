@@ -59,7 +59,7 @@ export const InputChat: React.FC<MainInput> = ({
   }, [message]);
 
   const handleMessageChange = (e: any) => {
-    setMessage(e.target.value);
+    setMessage(e.target.value.replace(/\r?\n/g, ""));
   };
   const combinedUid: any =
     currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
@@ -273,8 +273,7 @@ export const InputChat: React.FC<MainInput> = ({
           position="relative"
           placeholder="Type a message....."
           id="message"
-          border="1px solid"
-          borderColor={mainStyles.chatInputBorderColor}
+          border={{base: 0, md: "1px solid" + mainStyles.chatInputBorderColor}}
           _focus={{borderWidth: "1px"}}
           focusBorderColor={mainStyles.chatInputBorderColor}
           autoComplete="off"
@@ -303,6 +302,7 @@ export const InputChat: React.FC<MainInput> = ({
             boxSize="25px"
             _hover={{cursor: "pointer"}}
             onMouseOver={changeSmileOpen}
+            mb="1px"
           />
         </Flex>
       </Flex>
@@ -312,6 +312,7 @@ export const InputChat: React.FC<MainInput> = ({
           color={mainStyles.mainIconColor}
           boxSize="24px"
           _hover={{cursor: "pointer"}}
+          mb="1px"
         />
       </Flex>
     </Flex>

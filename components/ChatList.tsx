@@ -125,7 +125,7 @@ export const ChatSearch = ({
       borderBottom="2px solid"
       borderColor={mainStyles.chatInputBorderColor}
       bg={mainStyles.chatCardSecondBGColor}
-      borderRadius="9px 0 0 0"
+      borderRadius={{base: 0, sm: "9px 0 0 0"}}
     >
       <InputGroup size="md">
         <Input
@@ -260,6 +260,7 @@ const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
 
   return (
     <Flex
+      id="chatList"
       flex={0.5}
       direction="column"
       borderEnd="1px solid"

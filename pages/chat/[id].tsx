@@ -48,12 +48,18 @@ const id: React.FC = () => {
   return (
     <LayoutCard style={{height: "100vh", overflow: "hidden"}}>
       <ChakraProvider>
-        <Flex bg={mainStyles.mainBGColor} overflowY="hidden" my={3} h="100%">
+        <Flex
+          bg={mainStyles.mainBGColor}
+          overflowY="hidden"
+          my={{base: 0, lg: 3}}
+          mx={{base: 0, lg: 3}}
+          h="100%"
+        >
           <Sidebar />
           <Flex
             bg={mainStyles.chatCardBG}
             w="100%"
-            borderRadius="10px"
+            borderRadius={{base: 0, sm: "10px 0 0 10px", lg: 10}}
             border="1px solid"
             borderColor={mainStyles.chatListBorderColor}
           >
