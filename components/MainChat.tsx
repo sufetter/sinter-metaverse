@@ -140,7 +140,6 @@ const ChatMessges = ({user}: any) => {
     currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
   useEffect(() => {
     const getMessages = () => {
-      console.log("chats changed");
       const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
         let resMessages: any = doc.data();
         let messagesArr = Object.entries(resMessages);

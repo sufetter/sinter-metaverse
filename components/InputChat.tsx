@@ -139,6 +139,13 @@ export const InputChat: React.FC<MainInput> = ({
       );
 
       if (fileCheck && fileChecked) {
+        setButtonIcon(
+          <CircularProgress
+            value={progress}
+            size="30px"
+            color={mainStyles.mainItemColor}
+          />
+        );
         const uploadTask = uploadBytesResumable(storageRef, fileCheck);
 
         uploadTask.on(
@@ -147,13 +154,12 @@ export const InputChat: React.FC<MainInput> = ({
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             setProgress(progress);
-            console.log("Upload is " + progress + "% done");
             switch (snapshot.state) {
               case "paused":
                 console.log("Upload is paused");
                 break;
               case "running":
-                console.log("Upload is running");
+                // console.log("Upload is running");
                 break;
             }
           },
@@ -164,6 +170,14 @@ export const InputChat: React.FC<MainInput> = ({
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then(
               async (downloadURL) => {
+                setProgress(0);
+                setButtonIcon(
+                  <Icon
+                    as={BsUpload}
+                    boxSize="20px"
+                    color={mainStyles.chatCardBG}
+                  />
+                );
                 await updateDoc(doc(db, "chats", combinedUid), {
                   messages: arrayUnion({
                     id: uuid(),
@@ -194,7 +208,6 @@ export const InputChat: React.FC<MainInput> = ({
                     date: serverTimestamp(),
                   },
                 });
-                setMessage("");
               }
             );
           }
@@ -212,7 +225,10 @@ export const InputChat: React.FC<MainInput> = ({
   const [imagePreview, setImagePreview] = useState(
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099"
   );
-  const [progress, setProgress] = useState(80);
+  const [progress, setProgress] = useState(0);
+  const [buttonIcon, setButtonIcon] = useState(
+    <Icon as={BsUpload} boxSize="20px" color={mainStyles.chatCardBG} />
+  );
 
   return (
     <Flex w="100%" align="center">
@@ -256,11 +272,13 @@ export const InputChat: React.FC<MainInput> = ({
             {fileName}
           </Text>
         </FormLabel>
-        <Button bg={mainStyles.mainIconColor} onClick={handleSubmit}>
-          <Flex>
-            <Icon as={BsUpload} boxSize="20px" color="white" />
-            <CircularProgress value={progress} size="30px" display="none" />
-          </Flex>
+        <Button
+          bg={mainStyles.mainIconColor}
+          onClick={handleSubmit}
+          px={0}
+          py={0}
+        >
+          <Flex>{buttonIcon}</Flex>
         </Button>
       </Flex>
       <Flex
