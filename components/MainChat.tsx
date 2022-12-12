@@ -34,20 +34,25 @@ import EmojiCard from "./EmojiCard";
 export const TopBarChat = ({
   displayName,
   avatarSRC,
-  userCheck,
-  setUserCheck,
+
+  user,
 }: any) => {
+  const currentUser: any = useContext(AuthContext);
+
   if (avatarSRC == "")
     avatarSRC =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
-  let date = new Date();
+  let date = new Date(user.lastTimeSignIn * 1);
+
   let displayTime: string =
     (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +
     ":" +
     (date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes());
-  if (userCheck != displayName) {
-    setUserCheck(displayName);
+
+  if ((date + "").includes("Invalid")) {
+    displayTime = "time not found (prev v of user type)";
   }
+
   return (
     <Flex
       w="100%"
@@ -141,15 +146,15 @@ export const BottomBarChat = memo(({user}: any) => {
   );
 });
 
-const ChatMessges = ({user, userCheck}: any) => {
+const ChatMessges = ({user}: any) => {
   // вынести в различне компоненты топ и боттом бары
   const currentUser: any = useContext(AuthContext);
   const [messages, setMessages] = useState<any>([]);
+
   const combinedUid: any =
-    currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
+    currentUser?.uid?.slice(0, 5) + "" + user?.userID!.slice(0, 5);
   useEffect(() => {
     const getMessages = () => {
-      console.log(userCheck);
       const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
         let resMessages: any = doc.data();
         let messagesArr = Object.entries(resMessages);
@@ -191,7 +196,6 @@ const ChatMessges = ({user, userCheck}: any) => {
 };
 
 export const MainChat = ({user}: any) => {
-  const [userCheck, setUserCheck] = useState();
   return (
     <Flex
       flex={1}
@@ -210,8 +214,7 @@ export const MainChat = ({user}: any) => {
       <TopBarChat
         displayName={user?.displayName}
         avatarSRC={user?.photoURL}
-        setUserCheck={setUserCheck}
-        userCheck={userCheck}
+        user={user}
       />
       <Flex
         flex={1}
@@ -227,7 +230,7 @@ export const MainChat = ({user}: any) => {
           },
         }}
       >
-        <ChatMessges user={user} userCheck={userCheck} />
+        <ChatMessges user={user} />
       </Flex>
       <BottomBarChat user={user} />
     </Flex>

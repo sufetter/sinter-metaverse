@@ -51,9 +51,8 @@ export const ChatItem = memo(
     }
     let date = new Date(lastMessage.date?.seconds * 1000);
     let min: any = date.getMinutes();
-    console.log(min);
+
     if (date.getMinutes() < 10) {
-      console.log("less");
       min = "0" + date.getMinutes().toLocaleString();
     }
     let lastMessageDate = date.getHours() + ":" + min;
@@ -71,8 +70,9 @@ export const ChatItem = memo(
         <Flex
           align="center"
           w="100%"
-          onClick={() => {
-            setChatCard(<MainChat user={user} />);
+          onClick={async () => {
+            const userInfo: any = await getDoc(doc(db, "users", user.uid));
+            setChatCard(<MainChat user={userInfo.data()} />);
           }}
         >
           <Box boxSize="45px">
@@ -233,7 +233,6 @@ const Render = ({searchedUsers, username}: any) => {
 const ChatItemsList = memo(({setChatCard}: any) => {
   const currentUser: any = useContext(AuthContext);
   const [chats, setChats] = useState<any>([]);
-  let chatsLength = 0;
 
   useEffect(() => {
     const getChats = () => {
@@ -255,7 +254,6 @@ const ChatItemsList = memo(({setChatCard}: any) => {
             );
           });
           setChats(res);
-          chatsLength = chatsArr.length;
         }
       );
 

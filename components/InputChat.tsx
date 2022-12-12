@@ -62,9 +62,9 @@ export const InputChat: React.FC<MainInput> = ({
     setMessage(e.target.value.replace(/\r?\n/g, ""));
   };
   const combinedUid: any =
-    currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
+    currentUser?.uid?.slice(0, 5) + "" + user?.userID!.slice(0, 5);
   const combinedUidReverse =
-    user?.uid!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
+    user?.userID!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
 
   const handleSend = async () => {
     console.log("sended");
@@ -96,7 +96,7 @@ export const InputChat: React.FC<MainInput> = ({
         date: serverTimestamp(),
       },
     });
-    await updateDoc(doc(db, "userChats", user.uid), {
+    await updateDoc(doc(db, "userChats", user.userID), {
       [combinedUidReverse + ".lastMessage"]: {
         message,
         sender: currentUser.displayName,
