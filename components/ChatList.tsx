@@ -97,7 +97,7 @@ export const ChatItem = memo(
         console.log(err);
       }
     };
-
+    console.log(document.documentElement.clientWidth);
     return (
       <Flex
         align="center"
@@ -112,6 +112,14 @@ export const ChatItem = memo(
           align="center"
           w="100%"
           onClick={() => {
+            if (document.documentElement.clientWidth < 480) {
+              const chatList: any = document.getElementById("chatList");
+              chatList.style.display = "none";
+            }
+            const mainChat: any = document.getElementById("mainChat");
+            if (mainChat) {
+              mainChat.style.display = "flex";
+            }
             setChatCard(<MainChat user={searchedUser} />);
           }}
         >
@@ -194,7 +202,7 @@ export const ChatSearch = ({
       borderBottom="2px solid"
       borderColor={mainStyles.chatInputBorderColor}
       bg={mainStyles.chatCardSecondBGColor}
-      borderRadius="9px 0 0 0"
+      borderRadius={{base: 0, sm: "9px 0 0 0"}}
     >
       <InputGroup size="md">
         <Input
@@ -330,6 +338,7 @@ const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
   const [addedUsers, setAddedUsers] = useState([]);
   return (
     <Flex
+      id="chatList"
       flex={0.5}
       direction="column"
       borderEnd="1px solid"

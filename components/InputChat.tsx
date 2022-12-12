@@ -62,7 +62,7 @@ export const InputChat: React.FC<MainInput> = ({
     msg.style.height = msg.scrollHeight + 2 + "px";
   }, [message]);
   const handleMessageChange = (e: any) => {
-    setMessage(e.target.value);
+    setMessage(e.target.value.replace(/\r?\n/g, ""));
   };
   const combinedUid: any =
     currentUser?.uid?.slice(0, 5) + "" + user?.uid!.slice(0, 5);
@@ -70,8 +70,11 @@ export const InputChat: React.FC<MainInput> = ({
     user?.uid!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
 
   const handleSend = async () => {
-    if (message == "") return;
-    else if (message == " ") message = "just a space...";
+    message = message.trim();
+    if (message === "") {
+      setMessage(message);
+      return;
+    }
     await updateDoc(doc(db, "chats", combinedUid), {
       messages: arrayUnion({
         id: uuid(),
@@ -145,6 +148,7 @@ export const InputChat: React.FC<MainInput> = ({
           as={HiOutlinePaperClip}
           color={mainStyles.mainIconColor}
           boxSize="24px"
+          mb="1px"
           _hover={{cursor: "pointer"}}
           onClick={(e) => handleFileComponent(e)}
         />
@@ -152,10 +156,9 @@ export const InputChat: React.FC<MainInput> = ({
       {/* {mainComponent} */}
       <Flex width="100%" align="end" px={2}>
         <Textarea
-          placeholder="Type a message....."
+          placeholder="Message"
           id="message"
-          border="1px solid"
-          borderColor={mainStyles.chatInputBorderColor}
+          border={{base: 0, md: "1px solid" + mainStyles.chatInputBorderColor}}
           _focus={{borderWidth: "1px"}}
           focusBorderColor={mainStyles.chatInputBorderColor}
           autoComplete="off"
@@ -177,13 +180,20 @@ export const InputChat: React.FC<MainInput> = ({
             },
           }}
         ></Textarea>
-        <Flex position="relative" zIndex="1" pr={3} mb="7px" ml="-30px">
+        <Flex
+          position="relative"
+          zIndex="1"
+          pr={{base: 0, md: 3}}
+          mb="7px"
+          ml="-30px"
+        >
           <Icon
             as={HiOutlineEmojiHappy}
             color={mainStyles.mainIconColor}
             boxSize="25px"
             _hover={{cursor: "pointer"}}
             onMouseOver={changeSmileOpen}
+            mb="1px"
           />
         </Flex>
       </Flex>
@@ -193,6 +203,7 @@ export const InputChat: React.FC<MainInput> = ({
           color={mainStyles.mainIconColor}
           boxSize="24px"
           _hover={{cursor: "pointer"}}
+          mb="1px"
         />
       </Flex>
     </Flex>
