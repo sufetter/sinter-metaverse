@@ -9,7 +9,10 @@ import {
   Icon,
   Box,
   Image,
+  FormLabel,
+  Text,
   Textarea,
+  CircularProgress,
 } from "@chakra-ui/react";
 import {
   arrayUnion,
@@ -26,20 +29,10 @@ import {
   HiOutlinePaperClip,
 } from "react-icons/hi";
 import {mainStyles} from "./LayoutCard";
-import {db} from "./../firebaseconfig";
+import {db, storage} from "./../firebaseconfig";
+import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
 import {v4 as uuid} from "uuid";
-import {RiSpace} from "react-icons/ri";
-
-const HandleFileChange = ({e}: any) => {
-  if (e?.target?.files[0]?.type == undefined) {
-  }
-  let file = e.target.files![0];
-  return (
-    <Flex>
-      <Image src=""></Image>
-    </Flex>
-  );
-};
+import {BsUpload} from "react-icons/bs";
 
 interface MainInput {
   changeSmileOpen: () => void;
@@ -55,12 +48,16 @@ export const InputChat: React.FC<MainInput> = ({
   user,
 }) => {
   const currentUser: any = useContext(AuthContext);
+
   const input = useRef(null);
+  const inputFile: any = useRef();
+
   useEffect(() => {
     const msg: any = input.current;
     msg.style.height = "2.5rem";
     msg.style.height = msg.scrollHeight + 2 + "px";
   }, [message]);
+
   const handleMessageChange = (e: any) => {
     setMessage(e.target.value.replace(/\r?\n/g, ""));
   };
@@ -70,11 +67,12 @@ export const InputChat: React.FC<MainInput> = ({
     user?.uid!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
 
   const handleSend = async () => {
-    message = message.trim();
-    if (message === "") {
-      setMessage(message);
-      return;
-    }
+    console.log("sended");
+    if (message == "") {
+      console.log("fake");
+      // return;
+    } else if (message == " ") message = "just a space...";
+
     await updateDoc(doc(db, "chats", combinedUid), {
       messages: arrayUnion({
         id: uuid(),
@@ -112,26 +110,156 @@ export const InputChat: React.FC<MainInput> = ({
     e.code === "Enter" && handleSend();
   };
 
-  const handleFileComponent = (e: any) => {
-    setMainComponent(<HandleFileChange e={e} />);
+  const handleFileComponent = () => {
+    setMainComponent(!mainComponent);
   };
 
-  const [mainComponent, setMainComponent] = useState<any>();
+  const handleFile = (e: any) => {
+    if (e.target.files[0]?.type == undefined) return;
+    let file = e.target.files![0];
+    if (file?.type.includes("image") && Math.round(file.size / 1000) < 5000) {
+      setFileChecked(true);
+      setFileName("Your File is: " + file.name);
+      let avatarPath = URL.createObjectURL(file);
+      setImagePreview(avatarPath);
+    } else {
+      setFileName("Not valid file, please, upload Image (up to 5mb)");
+    }
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    let fileCheck = inputFile?.current!.files![0];
+    let fileName = fileCheck?.name;
+
+    try {
+      const storageRef = ref(
+        storage,
+        currentUser.displayName + "." + user.uid.slice(0, 5) + "." + fileName
+      );
+
+      if (fileCheck && fileChecked) {
+        setButtonIcon(
+          <CircularProgress
+            value={progress}
+            size="30px"
+            color={mainStyles.mainItemColor}
+          />
+        );
+        const uploadTask = uploadBytesResumable(storageRef, fileCheck);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setProgress(progress);
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                // console.log("Upload is running");
+                break;
+            }
+          },
+          (err) => {
+            console.log(err);
+            console.log(err.message);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL) => {
+                setProgress(0);
+                setButtonIcon(
+                  <Icon
+                    as={BsUpload}
+                    boxSize="20px"
+                    color={mainStyles.chatCardBG}
+                  />
+                );
+                await updateDoc(doc(db, "chats", combinedUid), {
+                  messages: arrayUnion({
+                    id: uuid(),
+                    message: downloadURL,
+                    senderId: currentUser.uid,
+                    date: Timestamp.now(),
+                  }),
+                });
+                await updateDoc(doc(db, "chats", combinedUidReverse), {
+                  messages: arrayUnion({
+                    id: uuid(),
+                    message: downloadURL,
+                    senderId: currentUser.uid,
+                    date: Timestamp.now(),
+                  }),
+                });
+                await updateDoc(doc(db, "userChats", currentUser.uid), {
+                  [combinedUid + ".lastMessage"]: {
+                    message: downloadURL,
+                    sender: currentUser.displayName,
+                    date: serverTimestamp(),
+                  },
+                });
+                await updateDoc(doc(db, "userChats", user.uid), {
+                  [combinedUidReverse + ".lastMessage"]: {
+                    message: downloadURL,
+                    sender: currentUser.displayName,
+                    date: serverTimestamp(),
+                  },
+                });
+              }
+            );
+          }
+        );
+      }
+    } catch (error: any) {
+      console.log(error.message);
+      console.log(error.message.includes("network"));
+    }
+  };
+
+  const [mainComponent, setMainComponent] = useState<any>(true);
+  const [fileName, setFileName] = useState("Choose any file");
+  const [fileChecked, setFileChecked] = useState(false);
+  const [imagePreview, setImagePreview] = useState(
+    "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099"
+  );
+  const [progress, setProgress] = useState(0);
+  const [buttonIcon, setButtonIcon] = useState(
+    <Icon as={BsUpload} boxSize="20px" color={mainStyles.chatCardBG} />
+  );
 
   return (
-    <Flex justify="space-between" w="100%" align="end">
+    <Flex w="100%" align="center">
       <Flex mb="7px" align="center">
-        {/* <FormLabel htmlFor="Avatar" w="100%">
+        <Icon
+          as={HiOutlinePaperClip}
+          color={mainStyles.mainIconColor}
+          boxSize="24px"
+          _hover={{cursor: "pointer"}}
+          onClick={handleFileComponent}
+        />
+      </Flex>
+      <Flex
+        display={mainComponent ? "none" : "flex"}
+        align="center"
+        justify="center"
+        w="100%"
+      >
+        <Image src={imagePreview} maxH="50px" mr={2} />
+        <FormLabel htmlFor="Avatar">
           <Input
             type="file"
             color="white"
             border="white"
             cursor="pointer"
-            onChange={handleFileChange}
+            onChange={handleFile}
             display="none"
             id="Avatar"
             ref={inputFile}
           ></Input>
+
           <Text
             align="center"
             color="white"
@@ -141,22 +269,27 @@ export const InputChat: React.FC<MainInput> = ({
             }}
             flexWrap="wrap"
           >
-            {avatar}
+            {fileName}
           </Text>
-        </FormLabel> */}
-        <Icon
-          as={HiOutlinePaperClip}
-          color={mainStyles.mainIconColor}
-          boxSize="24px"
-          mb="1px"
-          _hover={{cursor: "pointer"}}
-          onClick={(e) => handleFileComponent(e)}
-        />
+        </FormLabel>
+        <Button
+          bg={mainStyles.mainIconColor}
+          onClick={handleSubmit}
+          px={0}
+          py={0}
+        >
+          <Flex>{buttonIcon}</Flex>
+        </Button>
       </Flex>
-      {/* {mainComponent} */}
-      <Flex width="100%" align="end" px={2}>
+      <Flex
+        width="100%"
+        px={2}
+        display={mainComponent ? "flex" : "none"}
+        align="center"
+      >
         <Textarea
-          placeholder="Message"
+          position="relative"
+          placeholder="Type a message....."
           id="message"
           border={{base: 0, md: "1px solid" + mainStyles.chatInputBorderColor}}
           _focus={{borderWidth: "1px"}}
@@ -180,13 +313,7 @@ export const InputChat: React.FC<MainInput> = ({
             },
           }}
         ></Textarea>
-        <Flex
-          position="relative"
-          zIndex="1"
-          pr={{base: 0, md: 3}}
-          mb="7px"
-          ml="-30px"
-        >
+        <Flex zIndex="1" pl={1} align="center">
           <Icon
             as={HiOutlineEmojiHappy}
             color={mainStyles.mainIconColor}
@@ -197,7 +324,7 @@ export const InputChat: React.FC<MainInput> = ({
           />
         </Flex>
       </Flex>
-      <Flex align="end" mb="7px">
+      <Flex align="center" mb="7px" display={mainComponent ? "flex" : "none"}>
         <Icon
           as={HiOutlineMicrophone}
           color={mainStyles.mainIconColor}

@@ -33,11 +33,12 @@ import {AuthContext} from "../context/AuthContext";
 import {MainChat} from "./MainChat";
 import {mainSlice} from "../src/reducers/MainSlice";
 import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
+import {SearchItem} from "./SearchItem";
 
 type ChatItemProps = {
   searchedAvatar?: string;
   searchedName?: string;
-  searchedUser?: any;
+  user?: any;
   options?: boolean;
   setChatCard?: any;
 };
@@ -50,58 +51,8 @@ export const ChatItem = memo(
     if (searchedUser?.photoURL != undefined && searchedUser?.photoURL != "") {
       searchedAvatar = searchedUser.photoURL;
     }
-
-    const setToChatList = async () => {
-      try {
-        const combinedUid: any =
-          currentUser.uid.slice(0, 5) + "" + searchedUser?.userID?.slice(0, 5);
-        const combinedUidReverse =
-          searchedUser?.userID?.slice(0, 5) +
-          currentUser?.uid?.slice(0, 5) +
-          "";
-        const docRef: any = doc(db, "chats", combinedUid);
-        const existed: any = await getDoc(docRef);
-
-        const check = (user: any) => {
-          if (user?.photoURL != undefined) {
-            return user.photoURL;
-          } else return "";
-        };
-
-        if (!existed.exists()) {
-          console.log("added");
-          console.log(combinedUid);
-          console.log(searchedUser.userID);
-          console.log(currentUser.uid);
-          await setDoc(doc(db, "chats", combinedUid), {messages: []});
-          await setDoc(doc(db, "chats", combinedUidReverse), {messages: []});
-          await updateDoc(doc(db, "userChats", currentUser.uid), {
-            [combinedUid + ".userInfo"]: {
-              uid: searchedUser.userID,
-              displayName: searchedUser.displayName,
-              photoURL: check(searchedUser),
-            },
-            [combinedUid + ".date"]: serverTimestamp(),
-          });
-          await updateDoc(doc(db, "userChats", searchedUser.userID), {
-            [combinedUidReverse + ".userInfo"]: {
-              uid: currentUser.uid,
-              displayName: currentUser.displayName,
-              photoURL: check(currentUser),
-            },
-            [combinedUidReverse + ".date"]: serverTimestamp(),
-          });
-        } else {
-          console.log("exists");
-          console.log(existed.data());
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
     const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
     const dispatch = useAppDispatch();
-
     return (
       <Flex
         align="center"
@@ -116,36 +67,17 @@ export const ChatItem = memo(
           align="center"
           w="100%"
           onClick={() => {
-            dispatch(changeMainOpen("flex"));
-            setChatCard(<MainChat user={searchedUser} />);
+            setChatCard(<MainChat user={user} />);
           }}
         >
-          <Box mr="10px" boxSize="45px">
+          <Box boxSize="45px">
             <img src={searchedAvatar} style={{borderRadius: "100px"}} />
           </Box>
           <Text ms={3} color="white">
-            {searchedUser?.displayName}
+            {user?.displayName}
           </Text>
         </Flex>
-        <Flex align="center">
-          {options && (
-            <Tooltip label="Add user to chat list">
-              <Flex align="center">
-                <Icon
-                  as={MdAdd}
-                  color={mainStyles.mainIconColor}
-                  boxSize="25px"
-                  transition="color 200ms linear"
-                  onClick={setToChatList}
-                  _hover={{
-                    color: mainStyles.mainItemColor,
-                    cursor: "pointer",
-                  }}
-                />
-              </Flex>
-            </Tooltip>
-          )}
-        </Flex>
+        <Flex align="center"></Flex>
       </Flex>
     );
   }
@@ -236,7 +168,7 @@ const Render = ({searchedUsers, username}: any) => {
 
   let result = searchedUsers?.map((user: any) => {
     return (
-      <ChatItem
+      <SearchItem
         searchedAvatar={user.photoURL}
         searchedName={user.displayName}
         searchedUser={user}
@@ -296,17 +228,16 @@ const ChatItemsList = memo(({setChatCard}: any) => {
 
           let chatsArr = Object.entries(resChats).sort();
 
-          let res = chatsArr.map((chat: any) => {
-            return (
-              <ChatItem
-                key={Math.random()}
-                searchedUser={chat[1].userInfo}
-                setChatCard={setChatCard}
-              />
-            );
-          });
-
           if (chatsLength != chatsArr.length) {
+            let res = chatsArr.map((chat: any) => {
+              return (
+                <ChatItem
+                  key={Math.random()}
+                  user={chat[1].userInfo}
+                  setChatCard={setChatCard}
+                />
+              );
+            });
             setChats(res);
             chatsLength = chatsArr.length;
           }
@@ -332,7 +263,7 @@ type ChatListProps = {
 const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
   const [username, setUsername] = useState("");
-  const [addedUsers, setAddedUsers] = useState([]);
+
   const {isOpen} = useAppSelector((state) => state.mainSlice);
   return (
     <Flex

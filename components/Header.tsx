@@ -65,6 +65,7 @@ export const HeaderSearch = () => {
 
 const Logo = memo(() => {
   const currentUser: any = useContext(AuthContext);
+
   const [logoSRC, setLogoSRC] = useState(
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/mainLOGO.png?alt=media&token=7a5344ac-0842-4ee6-b542-b1bddbbe8bb1"
   );
@@ -83,6 +84,12 @@ const Logo = memo(() => {
 
 const Header = () => {
   const currentUser: any = useContext(AuthContext);
+  // useEffect(() => {
+  //   updateDoc(doc(db, "users", currentUser.uid), {
+  //     lastTimeSignIn: currentUser.metadata.lastSignInTime,
+  //   });
+  // }, [currentUser]);
+
   let dbUser: any;
 
   const userIcon =

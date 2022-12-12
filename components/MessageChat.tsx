@@ -1,34 +1,32 @@
 import {Avatar, Box, Flex, Text} from "@chakra-ui/react";
-import React, {memo, useState} from "react";
+import React, {memo, useState, useRef, useEffect} from "react";
 import {mainStyles} from "./LayoutCard";
-import {db} from "../firebaseconfig";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  getDoc,
-  setDoc,
-  doc,
-  updateDoc,
-  serverTimestamp,
-  onSnapshot,
-} from "firebase/firestore";
-
 export interface StandardProps {
   type?: string;
   children?: React.ReactNode;
-  message: string;
-  time: any;
+  message: any;
+  time?: any;
 
-  user: any;
+  user?: any;
 }
 const MessageChat = ({children, type, message, time, user}: StandardProps) => {
+  const lastRef: any = useRef();
   const [src, setSRC] = useState(
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099"
   );
+  let fileSRC;
+
   if (src != user.photoURL && user.photoURL != "" && user.photoURL != null)
     setSRC(user.photoURL);
+
+  if (message.includes("firebasestorage.googleapis.com")) {
+    fileSRC = message;
+    message = false;
+  }
+
+  useEffect(() => {
+    lastRef.current?.scrollIntoView({behavior: "smooth"});
+  }, [message]);
 
   var dateFormat = new Date(time.seconds * 1000);
 
@@ -44,15 +42,9 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
     dateFormat.getMinutes().toLocaleString();
 
   return (
-    <Flex direction="row" my={1.5} width="100%">
-      <Box
-        flex={{base: "0 0 35px", md: "0 0 45px"}}
-        borderRadius={{base: "15px", md: "20px"}}
-        height={{base: "35px", md: "45px"}}
-        overflow="hidden"
-        mr="10px"
-      >
-        <img src={src} />
+    <Flex direction="row" my={1.5} ref={lastRef}>
+      <Box mr="10px" boxSize="45px">
+        <img src={src} style={{borderRadius: "20px"}} />
       </Box>
 
       <Flex direction="column">
@@ -74,18 +66,24 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
               {localTime}
             </Text>
           </Flex>
-
-          <Text
-            color="white"
-            py={0.5}
-            borderRadius="5px"
-            textAlign="justify"
-            fontSize="14px"
-            overflowX="hidden"
-            wordBreak="break-all"
-          >
-            {message}
-          </Text>
+          {message && (
+            <Text
+              color="white"
+              w="fit-content"
+              py={0.5}
+              borderRadius="5px"
+              textAlign="justify"
+              fontSize="14px"
+            >
+              {message}
+            </Text>
+          )}
+          {fileSRC && (
+            <img
+              src={fileSRC}
+              style={{maxHeight: "250px", marginTop: "10px"}}
+            />
+          )}
         </Flex>
       </Flex>
     </Flex>
