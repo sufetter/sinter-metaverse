@@ -41,18 +41,24 @@ type ChatItemProps = {
   user?: any;
   options?: boolean;
   setChatCard?: any;
+  lastMessage: any;
 };
 
 export const ChatItem = memo(
-  ({searchedUser, options, setChatCard}: ChatItemProps) => {
-    const currentUser: any = useContext(AuthContext);
+  ({user, setChatCard, lastMessage}: ChatItemProps) => {
     let searchedAvatar: string =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
-    if (searchedUser?.photoURL != undefined && searchedUser?.photoURL != "") {
-      searchedAvatar = searchedUser.photoURL;
+    if (user?.photoURL != undefined && user?.photoURL != "") {
+      searchedAvatar = user.photoURL;
     }
-    const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
-    const dispatch = useAppDispatch();
+    let date = new Date(lastMessage.date?.seconds * 1000);
+    let min: any = date.getMinutes();
+
+    if (date.getMinutes() < 10) {
+      min = "0" + date.getMinutes().toLocaleString();
+    }
+    let lastMessageDate = date.getHours() + ":" + min;
+
     return (
       <Flex
         align="center"
@@ -66,16 +72,27 @@ export const ChatItem = memo(
         <Flex
           align="center"
           w="100%"
-          onClick={() => {
-            setChatCard(<MainChat user={user} />);
+          onClick={async () => {
+            const userInfo: any = await getDoc(doc(db, "users", user.uid));
+            setChatCard(<MainChat user={userInfo.data()} />);
           }}
         >
           <Box boxSize="45px">
             <img src={searchedAvatar} style={{borderRadius: "100px"}} />
           </Box>
-          <Text ms={3} color="white">
-            {user?.displayName}
-          </Text>
+          <Flex direction="column">
+            <Text ms={3} color="white">
+              {user?.displayName}
+            </Text>
+            <Flex>
+              <Text ms={3} color="gray.400">
+                {lastMessage.message}
+              </Text>
+              <Text ms={3} color={mainStyles.mainIconColor}>
+                {lastMessageDate}
+              </Text>
+            </Flex>
+          </Flex>
         </Flex>
         <Flex align="center"></Flex>
       </Flex>
@@ -218,7 +235,7 @@ const Render = ({searchedUsers, username}: any) => {
 const ChatItemsList = memo(({setChatCard}: any) => {
   const currentUser: any = useContext(AuthContext);
   const [chats, setChats] = useState<any>([]);
-  let chatsLength = 0;
+
   useEffect(() => {
     const getChats = () => {
       const newChat = onSnapshot(
@@ -228,19 +245,17 @@ const ChatItemsList = memo(({setChatCard}: any) => {
 
           let chatsArr = Object.entries(resChats).sort();
 
-          if (chatsLength != chatsArr.length) {
-            let res = chatsArr.map((chat: any) => {
-              return (
-                <ChatItem
-                  key={Math.random()}
-                  user={chat[1].userInfo}
-                  setChatCard={setChatCard}
-                />
-              );
-            });
-            setChats(res);
-            chatsLength = chatsArr.length;
-          }
+          let res = chatsArr.map((chat: any) => {
+            return (
+              <ChatItem
+                key={Math.random()}
+                user={chat[1].userInfo}
+                setChatCard={setChatCard}
+                lastMessage={chat[1].lastMessage}
+              />
+            );
+          });
+          setChats(res);
         }
       );
 

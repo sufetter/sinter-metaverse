@@ -28,7 +28,11 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
     lastRef.current?.scrollIntoView({behavior: "smooth"});
   }, [message]);
 
-  var dateFormat = new Date(time.seconds * 1000);
+  let dateFormat = new Date(time.seconds * 1000);
+  let min: any = dateFormat.getMinutes();
+  if (dateFormat.getMinutes() < 10) {
+    min = "0" + dateFormat.getMinutes().toLocaleString();
+  }
 
   let localTime =
     dateFormat.getDate() +
@@ -39,7 +43,7 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
     " " +
     dateFormat.getHours() +
     ":" +
-    dateFormat.getMinutes().toLocaleString();
+    min;
 
   return (
     <Flex direction="row" my={1.5} ref={lastRef}>
