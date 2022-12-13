@@ -29,10 +29,10 @@ import {
   doc,
   updateDoc,
   serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import {onAuthStateChanged} from "firebase/auth";
 import {motion} from "framer-motion";
-import localUser from "../images/user.png";
 
 export const HeaderSearch = () => {
   return (
@@ -87,11 +87,9 @@ const Header = () => {
 
   useEffect(() => {
     if (currentUser.displayName != null) {
-      let date = new Date(currentUser.metadata.lastSignInTime);
       console.log("updating");
-      console.log(currentUser.metadata);
       updateDoc(doc(db, "users", currentUser.uid), {
-        lastTimeSignIn: date.getTime(),
+        lastTimeSignIn: Timestamp.now(),
       });
     }
   }, [currentUser]);
