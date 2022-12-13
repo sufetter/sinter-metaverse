@@ -56,7 +56,10 @@ export const ChatItem = memo(
       min = "0" + date.getMinutes().toLocaleString();
     }
     let lastMessageDate = date.getHours() + ":" + min;
-
+    if (lastMessage.message.length > 7) {
+      lastMessage.message = lastMessage.message.slice(0, 7) + "...";
+      console.log(lastMessage.message);
+    }
     return (
       <Flex
         align="center"
