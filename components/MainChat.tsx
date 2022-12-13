@@ -73,14 +73,14 @@ export const TopBarChat = ({
       <Icon
         as={HiArrowLeft}
         color="white"
-        display={{base: "block", sm: "none"}}
+        display={{base: "block", md: "none"}}
         boxSize="20px"
         _hover={{cursor: "pointer"}}
         onClick={() => {
           dispatch(changeMainOpen("none"));
         }}
       />
-      <Flex flex={1} flexDirection={{base: "column", md: "row"}} align="center">
+      <Flex flex={1} flexDirection={{base: "column", lg: "row"}} align="center">
         <Text
           color={mainStyles.chatHeaderTextColor}
           fontSize={{base: 14, md: 16}}
@@ -203,7 +203,7 @@ export const MainChat = ({user}: any) => {
     <Flex
       flex={2}
       id="mainChat"
-      display={{base: isOpen, sm: "flex"}}
+      display={{base: isOpen, md: "flex"}}
       w={"100%"}
       direction="column"
       overflowY="scroll"

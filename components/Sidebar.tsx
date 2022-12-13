@@ -29,7 +29,7 @@ type SideBarItemProps = {
 export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
   return (
     <Flex
-      w={{base: "auto", md: "140px"}}
+      w={{base: "auto", sm: "120px", md: "140px"}}
       mb={2}
       mr={{base: 1, sm: 3, lg: 2}}
       p={1.5}
@@ -45,7 +45,7 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
     >
       <Icon boxSize={"20px"} color={mainStyles.mainItemColor} as={icon} />
       <Text
-        display={{base: "none", md: "block"}}
+        display={{base: "none", sm: "block"}}
         color={mainStyles.mainTextColor}
         pl={3}
         fontSize="14px"
