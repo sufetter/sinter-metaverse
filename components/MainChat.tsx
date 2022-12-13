@@ -45,6 +45,7 @@ export const TopBarChat = ({
     avatarSRC =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
   let date = new Date(user.lastTimeSignIn * 1);
+  console.log(date);
 
   let displayTime: string =
     (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +

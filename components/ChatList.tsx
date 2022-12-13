@@ -58,7 +58,10 @@ export const ChatItem = memo(
       min = "0" + date.getMinutes().toLocaleString();
     }
     let lastMessageDate = date.getHours() + ":" + min;
-
+    if (lastMessage.message.length > 7) {
+      lastMessage.message = lastMessage.message.slice(0, 7) + "...";
+      console.log(lastMessage.message);
+    }
     return (
       <Flex
         align="center"
@@ -244,7 +247,17 @@ const ChatItemsList = memo(({setChatCard}: any) => {
           let resChats: any = doc.data();
 
           let chatsArr = Object.entries(resChats).sort();
+          chatsArr.sort((a, b) => {
+            if (a[1].userInfo < b[1].userInfo) {
+              return -1;
+            }
+            if (a[1].userInfo < b[1].userInfo) {
+              return 1;
+            }
 
+            // names must be equal
+            return 0;
+          });
           let res = chatsArr.map((chat: any) => {
             return (
               <ChatItem
@@ -255,6 +268,7 @@ const ChatItemsList = memo(({setChatCard}: any) => {
               />
             );
           });
+
           setChats(res);
         }
       );
