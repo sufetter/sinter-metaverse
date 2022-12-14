@@ -47,8 +47,14 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
 
   return (
     <Flex direction="row" my={1.5} ref={lastRef}>
-      <Box mr="10px" boxSize="45px">
-        <img src={src} style={{borderRadius: "20px"}} />
+      <Box
+        flex={{base: "0 0 40px", sm: "0 0 45px"}}
+        height={{base: "40px", sm: "45px"}}
+        borderRadius={{base: "17.5px", sm: "20px"}}
+        overflow="hidden"
+        mr="10px"
+      >
+        <img src={src} />
       </Box>
 
       <Flex direction="column">
@@ -58,22 +64,24 @@ const MessageChat = ({children, type, message, time, user}: StandardProps) => {
               color={mainStyles.messageTextColor}
               mr="10px"
               fontWeight={500}
-              fontSize={{base: 12, md: 14}}
+              fontSize={{base: 12, sm: 14}}
             >
               {user?.displayName}
             </Text>
             <Text
               color={mainStyles.secondTextColor}
               fontWeight={400}
-              fontSize={{base: 10, md: 14}}
+              fontSize={{base: 10, sm: 14}}
             >
               {localTime}
             </Text>
           </Flex>
           {message && (
             <Text
+              flex={0}
               color="white"
               w="fit-content"
+              wordBreak="break-all"
               py={0.5}
               borderRadius="5px"
               textAlign="justify"
