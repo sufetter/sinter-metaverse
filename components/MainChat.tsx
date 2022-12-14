@@ -37,12 +37,10 @@ export const TopBarChat = ({
 
   user,
 }: any) => {
-  const currentUser: any = useContext(AuthContext);
-
   if (avatarSRC == "")
     avatarSRC =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
-  let date = new Date(user.lastTimeSignIn * 1);
+  let date = new Date(user.lastTimeSignIn * 1000);
   console.log(date);
 
   let displayTime: string =
@@ -148,7 +146,6 @@ export const BottomBarChat = memo(({user}: any) => {
 });
 
 const ChatMessges = ({user}: any) => {
-  // вынести в различне компоненты топ и боттом бары
   const currentUser: any = useContext(AuthContext);
   const [messages, setMessages] = useState<any>([]);
 

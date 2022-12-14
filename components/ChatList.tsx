@@ -56,9 +56,10 @@ export const ChatItem = memo(
       min = "0" + date.getMinutes().toLocaleString();
     }
     let lastMessageDate = date.getHours() + ":" + min;
-    if (lastMessage.message.length > 7) {
+    let displayName = user?.displayName;
+    if (user?.displayName.length > 7 || lastMessage.message.length > 7) {
       lastMessage.message = lastMessage.message.slice(0, 7) + "...";
-      console.log(lastMessage.message);
+      displayName = user.displayName.slice(0, 7) + "...";
     }
     return (
       <Flex
@@ -83,7 +84,7 @@ export const ChatItem = memo(
           </Box>
           <Flex direction="column">
             <Text ms={3} color="white">
-              {user?.displayName}
+              {displayName}
             </Text>
             <Flex>
               <Text ms={3} color="gray.400">
