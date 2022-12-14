@@ -17,6 +17,7 @@ const id: React.FC = () => {
     };
     return (
       <Flex
+        display={{sm: "none", md: "flex"}}
         flex={2}
         h="100%"
         align="center"

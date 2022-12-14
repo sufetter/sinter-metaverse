@@ -29,8 +29,8 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
-import {AuthContext} from "../context/AuthContext";
 import {MainChat} from "./MainChat";
+import {useAppSelector} from "../src/hooks/redux";
 
 type SearchItemProps = {
   searchedAvatar?: string;
@@ -41,7 +41,7 @@ type SearchItemProps = {
 
 export const SearchItem = memo(({searchedUser}: SearchItemProps) => {
   const [user, setUser] = useState(searchedUser);
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   let searchedAvatar: string =
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
   if (user?.photoURL != undefined && user?.photoURL != "") {

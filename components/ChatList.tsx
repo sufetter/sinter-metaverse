@@ -29,7 +29,6 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
-import {AuthContext} from "../context/AuthContext";
 import {MainChat} from "./MainChat";
 import {mainSlice} from "../src/reducers/MainSlice";
 import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
@@ -60,9 +59,8 @@ export const ChatItem = memo(
     let lastMessageDate = date.getHours() + ":" + min;
     if (lastMessage?.message.length > 12) {
       lastMessage.message = lastMessage.message.slice(0, 10) + "...";
-      console.log(lastMessage.message);
     }
-    const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
+    const {changeMainOpen, changeCurrentChat} = mainSlice.actions; //Ууууу Reduux
     const dispatch = useAppDispatch();
     return (
       <Flex
@@ -80,7 +78,8 @@ export const ChatItem = memo(
           onClick={async () => {
             dispatch(changeMainOpen("flex"));
             const userInfo: any = await getDoc(doc(db, "users", user.uid));
-            setChatCard(<MainChat user={userInfo.data()} />);
+            dispatch(changeCurrentChat(userInfo.data()));
+            setChatCard(<MainChat />);
           }}
         >
           <Box boxSize="45px" overflow="hidden" borderRadius="100px">
@@ -113,7 +112,7 @@ export const ChatSearch = ({
   searchInput,
 }: any) => {
   const [error, setError] = useState<boolean>(false);
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   useEffect(() => {
     if (username !== undefined && currentUser.uid !== undefined) handleSearch();
@@ -239,7 +238,7 @@ const Render = ({searchedUsers, username}: any) => {
 };
 
 const ChatItemsList = memo(({setChatCard}: any) => {
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [chats, setChats] = useState<any>([]);
 
   useEffect(() => {

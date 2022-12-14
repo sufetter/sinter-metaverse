@@ -17,7 +17,6 @@ import {MdOutlineLogout} from "react-icons/md";
 import {mainStyles, navigate} from "./LayoutCard";
 import {signOut} from "firebase/auth";
 import {auth} from "../firebaseconfig";
-import {AuthContext} from "../context/AuthContext";
 import {useAppSelector} from "../src/hooks/redux";
 
 type SideBarItemProps = {
@@ -57,7 +56,7 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
 };
 
 const Sidebar = () => {
-  const currentUser = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const {isOpen} = useAppSelector((state) => state.mainSlice);
   return (
