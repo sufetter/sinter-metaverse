@@ -30,6 +30,8 @@ import {
 } from "firebase/firestore";
 import {AuthContext} from "../context/AuthContext";
 import EmojiCard from "./EmojiCard";
+import {mainSlice} from "../src/reducers/MainSlice";
+import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
 
 export const TopBarChat = ({
   displayName,
@@ -47,6 +49,8 @@ export const TopBarChat = ({
     (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +
     ":" +
     (date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes());
+  const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
+  const dispatch = useAppDispatch();
 
   if ((date + "").includes("Invalid")) {
     displayTime = "time not found (prev v of user type)";
@@ -67,17 +71,14 @@ export const TopBarChat = ({
       <Icon
         as={HiArrowLeft}
         color="white"
-        display={{base: "block", sm: "none"}}
+        display={{base: "block", md: "none"}}
         boxSize="20px"
         _hover={{cursor: "pointer"}}
         onClick={() => {
-          const mainChat: any = document.getElementById("mainChat");
-          mainChat.style.display = "none";
-          const chatList: any = document.getElementById("chatList");
-          chatList.style.display = "flex";
+          dispatch(changeMainOpen("none"));
         }}
       />
-      <Flex flex={1} flexDirection={{base: "column", md: "row"}} align="center">
+      <Flex flex={1} flexDirection={{base: "column", lg: "row"}} align="center">
         <Text
           color={mainStyles.chatHeaderTextColor}
           fontSize={{base: 14, md: 16}}
@@ -194,10 +195,12 @@ const ChatMessges = ({user}: any) => {
 };
 
 export const MainChat = ({user}: any) => {
+  const {isOpen} = useAppSelector((state) => state.mainSlice);
   return (
     <Flex
-      flex={1}
+      flex={2}
       id="mainChat"
+      display={{base: isOpen, md: "flex"}}
       w={"100%"}
       direction="column"
       overflowY="scroll"

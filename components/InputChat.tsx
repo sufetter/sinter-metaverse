@@ -231,8 +231,8 @@ export const InputChat: React.FC<MainInput> = ({
   );
 
   return (
-    <Flex w="100%" align="center">
-      <Flex mb="7px" align="center">
+    <Flex w="100%">
+      <Flex mb="7px" align="end">
         <Icon
           as={HiOutlinePaperClip}
           color={mainStyles.mainIconColor}
@@ -281,12 +281,7 @@ export const InputChat: React.FC<MainInput> = ({
           <Flex>{buttonIcon}</Flex>
         </Button>
       </Flex>
-      <Flex
-        width="100%"
-        px={2}
-        display={mainComponent ? "flex" : "none"}
-        align="center"
-      >
+      <Flex width="100%" px={2} display={mainComponent ? "flex" : "none"}>
         <Textarea
           position="relative"
           placeholder="Type a message....."
@@ -313,18 +308,17 @@ export const InputChat: React.FC<MainInput> = ({
             },
           }}
         ></Textarea>
-        <Flex zIndex="1" pl={1} align="center">
+        <Flex zIndex="1" ml={-8} mb={"7.5px"} align="end">
           <Icon
             as={HiOutlineEmojiHappy}
             color={mainStyles.mainIconColor}
             boxSize="25px"
             _hover={{cursor: "pointer"}}
             onMouseOver={changeSmileOpen}
-            mb="1px"
           />
         </Flex>
       </Flex>
-      <Flex align="center" mb="7px" display={mainComponent ? "flex" : "none"}>
+      <Flex align="end" mb="7px" display={mainComponent ? "flex" : "none"}>
         <Icon
           as={HiOutlineMicrophone}
           color={mainStyles.mainIconColor}
