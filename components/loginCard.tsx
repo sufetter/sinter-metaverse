@@ -24,9 +24,9 @@ import {mainStyles} from "./LayoutCard";
 import {auth} from "../firebaseconfig";
 import {signInWithEmailAndPassword} from "firebase/auth";
 import {useRouter} from "next/router";
-import {AuthContext} from "../context/AuthContext";
 import {navigate} from "./LayoutCard";
 import SingupGoogle from "./SingupGoogle";
+import {useAppSelector} from "../src/hooks/redux";
 
 function loginCard() {
   const [email, setEmail] = useState("");
@@ -41,7 +41,7 @@ function loginCard() {
   };
 
   const handleShow = () => setShow(!show);
-  const currentUser = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

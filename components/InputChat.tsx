@@ -22,7 +22,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import React, {useState, useEffect, useContext, useRef} from "react";
-import {AuthContext} from "../context/AuthContext";
+import {useAppSelector} from "../src/hooks/redux";
 import {
   HiOutlineEmojiHappy,
   HiOutlineMicrophone,
@@ -38,17 +38,15 @@ interface MainInput {
   changeSmileOpen: () => void;
   setMessage: (value: string) => void;
   message: string;
-  user: any;
   setMainComponent?: any;
 }
 export const InputChat: React.FC<MainInput> = ({
   changeSmileOpen,
   setMessage,
   message,
-  user,
 }) => {
-  const currentUser: any = useContext(AuthContext);
-
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
+  const {currentChat} = useAppSelector((state) => state.mainSlice);
   const input = useRef(null);
   const inputFile: any = useRef();
 
@@ -62,9 +60,9 @@ export const InputChat: React.FC<MainInput> = ({
     setMessage(e.target.value.replace(/\r?\n/g, ""));
   };
   const combinedUid: any =
-    currentUser?.uid?.slice(0, 5) + "" + user?.userID!.slice(0, 5);
+    currentUser?.uid?.slice(0, 5) + "" + currentChat?.userID!.slice(0, 5);
   const combinedUidReverse =
-    user?.userID!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
+    currentChat?.userID!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
 
   const handleSend = async () => {
     console.log("sended");
@@ -96,7 +94,7 @@ export const InputChat: React.FC<MainInput> = ({
         date: serverTimestamp(),
       },
     });
-    await updateDoc(doc(db, "userChats", user.userID), {
+    await updateDoc(doc(db, "userChats", currentChat.userID), {
       [combinedUidReverse + ".lastMessage"]: {
         message,
         sender: currentUser.displayName,
@@ -135,7 +133,11 @@ export const InputChat: React.FC<MainInput> = ({
     try {
       const storageRef = ref(
         storage,
-        currentUser.displayName + "." + user.uid.slice(0, 5) + "." + fileName
+        currentUser.displayName +
+          "." +
+          currentChat.uid.slice(0, 5) +
+          "." +
+          fileName
       );
 
       if (fileCheck && fileChecked) {
@@ -201,7 +203,7 @@ export const InputChat: React.FC<MainInput> = ({
                     date: serverTimestamp(),
                   },
                 });
-                await updateDoc(doc(db, "userChats", user.uid), {
+                await updateDoc(doc(db, "userChats", currentChat.uid), {
                   [combinedUidReverse + ".lastMessage"]: {
                     message: downloadURL,
                     sender: currentUser.displayName,
@@ -231,8 +233,8 @@ export const InputChat: React.FC<MainInput> = ({
   );
 
   return (
-    <Flex w="100%" align="center">
-      <Flex mb="7px" align="center">
+    <Flex w="100%">
+      <Flex mb="7px" align="end">
         <Icon
           as={HiOutlinePaperClip}
           color={mainStyles.mainIconColor}
@@ -281,12 +283,7 @@ export const InputChat: React.FC<MainInput> = ({
           <Flex>{buttonIcon}</Flex>
         </Button>
       </Flex>
-      <Flex
-        width="100%"
-        px={2}
-        display={mainComponent ? "flex" : "none"}
-        align="center"
-      >
+      <Flex width="100%" px={2} display={mainComponent ? "flex" : "none"}>
         <Textarea
           position="relative"
           placeholder="Type a message....."
@@ -313,18 +310,17 @@ export const InputChat: React.FC<MainInput> = ({
             },
           }}
         ></Textarea>
-        <Flex zIndex="1" pl={1} align="center">
+        <Flex zIndex="1" ml={-8} mb={"7.5px"} align="end">
           <Icon
             as={HiOutlineEmojiHappy}
             color={mainStyles.mainIconColor}
             boxSize="25px"
             _hover={{cursor: "pointer"}}
             onMouseOver={changeSmileOpen}
-            mb="1px"
           />
         </Flex>
       </Flex>
-      <Flex align="center" mb="7px" display={mainComponent ? "flex" : "none"}>
+      <Flex align="end" mb="7px" display={mainComponent ? "flex" : "none"}>
         <Icon
           as={HiOutlineMicrophone}
           color={mainStyles.mainIconColor}

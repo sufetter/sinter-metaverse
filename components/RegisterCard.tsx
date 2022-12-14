@@ -32,11 +32,11 @@ import {
 import {auth, storage, db} from "../firebaseconfig";
 import {doc, setDoc} from "firebase/firestore";
 import {collection, query, where, getDocs} from "firebase/firestore";
-import {AuthContext} from "../context/AuthContext";
 import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
 import {navigate, mainStyles} from "./LayoutCard";
 import SingupGoogle from "../components/SingupGoogle";
+import {useAppSelector} from "../src/hooks/redux";
 
 function RegisterCard() {
   const [email, setEmail] = useState<string>("");
@@ -54,7 +54,7 @@ function RegisterCard() {
     "Please, enter your password. Min length 6 is required."
   );
   const [fileChecked, setFileChecked] = useState(false);
-  const currentUser = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const inputFile: any = useRef(null);
 

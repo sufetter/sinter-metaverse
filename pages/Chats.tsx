@@ -6,7 +6,7 @@ import {SidebarChats} from "../components/SidebarMain";
 const Chats: React.FC = () => {
   return (
     <ChakraProvider>
-      <Flex flex={1} bg="#030812">
+      <Flex overflow="hidden" flex={1} bg="#030812">
         <SidebarChats />
         <MainChat />
       </Flex>

@@ -4,6 +4,10 @@ import {Html} from "next/document";
 import Header from "./Header";
 import {AnimatePresence, motion} from "framer-motion";
 import {useRouter} from "next/router";
+import {userAuthSlice} from "../src/reducers/userAuthSlice";
+import {useAppDispatch} from "../src/hooks/redux";
+import {auth} from "../firebaseconfig";
+import {onAuthStateChanged} from "firebase/auth";
 
 type LayoutProps = {
   children: JSX.Element;
@@ -50,6 +54,15 @@ export default function LayoutCard({
     router.push(`${href}`);
   };
 
+  const {setCurrentUser} = userAuthSlice.actions;
+  const dispatch = useAppDispatch();
+  onAuthStateChanged(auth, (user: any) => {
+    if (user) {
+      dispatch(setCurrentUser(user));
+    } else {
+      setCurrentUser("not user");
+    }
+  });
   return (
     <>
       <Head>

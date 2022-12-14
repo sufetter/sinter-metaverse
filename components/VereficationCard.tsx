@@ -13,11 +13,11 @@ import {
   useRadio,
 } from "@chakra-ui/react";
 import {checkCustomRoutes} from "next/dist/lib/load-custom-routes";
-import {AuthContext} from "../context/AuthContext";
 import {navigate} from "./LayoutCard";
+import {useAppSelector} from "../src/hooks/redux";
 
 const VereficationCard = () => {
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   if (currentUser != Object) {
     // navigate("/register");
   }

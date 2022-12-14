@@ -29,7 +29,6 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
-import {AuthContext} from "../context/AuthContext";
 import {MainChat} from "./MainChat";
 import {mainSlice} from "../src/reducers/MainSlice";
 import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
@@ -51,17 +50,18 @@ export const ChatItem = memo(
     if (user?.photoURL != undefined && user?.photoURL != "") {
       searchedAvatar = user.photoURL;
     }
-    let date = new Date(lastMessage.date?.seconds * 1000);
+    let date = new Date(lastMessage?.date?.seconds * 1000);
     let min: any = date.getMinutes();
 
     if (date.getMinutes() < 10) {
       min = "0" + date.getMinutes().toLocaleString();
     }
     let lastMessageDate = date.getHours() + ":" + min;
-    if (lastMessage.message.length > 7) {
-      lastMessage.message = lastMessage.message.slice(0, 7) + "...";
-      console.log(lastMessage.message);
+    if (lastMessage?.message.length > 12) {
+      lastMessage.message = lastMessage.message.slice(0, 10) + "...";
     }
+    const {changeMainOpen, changeCurrentChat} = mainSlice.actions; //Ууууу Reduux
+    const dispatch = useAppDispatch();
     return (
       <Flex
         align="center"
@@ -76,24 +76,26 @@ export const ChatItem = memo(
           align="center"
           w="100%"
           onClick={async () => {
+            dispatch(changeMainOpen("flex"));
             const userInfo: any = await getDoc(doc(db, "users", user.uid));
-            setChatCard(<MainChat user={userInfo.data()} />);
+            dispatch(changeCurrentChat(userInfo.data()));
+            setChatCard(<MainChat />);
           }}
         >
-          <Box boxSize="45px">
-            <img src={searchedAvatar} style={{borderRadius: "100px"}} />
+          <Box boxSize="45px" overflow="hidden" borderRadius="100px">
+            <img width="100%" src={searchedAvatar} />
           </Box>
           <Flex direction="column">
             <Text ms={3} color="white">
               {user?.displayName}
             </Text>
             <Flex>
-              <Text ms={3} color="gray.400">
-                {lastMessage.message}
+              <Text wordBreak="break-all" ms={3} color="gray.400">
+                {lastMessage?.message}
               </Text>
-              <Text ms={3} color={mainStyles.mainIconColor}>
+              {/* <Text ms={3} color={mainStyles.mainIconColor}>
                 {lastMessageDate}
-              </Text>
+              </Text> */}
             </Flex>
           </Flex>
         </Flex>
@@ -110,7 +112,7 @@ export const ChatSearch = ({
   searchInput,
 }: any) => {
   const [error, setError] = useState<boolean>(false);
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   useEffect(() => {
     if (username !== undefined && currentUser.uid !== undefined) handleSearch();
@@ -236,7 +238,7 @@ const Render = ({searchedUsers, username}: any) => {
 };
 
 const ChatItemsList = memo(({setChatCard}: any) => {
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [chats, setChats] = useState<any>([]);
 
   useEffect(() => {
@@ -296,7 +298,7 @@ const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
   const {isOpen} = useAppSelector((state) => state.mainSlice);
   return (
     <Flex
-      display={{base: isOpen === "none" ? "flex" : "none", sm: "flex"}}
+      display={{base: isOpen === "none" ? "flex" : "none", md: "flex"}}
       flex={1}
       direction="column"
       borderEnd="1px solid"

@@ -17,7 +17,8 @@ const id: React.FC = () => {
     };
     return (
       <Flex
-        flex={1}
+        display={{sm: "none", md: "flex"}}
+        flex={2}
         h="100%"
         align="center"
         justify="center"
@@ -61,6 +62,7 @@ const id: React.FC = () => {
             w="100%"
             borderRadius={{base: 0, sm: "10px 0 0 10px", lg: 10}}
             border="1px solid"
+            overflow="hidden"
             borderColor={mainStyles.chatListBorderColor}
           >
             <ChatList searchInput={searchInput} setChatCard={setChatCard} />
