@@ -61,7 +61,6 @@ export const ChatItem = memo(
     let displayName = user?.displayName;
 
     if (user?.displayName.length > 9 || lastMessage.message.length > 9) {
-      console.log(lastMessage.message.length + "  " + displayName);
       lastMessage.message = lastMessage.message.slice(0, 6) + "...";
       displayName = user.displayName.slice(0, 6) + "...";
     }
