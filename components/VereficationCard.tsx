@@ -1,7 +1,7 @@
 import {auth} from "../firebaseconfig";
 import {onAuthStateChanged, sendEmailVerification} from "firebase/auth";
 import {useRouter} from "next/router";
-import {useEffect, useContext} from "react";
+import {useEffect} from "react";
 
 import {
   Flex,

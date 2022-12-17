@@ -60,7 +60,7 @@ export default function LayoutCard({
     if (user) {
       dispatch(setCurrentUser(user));
     } else {
-      setCurrentUser("not user");
+      dispatch(setCurrentUser("not user"));
     }
   });
   return (

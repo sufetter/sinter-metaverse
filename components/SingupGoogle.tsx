@@ -1,4 +1,3 @@
-import {useContext} from "react";
 import {signInWithPopup, GoogleAuthProvider} from "firebase/auth";
 import {doc, setDoc} from "firebase/firestore";
 import {collection, query, where, getDocs} from "firebase/firestore";

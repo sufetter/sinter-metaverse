@@ -21,7 +21,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import React, {useState, useEffect, useContext, useRef} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {useAppSelector} from "../src/hooks/redux";
 import {
   HiOutlineEmojiHappy,
@@ -65,12 +65,11 @@ export const InputChat: React.FC<MainInput> = ({
     currentChat?.userID!.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
 
   const handleSend = async () => {
-    console.log("sended");
+    message = message.trim();
     if (message == "") {
       console.log("fake");
       // return;
-    } else if (message == " ") message = "just a space...";
-
+    }
     await updateDoc(doc(db, "chats", combinedUid), {
       messages: arrayUnion({
         id: uuid(),
@@ -87,6 +86,7 @@ export const InputChat: React.FC<MainInput> = ({
         date: Timestamp.now(),
       }),
     });
+    console.log("asdf");
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [combinedUid + ".lastMessage"]: {
         message,

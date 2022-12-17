@@ -8,7 +8,7 @@ import {
   Text,
   SlideFade,
 } from "@chakra-ui/react";
-import React, {useState, memo, useContext, useEffect, useRef} from "react";
+import React, {useState, memo, useEffect, useRef} from "react";
 import {InputChat} from "../components/InputChat";
 import MessageChat from "./MessageChat";
 import {mainStyles} from "./LayoutCard";
