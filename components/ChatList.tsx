@@ -57,8 +57,12 @@ export const ChatItem = memo(
       min = "0" + date.getMinutes().toLocaleString();
     }
     let lastMessageDate = date.getHours() + ":" + min;
-    if (lastMessage?.message.length > 12) {
-      lastMessage.message = lastMessage.message.slice(0, 10) + "...";
+    let displayName = user?.displayName;
+
+    if (user?.displayName.length > 9 || lastMessage.message.length > 9) {
+      console.log(lastMessage.message.length + "  " + displayName);
+      lastMessage.message = lastMessage.message.slice(0, 6) + "...";
+      displayName = user.displayName.slice(0, 6) + "...";
     }
     const {changeMainOpen, changeCurrentChat} = mainSlice.actions; //Ууууу Reduux
     const dispatch = useAppDispatch();
@@ -87,7 +91,7 @@ export const ChatItem = memo(
           </Box>
           <Flex direction="column">
             <Text ms={3} color="white">
-              {user?.displayName}
+              {displayName}
             </Text>
             <Flex>
               <Text wordBreak="break-all" ms={3} color="gray.400">
