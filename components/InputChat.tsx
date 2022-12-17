@@ -196,14 +196,14 @@ export const InputChat: React.FC<MainInput> = ({
                 });
                 await updateDoc(doc(db, "userChats", currentUser.uid), {
                   [combinedUid + ".lastMessage"]: {
-                    message: downloadURL,
+                    message: "File",
                     sender: currentUser.displayName,
                     date: serverTimestamp(),
                   },
                 });
                 await updateDoc(doc(db, "userChats", user.userID), {
                   [combinedUidReverse + ".lastMessage"]: {
-                    message: downloadURL,
+                    message: "File",
                     sender: currentUser.displayName,
                     date: serverTimestamp(),
                   },

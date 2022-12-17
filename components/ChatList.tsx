@@ -60,7 +60,7 @@ export const ChatItem = memo(
     let lastMessageDate = date.getHours() + ":" + min;
     let displayName = user?.displayName;
 
-    if (user?.displayName.length > 9 || lastMessage.message.length > 9) {
+    if (user?.displayName.length > 9 || lastMessage?.message?.length > 9) {
       lastMessage.message = lastMessage.message.slice(0, 6) + "...";
       displayName = user.displayName.slice(0, 6) + "...";
     }
