@@ -28,7 +28,7 @@ const ModalCard = ({header, body, footer, open, components, modal}: any) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   useEffect(() => {
-    onOpen();
+    if (modal) onOpen();
   }, [modal]);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

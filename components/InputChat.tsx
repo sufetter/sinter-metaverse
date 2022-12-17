@@ -129,13 +129,12 @@ export const InputChat: React.FC<MainInput> = ({
     e.preventDefault();
     let fileCheck = inputFile?.current!.files![0];
     let fileName = fileCheck?.name;
-
     try {
       const storageRef = ref(
         storage,
         currentUser.displayName +
           "." +
-          currentChat.uid.slice(0, 5) +
+          currentChat.userID.slice(0, 5) +
           "." +
           fileName
       );
@@ -203,7 +202,7 @@ export const InputChat: React.FC<MainInput> = ({
                     date: serverTimestamp(),
                   },
                 });
-                await updateDoc(doc(db, "userChats", currentChat.uid), {
+                await updateDoc(doc(db, "userChats", currentChat.userID), {
                   [combinedUidReverse + ".lastMessage"]: {
                     message: downloadURL,
                     sender: currentUser.displayName,
@@ -249,7 +248,7 @@ export const InputChat: React.FC<MainInput> = ({
         justify="center"
         w="100%"
       >
-        <Image src={imagePreview} maxH="50px" mr={2} />
+        <Image src={imagePreview} maxH="40px" mr={2} />
         <FormLabel htmlFor="Avatar">
           <Input
             type="file"

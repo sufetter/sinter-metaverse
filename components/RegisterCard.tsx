@@ -37,6 +37,7 @@ import {FcAddImage} from "react-icons/fc";
 import {navigate, mainStyles} from "./LayoutCard";
 import SingupGoogle from "../components/SingupGoogle";
 import {useAppSelector} from "../src/hooks/redux";
+import ModalCard from "./ModalCard";
 
 function RegisterCard() {
   const [email, setEmail] = useState<string>("");
@@ -54,6 +55,7 @@ function RegisterCard() {
     "Please, enter your password. Min length 6 is required."
   );
   const [fileChecked, setFileChecked] = useState(false);
+  const [modal, setModal] = useState<any>(false);
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const inputFile: any = useRef(null);
@@ -194,9 +196,26 @@ function RegisterCard() {
         // navigate("/verefication");
       } else {
         console.log("user exist");
+        setModal(
+          <ModalCard
+            open
+            header={"Reset error"}
+            body={`user exists`}
+            modal={modal}
+          />
+        );
       }
     } catch (error: any) {
       setError(true);
+      setModal(
+        <ModalCard
+          open
+          header={"Reset error"}
+          body={error.message}
+          modal={modal}
+        />
+      );
+
       console.log(error.message);
       console.log(error.message.includes("network"));
     }
@@ -223,24 +242,13 @@ function RegisterCard() {
   let file: Array<File> = [];
   let fileName: string | any = "";
   let fileCheck: File | any;
+  let modalBody = "";
 
   // MAIN UI
   return (
-    <Flex
-      w="100%"
-      flex={"1 1 auto"}
-      h="100%"
-      align="center"
-      justify="center"
-      // overflowY="scroll"
-      // sx={{scrollbarWidth: "none"}}
-      // css={{
-      //   "&::-webkit-scrollbar": {
-      //     display: "none",
-      //     width: "30px",
-      //   },
-      // }}
-    >
+    <Flex w="100%" flex={"1 1 auto"} h="100%" align="center" justify="center">
+      {modal}
+
       <Flex
         maxW={"370px"}
         border={{base: "0px solid", sm: "2px solid " + mainStyles.cardBorder}}

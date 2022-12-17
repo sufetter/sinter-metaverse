@@ -196,8 +196,8 @@ const ChatMessges = () => {
   );
 };
 
-export const MainChat = () => {
-  const {isOpen} = useAppSelector((state) => state.mainSlice);
+export const MainChat = ({user}: any) => {
+  const {isOpen} = useAppSelector((state: any) => state.mainSlice);
   return (
     <Flex
       flex={2}
