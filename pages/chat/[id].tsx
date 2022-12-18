@@ -28,6 +28,7 @@ const id: React.FC = () => {
       setChatList(false);
       // setTimeout(() => navigate("/register"), 5000);
     }
+
     if (
       typeof currentUser == "object" &&
       router.asPath.split("/chat/")[1] !== trueRoute

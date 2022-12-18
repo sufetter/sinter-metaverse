@@ -31,6 +31,7 @@ import {
 } from "firebase/firestore";
 import {AuthContext} from "../../context/AuthContext";
 import {MainChat} from "../MainChat";
+import {ModalCard} from "../Modal";
 
 type SearchItemProps = {
   searchedAvatar?: string;
@@ -41,6 +42,7 @@ type SearchItemProps = {
 
 export const SearchItem = memo(({searchedUser}: SearchItemProps) => {
   const [user, setUser] = useState(searchedUser);
+  const [modal, setModal] = useState<any>(false);
   const currentUser: any = useContext(AuthContext);
   let searchedAvatar: string =
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
@@ -89,6 +91,14 @@ export const SearchItem = memo(({searchedUser}: SearchItemProps) => {
       } else {
         console.log("exists");
         console.log(existed.data());
+        setModal(
+          <ModalCard
+            open
+            header={"Search error"}
+            body={`user already in your chat list`}
+            modal={modal}
+          />
+        );
       }
     } catch (err) {
       console.log(err);
@@ -105,6 +115,7 @@ export const SearchItem = memo(({searchedUser}: SearchItemProps) => {
       px={4}
       py={2}
     >
+      {modal}
       <Flex align="center" w="100%">
         <Box mr="10px" boxSize="45px">
           <img src={searchedAvatar} style={{borderRadius: "100px"}} />

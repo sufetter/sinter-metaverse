@@ -35,7 +35,7 @@ export const ModalCard = ({
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   useEffect(() => {
-    if (modal) onOpen();
+    onOpen();
   }, [modal]);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

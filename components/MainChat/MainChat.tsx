@@ -7,6 +7,7 @@ import {
   HStack,
   Text,
   SlideFade,
+  Image,
 } from "@chakra-ui/react";
 import React, {useState, memo, useContext, useEffect, useRef} from "react";
 import {InputChat} from "../../components/InputChat";
@@ -33,17 +34,12 @@ import {EmojiCard} from "../../components/EmojiCard";
 import {mainSlice} from "../../src/reducers/MainSlice";
 import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 
-export const TopBarChat = ({
-  displayName,
-  avatarSRC,
-
-  user,
-}: any) => {
-  if (avatarSRC == "")
+export const TopBarChat = memo(({displayName, avatarSRC, user}: any) => {
+  if (avatarSRC == "" || avatarSRC == undefined) {
     avatarSRC =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
+  }
   let date = new Date(user.lastTimeSignIn * 1000);
-  console.log(date);
 
   let displayTime: string =
     (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +
@@ -106,15 +102,16 @@ export const TopBarChat = ({
           boxSize="28px"
           _hover={{cursor: "pointer"}}
         />
-        <Avatar
+        <Image
           src={avatarSRC}
           boxSize="33px"
           _hover={{cursor: "pointer"}}
-        ></Avatar>
+          borderRadius="100px"
+        ></Image>
       </HStack>
     </Flex>
   );
-};
+});
 
 export const BottomBarChat = memo(({user}: any) => {
   const [message, setMessage] = useState<string>("");
@@ -146,7 +143,7 @@ export const BottomBarChat = memo(({user}: any) => {
   );
 });
 
-const ChatMessges = ({user}: any) => {
+const ChatMessges = memo(({user}: any) => {
   const currentUser: any = useContext(AuthContext);
   const [messages, setMessages] = useState<any>([]);
 
@@ -192,9 +189,9 @@ const ChatMessges = ({user}: any) => {
       {messages}
     </Flex>
   );
-};
+});
 
-export const MainChat = ({user}: any) => {
+export const MainChat = memo(({user}: any) => {
   const {isOpen} = useAppSelector((state: any) => state.mainSlice);
   return (
     <Flex
@@ -236,4 +233,4 @@ export const MainChat = ({user}: any) => {
       <BottomBarChat user={user} />
     </Flex>
   );
-};
+});

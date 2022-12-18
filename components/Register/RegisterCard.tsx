@@ -280,6 +280,7 @@ export const RegisterCard = memo(() => {
                   onChange={handleDisplayNameChange}
                   placeholder="Your nickname"
                   bg="#224957"
+                  color="white"
                 />
                 {!isErrorNickname ? (
                   <FormHelperText mb="2">Nice one.</FormHelperText>
@@ -296,6 +297,7 @@ export const RegisterCard = memo(() => {
                   onChange={handleEmailChange}
                   placeholder="Email"
                   bg="#224957"
+                  color="white"
                 />
                 {!isErrorEmail ? (
                   <FormHelperText mb="2">Email is checked.</FormHelperText>
@@ -312,6 +314,7 @@ export const RegisterCard = memo(() => {
                     placeholder="Password"
                     bg="#224957"
                     w="100%"
+                    color="white"
                   />
                   <Button
                     h="1.75rem"
@@ -356,6 +359,7 @@ export const RegisterCard = memo(() => {
                   placeholder="Repeat your Password"
                   bg="#224957"
                   w="100%"
+                  color="white"
                 />
                 {!isErrorPasswordRepeat ? (
                   <FormHelperText mb={2}>

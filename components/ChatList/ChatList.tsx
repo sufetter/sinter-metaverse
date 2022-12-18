@@ -9,6 +9,8 @@ import {
   Stack,
   Tooltip,
   Box,
+  SkeletonCircle,
+  Skeleton,
 } from "@chakra-ui/react";
 import React, {useState, useContext, useEffect, memo, useMemo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
@@ -62,7 +64,7 @@ const ChatItem = memo(({user, setChatCard, lastMessage}: ChatItemProps) => {
     lastMessage.message = lastMessage.message.slice(0, 6) + "...";
     displayName = user.displayName.slice(0, 6) + "...";
   }
-  const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
+  const {changeMainOpen} = mainSlice.actions;
   const dispatch = useAppDispatch();
   return (
     <Flex
@@ -199,6 +201,8 @@ const Render = ({searchedUsers, username}: any) => {
       />
     );
   });
+  // TO DO
+  // make normal code here
   if (result?.length > 0) {
     borderWidth = 1;
     supMessage = "Users found:";
@@ -240,6 +244,7 @@ const Render = ({searchedUsers, username}: any) => {
 const ChatItemsList = memo(({setChatCard}: any) => {
   const currentUser: any = useContext(AuthContext);
   const [chats, setChats] = useState<any>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const getChats = () => {
@@ -262,6 +267,20 @@ const ChatItemsList = memo(({setChatCard}: any) => {
           });
           let res = chatsArr.map((chat: any) => {
             return (
+              // <Flex
+              //   align="center"
+              //   px={loaded ? "0px" : "10px"}
+              //   py={loaded ? "0px" : "10px"}
+              // >
+              //   <Skeleton key={Math.random()} isLoaded={false} w="100%">
+              //     <ChatItem
+              //       key={Math.random()}
+              //       user={chat[1].userInfo}
+              //       setChatCard={setChatCard}
+              //       lastMessage={chat[1].lastMessage}
+              //     />
+              //   </Skeleton>
+              // </Flex>
               <ChatItem
                 key={Math.random()}
                 user={chat[1].userInfo}
@@ -272,6 +291,7 @@ const ChatItemsList = memo(({setChatCard}: any) => {
           });
 
           setChats(res);
+          setLoaded(!loaded);
         }
       );
 
@@ -283,7 +303,17 @@ const ChatItemsList = memo(({setChatCard}: any) => {
     currentUser.uid && getChats();
   }, [currentUser.uid]);
 
-  return <Flex direction="column">{chats}</Flex>;
+  return (
+    <Flex
+      direction="column"
+      h="100%"
+      onClick={() => {
+        setLoaded(!loaded);
+      }}
+    >
+      <Flex direction="column">{chats}</Flex>
+    </Flex>
+  );
 });
 
 type ChatListProps = {
