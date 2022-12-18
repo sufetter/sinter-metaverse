@@ -22,13 +22,20 @@ import {
   useDisclosure,
   extendTheme,
 } from "@chakra-ui/react";
-import {mainStyles} from "./LayoutCard";
+import {mainStyles} from "../Layout/LayoutCard";
 
-const ModalCard = ({header, body, footer, open, components, modal}: any) => {
+export const ModalCard = ({
+  header,
+  body,
+  footer,
+  open,
+  components,
+  modal,
+}: any) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   useEffect(() => {
-    if (modal) onOpen();
+    onOpen();
   }, [modal]);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

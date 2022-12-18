@@ -23,14 +23,14 @@ import {
   useDisclosure,
   extendTheme,
 } from "@chakra-ui/react";
-import {mainStyles} from "./LayoutCard";
-import {AuthContext} from "../context/AuthContext";
-import resetPasswordIcon from "../images/resetPasswordIcon.png";
-import {auth} from "../firebaseconfig";
+import {mainStyles} from "../Layout";
+import {AuthContext} from "../../context/AuthContext";
+import resetPasswordIcon from "../../images/resetPasswordIcon.png";
+import {auth} from "../../firebaseconfig";
 import {sendPasswordResetEmail} from "firebase/auth";
-import ModalCard from "./ModalCard";
+import {ModalCard} from "../Modal";
 
-const ResetPasswordCard = () => {
+export const ResetPasswordCard = () => {
   const currentUser: any = useContext(AuthContext);
   const [modal, setModal] = useState<any>();
   const [disabled, setDisabled] = useState(false);

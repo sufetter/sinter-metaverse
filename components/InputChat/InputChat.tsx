@@ -22,14 +22,14 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import React, {useState, useEffect, useContext, useRef} from "react";
-import {AuthContext} from "../context/AuthContext";
+import {AuthContext} from "../../context/AuthContext";
 import {
   HiOutlineEmojiHappy,
   HiOutlineMicrophone,
   HiOutlinePaperClip,
 } from "react-icons/hi";
-import {mainStyles} from "./LayoutCard";
-import {db, storage} from "./../firebaseconfig";
+import {mainStyles} from "../Layout";
+import {db, storage} from "../../firebaseconfig";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
 import {v4 as uuid} from "uuid";
 import {BsUpload} from "react-icons/bs";
@@ -196,14 +196,14 @@ export const InputChat: React.FC<MainInput> = ({
                 });
                 await updateDoc(doc(db, "userChats", currentUser.uid), {
                   [combinedUid + ".lastMessage"]: {
-                    message: downloadURL,
+                    message: "File",
                     sender: currentUser.displayName,
                     date: serverTimestamp(),
                   },
                 });
                 await updateDoc(doc(db, "userChats", user.userID), {
                   [combinedUidReverse + ".lastMessage"]: {
-                    message: downloadURL,
+                    message: "File",
                     sender: currentUser.displayName,
                     date: serverTimestamp(),
                   },

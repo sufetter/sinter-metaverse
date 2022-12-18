@@ -5,13 +5,12 @@ import {getFirestore} from "firebase/firestore";
 import {getAnalytics} from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCVLIDF7YRiZc-K0sDCk4tB6Af1CRZYFhE",
-  authDomain: "sinter-metaverse.firebaseapp.com",
-  projectId: "sinter-metaverse",
-  storageBucket: "sinter-metaverse.appspot.com",
-  messagingSenderId: "740073417736",
-  appId: "1:740073417736:web:4ce665a4137d8736b135bd",
-  measurementId: "G-YR7C7CFYZR",
+  apiKey: "AIzaSyAJlP_2WDkXl6iBKlio6ZCtk--Dlpq-J04",
+  authDomain: "sinter-chat.firebaseapp.com",
+  projectId: "sinter-chat",
+  storageBucket: "sinter-chat.appspot.com",
+  messagingSenderId: "1046959762430",
+  appId: "1:1046959762430:web:d394b73e102fd8c710aeaf",
 };
 
 export const app = initializeApp(firebaseConfig);

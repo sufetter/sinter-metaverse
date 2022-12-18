@@ -12,13 +12,18 @@ import {
   InputLeftElement,
   Input,
   Image,
+  Button,
+  MenuItem,
+  Menu,
+  MenuButton,
+  MenuList,
 } from "@chakra-ui/react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {IoIosArrowDown} from "react-icons/io";
-import {mainStyles} from "./LayoutCard";
+import {mainStyles} from "../Layout/LayoutCard";
 import Link from "next/link";
-import {AuthContext} from "../context/AuthContext";
-import {auth, db} from "../firebaseconfig";
+import {AuthContext} from "../../context/AuthContext";
+import {auth, db} from "../../firebaseconfig";
 import {
   collection,
   query,
@@ -82,7 +87,7 @@ const Logo = memo(() => {
   );
 });
 
-const Header = () => {
+export const Header = memo(() => {
   const currentUser: any = useContext(AuthContext);
 
   useEffect(() => {
@@ -174,12 +179,17 @@ const Header = () => {
               h="35px"
               borderRadius="20px"
             />
-            <Icon as={IoIosArrowDown} ml={1} boxSize="17px" />
+            <Flex>
+              <Icon
+                as={IoIosArrowDown}
+                color={mainStyles.mainIconColor}
+                ml={0.5}
+                boxSize="17px"
+              />
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
     </ChakraProvider>
   );
-};
-
-export default memo(Header);
+});

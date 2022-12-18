@@ -9,10 +9,15 @@ import {
   Text,
   SlideFade,
 } from "@chakra-ui/react";
+<<<<<<< HEAD:components/EmojiCard.tsx
 import {mainStyles} from "./LayoutCard";
 import {motion, AnimatePresence} from "framer-motion";
+=======
+import {mainStyles} from "../Layout/LayoutCard";
+import {motion} from "framer-motion";
+>>>>>>> f820432a868067d34eaaa4a3c40c5f92f8376efc:components/EmojiCard/EmojiCard.tsx
 
-const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
+export const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
   const [browserStyles, setBrowserStyles] = useState({});
   let userAgent;
   let browserName;
@@ -115,5 +120,3 @@ const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
     </Flex>
   );
 };
-
-export default EmojiCard;

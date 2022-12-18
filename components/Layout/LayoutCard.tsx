@@ -1,7 +1,7 @@
 import {Box, Flex, Stack, Spacer, Text, VStack} from "@chakra-ui/react";
 import Head from "next/head";
 import {Html} from "next/document";
-import Header from "./Header";
+import {Header} from "../Header";
 import {AnimatePresence, motion} from "framer-motion";
 import {useRouter} from "next/router";
 
@@ -40,11 +40,7 @@ export const mainStyles = {
 };
 
 export let navigate: any;
-export default function LayoutCard({
-  children,
-  card = false,
-  style,
-}: LayoutProps) {
+export function LayoutCard({children, card = false, style}: LayoutProps) {
   const router = useRouter();
   navigate = (href: string) => {
     router.push(`${href}`);

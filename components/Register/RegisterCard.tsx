@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useContext} from "react";
+import React, {useEffect, useState, useRef, useContext, memo} from "react";
 import Link from "next/link";
 import {
   Heading,
@@ -22,24 +22,24 @@ import {
 import {motion} from "framer-motion";
 import {AttachmentIcon} from "@chakra-ui/icons";
 import {ref, uploadBytesResumable, getDownloadURL} from "firebase/storage";
-import userIcon from "../images/user.png";
+import userIcon from "../../images/user.png";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
   sendEmailVerification,
 } from "firebase/auth";
-import {auth, storage, db} from "../firebaseconfig";
+import {auth, storage, db} from "../../firebaseconfig";
 import {doc, setDoc} from "firebase/firestore";
 import {collection, query, where, getDocs} from "firebase/firestore";
-import {AuthContext} from "../context/AuthContext";
+import {AuthContext} from "../../context/AuthContext";
 import {useRouter} from "next/router";
 import {FcAddImage} from "react-icons/fc";
-import {navigate, mainStyles} from "./LayoutCard";
-import SingupGoogle from "../components/SingupGoogle";
-import ModalCard from "./ModalCard";
+import {navigate, mainStyles} from "../Layout";
+import {SingupGoogle} from "../SingupGoogle";
+import {ModalCard} from "../Modal";
 
-function RegisterCard() {
+export const RegisterCard = memo(() => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
@@ -280,6 +280,7 @@ function RegisterCard() {
                   onChange={handleDisplayNameChange}
                   placeholder="Your nickname"
                   bg="#224957"
+                  color="white"
                 />
                 {!isErrorNickname ? (
                   <FormHelperText mb="2">Nice one.</FormHelperText>
@@ -296,6 +297,7 @@ function RegisterCard() {
                   onChange={handleEmailChange}
                   placeholder="Email"
                   bg="#224957"
+                  color="white"
                 />
                 {!isErrorEmail ? (
                   <FormHelperText mb="2">Email is checked.</FormHelperText>
@@ -312,6 +314,7 @@ function RegisterCard() {
                     placeholder="Password"
                     bg="#224957"
                     w="100%"
+                    color="white"
                   />
                   <Button
                     h="1.75rem"
@@ -356,6 +359,7 @@ function RegisterCard() {
                   placeholder="Repeat your Password"
                   bg="#224957"
                   w="100%"
+                  color="white"
                 />
                 {!isErrorPasswordRepeat ? (
                   <FormHelperText mb={2}>
@@ -460,5 +464,4 @@ function RegisterCard() {
       </Flex>
     </Flex>
   );
-}
-export default RegisterCard;
+});
