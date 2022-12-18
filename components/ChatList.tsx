@@ -10,7 +10,7 @@ import {
   Tooltip,
   Box,
 } from "@chakra-ui/react";
-import React, {useState, useContext, useEffect, memo, useMemo} from "react";
+import React, {useState, useEffect, memo, useMemo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {CiSettings} from "react-icons/ci";
 import {MdAdd} from "react-icons/md";
@@ -60,7 +60,6 @@ export const ChatItem = memo(
     let displayName = user?.displayName;
 
     if (user?.displayName.length > 9 || lastMessage.message.length > 9) {
-      console.log(lastMessage.message.length + "  " + displayName);
       lastMessage.message = lastMessage.message.slice(0, 6) + "...";
       displayName = user.displayName.slice(0, 6) + "...";
     }
@@ -138,6 +137,7 @@ export const ChatSearch = ({
       const querySnapshot: any = await getDocs(queryDB);
       await querySnapshot.forEach((doc: any) => {
         const result = doc.data();
+        console.log(result);
         if (result.userID != currentUser.uid) results.push(result);
       });
 

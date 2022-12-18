@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import {
   Heading,
@@ -34,6 +34,8 @@ function loginCard() {
   const [show, setShow] = useState(false);
   const [error, setError] = useState<boolean>(false);
   const [submit, setSubmit] = useState(false);
+  const [passwordError, setPasswordError] = useState("Password is required");
+  const [emailError, setEmailError] = useState("Email is required");
 
   const handleEmailChange = (e: any) => setEmail(e.target.value);
   const handlePasswordChange = (e: any) => {
@@ -56,6 +58,13 @@ function loginCard() {
       );
     } catch (error: any) {
       setError(true);
+      if (error.message.includes("password")) {
+        setPassword("");
+        setPasswordError("Wrong Password");
+      } else if (error.message.includes("user-not-found")) {
+        setEmail("");
+        setEmailError("No user found");
+      }
       console.log(error.message);
       console.log(error.code);
     }
@@ -117,7 +126,7 @@ function loginCard() {
                     Enter your email address.
                   </FormHelperText>
                 ) : (
-                  <FormErrorMessage mb="2">Email is required.</FormErrorMessage>
+                  <FormErrorMessage mb="2">{emailError}</FormErrorMessage>
                 )}
               </FormControl>
               <FormControl isInvalid={isErrorPssword}>
@@ -144,9 +153,7 @@ function loginCard() {
                 {!isErrorPssword ? (
                   <FormHelperText mb={2}>Enter your password.</FormHelperText>
                 ) : (
-                  <FormErrorMessage mb={2}>
-                    Pssword is required.
-                  </FormErrorMessage>
+                  <FormErrorMessage mb={2}>{passwordError}</FormErrorMessage>
                 )}
               </FormControl>
 

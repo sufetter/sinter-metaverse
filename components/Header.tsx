@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useRef, memo} from "react";
+import React, {useState, useEffect, useRef, memo} from "react";
 import {
   Box,
   Flex,
@@ -131,6 +131,8 @@ const Header = () => {
     () => currentUser.photoURL || userIcon
   );
   const [username, setUsername] = useState<any>(currentUser.displayName);
+  let chatHref =
+    "/chat/" + currentUser.displayName + "." + currentUser.uid?.slice(0, 5);
   return (
     <ChakraProvider>
       <Flex
@@ -153,7 +155,7 @@ const Header = () => {
           <Flex>
             <HeaderSearch />
             <HStack align="center">
-              <Link href="/chat/fisting">
+              <Link href={chatHref}>
                 <a>CHAT</a>
               </Link>
               <Link href="/register">
