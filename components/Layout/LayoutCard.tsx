@@ -4,6 +4,7 @@ import {Html} from "next/document";
 import {Header} from "../Header";
 import {AnimatePresence, motion} from "framer-motion";
 import {useRouter} from "next/router";
+import React from "react";
 
 type LayoutProps = {
   children: JSX.Element;
