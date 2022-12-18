@@ -10,7 +10,7 @@ import {
   SlideFade,
 } from "@chakra-ui/react";
 import {mainStyles} from "./LayoutCard";
-import {motion} from "framer-motion";
+import {motion, AnimatePresence} from "framer-motion";
 
 const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
   const [browserStyles, setBrowserStyles] = useState({});
@@ -63,48 +63,56 @@ const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
   };
 
   return (
-    <motion.div
-      animate={smileIsOpen ? "open" : "closed"}
-      variants={variants}
-      transition={{duration: 0.3}}
-    >
-      <Flex direction="column" align="flex-end" w="100%">
-        <Flex
-          direction="row"
-          color="white"
-          w="210px"
-          align-self="flex-end"
-          bg={mainStyles.emojiDashboardColor}
-          borderRadius="7px"
-          h="250px"
-          wrap="wrap"
-          overflowY="scroll"
-          display={smileIsOpen ? "flex" : "none"}
-          fontSize="20px"
-          zIndex={10}
-          mx={1}
-          mt="-250px"
-          css={browserStyles}
-          textAlign="justify"
-          user-select="none"
-        >
-          {symbols.map((symbol) => (
-            <Flex
-              align="center"
-              justify="center"
-              key={symbol}
-              onClick={() => setMessage(message + symbol)}
-              m="10px 10px"
-              w="30px"
-              h="30px"
-              _hover={{cursor: "pointer"}}
-            >
-              {symbol}
+    <Flex>
+      <AnimatePresence>
+        {smileIsOpen && (
+          <motion.div
+            initial={{x: -1000, opacity: 0, scale: 0.5}}
+            animate={{x: 0, opacity: 1, scale: 1}}
+            transition={{duration: 0.3, default: {ease: "easeInOut"}}}
+            exit={{opacity: 0}}
+            key={Math.random()}
+          >
+            <Flex direction="column" align="flex-end" w="100%">
+              <Flex
+                direction="row"
+                color="white"
+                w="210px"
+                align-self="flex-end"
+                bg={mainStyles.emojiDashboardColor}
+                borderRadius="7px"
+                h="250px"
+                wrap="wrap"
+                overflowY="scroll"
+                display={smileIsOpen ? "flex" : "none"}
+                fontSize="20px"
+                zIndex={10}
+                mx={1}
+                mt="-250px"
+                css={browserStyles}
+                textAlign="justify"
+                user-select="none"
+              >
+                {symbols.map((symbol) => (
+                  <Flex
+                    align="center"
+                    justify="center"
+                    key={symbol}
+                    onClick={() => setMessage(message + symbol)}
+                    m="10px 10px"
+                    w="30px"
+                    h="30px"
+                    _hover={{cursor: "pointer"}}
+                  >
+                    {symbol}
+                  </Flex>
+                ))}
+              </Flex>
             </Flex>
-          ))}
-        </Flex>
-      </Flex>
-    </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Flex>
   );
 };
 
