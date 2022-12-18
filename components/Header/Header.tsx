@@ -15,10 +15,10 @@ import {
 } from "@chakra-ui/react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {IoIosArrowDown} from "react-icons/io";
-import {mainStyles} from "./LayoutCard";
+import {mainStyles} from "../Layout/LayoutCard";
 import Link from "next/link";
-import {AuthContext} from "../context/AuthContext";
-import {auth, db} from "../firebaseconfig";
+import {AuthContext} from "../../context/AuthContext";
+import {auth, db} from "../../firebaseconfig";
 import {
   collection,
   query,
@@ -82,7 +82,7 @@ const Logo = memo(() => {
   );
 });
 
-const Header = () => {
+export const Header = memo(() => {
   const currentUser: any = useContext(AuthContext);
 
   useEffect(() => {
@@ -180,6 +180,4 @@ const Header = () => {
       </Flex>
     </ChakraProvider>
   );
-};
-
-export default memo(Header);
+});

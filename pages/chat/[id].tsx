@@ -1,16 +1,15 @@
 import {Avatar, Box, ChakraProvider, Flex, Icon, Text} from "@chakra-ui/react";
 import React, {useState, useRef, useContext, useEffect} from "react";
-import LayoutCard from "../../components/LayoutCard";
+
 import {MainChat} from "../../components/MainChat";
 import {SidebarMain} from "../../components/SidebarMain";
-import Sidebar from "../../components/Sidebar";
+import {Sidebar} from "../../components/Sidebar";
 import {ChatSettings} from "../../components/ChatSettings";
-import ChatList from "../../components/ChatList";
-import {mainStyles} from "../../components/LayoutCard";
+import {ChatList} from "../../components/ChatList";
+import {mainStyles, LayoutCard, navigate} from "../../components/Layout";
 import {HiOutlineChatAlt2} from "react-icons/hi";
 import {TbLock} from "react-icons/tb";
 import {AuthContext} from "../../context/AuthContext";
-import {navigate} from "../../components/LayoutCard";
 import {useRouter} from "next/router";
 
 const id: React.FC = () => {
@@ -58,7 +57,7 @@ const id: React.FC = () => {
         </Text>
         <Text>
           <Text color="white" as="span">
-            or
+            or{" "}
           </Text>
           <Text
             color={mainStyles.mainItemColor}

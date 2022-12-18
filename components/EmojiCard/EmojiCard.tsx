@@ -9,10 +9,10 @@ import {
   Text,
   SlideFade,
 } from "@chakra-ui/react";
-import {mainStyles} from "./LayoutCard";
+import {mainStyles} from "../Layout/LayoutCard";
 import {motion} from "framer-motion";
 
-const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
+export const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
   const [browserStyles, setBrowserStyles] = useState({});
   let userAgent;
   let browserName;
@@ -107,5 +107,3 @@ const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
     </motion.div>
   );
 };
-
-export default EmojiCard;

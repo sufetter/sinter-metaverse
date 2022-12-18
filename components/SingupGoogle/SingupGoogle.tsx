@@ -2,10 +2,10 @@ import {useContext} from "react";
 import {signInWithPopup, GoogleAuthProvider} from "firebase/auth";
 import {doc, setDoc} from "firebase/firestore";
 import {collection, query, where, getDocs} from "firebase/firestore";
-import {auth, db} from "../firebaseconfig";
-import {AuthContext} from "../context/AuthContext";
+import {auth, db} from "../../firebaseconfig";
+import {AuthContext} from "../../context/AuthContext";
 import {Button, Flex, Icon, Text} from "@chakra-ui/react";
-import {mainStyles} from "./LayoutCard";
+import {mainStyles} from "../Layout";
 import {FcGoogle} from "react-icons/fc";
 
 const provider = new GoogleAuthProvider();
@@ -53,7 +53,7 @@ const handleSubmit = async () => {
       // ...
     });
 };
-const SingupGoogle = () => {
+export const SingupGoogle = () => {
   const currentUser: any = useContext(AuthContext);
   // console.log(currentUser);
   return (
@@ -76,5 +76,3 @@ const SingupGoogle = () => {
     </Button>
   );
 };
-
-export default SingupGoogle;

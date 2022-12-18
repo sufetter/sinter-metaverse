@@ -14,8 +14,8 @@ import React, {useState, useContext, useEffect, memo, useMemo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {CiSettings} from "react-icons/ci";
 import {MdAdd} from "react-icons/md";
-import {mainStyles} from "./LayoutCard";
-import {db} from "../firebaseconfig";
+import {mainStyles} from "../Layout";
+import {db} from "../../firebaseconfig";
 import {
   collection,
   query,
@@ -29,8 +29,8 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
-import {AuthContext} from "../context/AuthContext";
-import {MainChat} from "./MainChat";
+import {AuthContext} from "../../context/AuthContext";
+import {MainChat} from "../MainChat";
 
 type SearchItemProps = {
   searchedAvatar?: string;

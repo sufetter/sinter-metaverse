@@ -1,5 +1,5 @@
-import VereficationCard from "../components/VereficationCard";
-import LayoutCard from "../components/LayoutCard";
+import {VereficationCard} from "../components/Verification";
+import {LayoutCard} from "../components/Layout";
 import {ChakraProvider} from "@chakra-ui/react";
 
 const verefication = () => {

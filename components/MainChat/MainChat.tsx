@@ -9,13 +9,13 @@ import {
   SlideFade,
 } from "@chakra-ui/react";
 import React, {useState, memo, useContext, useEffect, useRef} from "react";
-import {InputChat} from "../components/InputChat";
-import MessageChat from "./MessageChat";
-import {mainStyles} from "./LayoutCard";
+import {InputChat} from "../../components/InputChat";
+import {MessageChat} from "../MessageChat";
+import {mainStyles} from "../Layout";
 import {FiMoreHorizontal} from "react-icons/fi";
 import {BiSearchAlt2} from "react-icons/bi";
 import {HiArrowLeft} from "react-icons/hi";
-import {db} from "../firebaseconfig";
+import {db} from "../../firebaseconfig";
 import {
   collection,
   query,
@@ -28,10 +28,10 @@ import {
   serverTimestamp,
   onSnapshot,
 } from "firebase/firestore";
-import {AuthContext} from "../context/AuthContext";
-import EmojiCard from "./EmojiCard";
-import {mainSlice} from "../src/reducers/MainSlice";
-import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
+import {AuthContext} from "../../context/AuthContext";
+import {EmojiCard} from "../../components/EmojiCard";
+import {mainSlice} from "../../src/reducers/MainSlice";
+import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 
 export const TopBarChat = ({
   displayName,
