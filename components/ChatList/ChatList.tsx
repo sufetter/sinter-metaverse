@@ -64,7 +64,7 @@ const ChatItem = memo(({user, setChatCard, lastMessage}: ChatItemProps) => {
     lastMessage.message = lastMessage.message.slice(0, 6) + "...";
     displayName = user.displayName.slice(0, 6) + "...";
   }
-  const {changeMainOpen} = mainSlice.actions;
+  const {changeMainOpen, changeCurrentChat} = mainSlice.actions;
   const dispatch = useAppDispatch();
   return (
     <Flex
@@ -82,7 +82,8 @@ const ChatItem = memo(({user, setChatCard, lastMessage}: ChatItemProps) => {
         onClick={async () => {
           dispatch(changeMainOpen("flex"));
           const userInfo: any = await getDoc(doc(db, "users", user.uid));
-          setChatCard(<MainChat user={userInfo.data()} />);
+          dispatch(changeCurrentChat(userInfo.data()));
+          setChatCard(<MainChat />);
         }}
       >
         <Box boxSize="45px" overflow="hidden" borderRadius="100px">

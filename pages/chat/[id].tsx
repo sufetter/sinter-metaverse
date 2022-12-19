@@ -2,7 +2,6 @@ import {Avatar, Box, ChakraProvider, Flex, Icon, Text} from "@chakra-ui/react";
 import React, {useState, useRef, useContext, useEffect} from "react";
 
 import {MainChat} from "../../components/MainChat";
-import {SidebarMain} from "../../components/SidebarMain";
 import {Sidebar} from "../../components/Sidebar";
 import {ChatSettings} from "../../components/ChatSettings";
 import {ChatList} from "../../components/ChatList";
@@ -133,10 +132,7 @@ const id: React.FC = () => {
                 </Text>
               </Flex>
             </Flex>
-            <Flex display={chatList ? "flex" : "none"}>
-              <ChatList searchInput={searchInput} setChatCard={setChatCard} />
-            </Flex>
-
+            <ChatList searchInput={searchInput} setChatCard={setChatCard} />
             {chatCard}
           </Flex>
         </Flex>

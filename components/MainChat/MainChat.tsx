@@ -9,7 +9,7 @@ import {
   SlideFade,
   Image,
 } from "@chakra-ui/react";
-import React, {useState, memo, useContext, useEffect, useRef} from "react";
+import React, {useState, memo, useEffect, useRef} from "react";
 import {InputChat} from "../../components/InputChat";
 import {MessageChat} from "../MessageChat";
 import {mainStyles} from "../Layout";
@@ -34,15 +34,16 @@ import {EmojiCard} from "../../components/EmojiCard";
 import {mainSlice} from "../../src/reducers/MainSlice";
 import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 
-export const TopBarChat = memo(({displayName, avatarSRC}: any) => {
+export const TopBarChat = memo(() => {
   const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
   const {currentChat} = useAppSelector((state) => state.mainSlice);
   const dispatch = useAppDispatch();
+  let avatarSRC = currentChat?.photoURL;
   if (avatarSRC == "" || avatarSRC == undefined) {
     avatarSRC =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
   }
-  let date = new Date(currentChat.lastTimeSignIn * 1000);
+  let date = new Date(currentChat?.lastTimeSignIn * 1000);
 
   let displayTime: string =
     (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +
@@ -83,9 +84,9 @@ export const TopBarChat = memo(({displayName, avatarSRC}: any) => {
           _hover={{cursor: "pointer"}}
           pr={{base: 0, md: "10px"}}
         >
-          {displayName}
+          {currentChat?.displayName}
         </Text>
-        <Text color="white" fontSize={{base: 12, md: 16}}>
+        <Text color="white" fontSize={{base: 12, lg: 16}}>
           Last time online: {displayTime}
         </Text>
       </Flex>
@@ -143,7 +144,7 @@ export const BottomBarChat = () => {
   );
 };
 
-const ChatMessges = memo(({user}: any) => {
+const ChatMessges = memo(() => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [messages, setMessages] = useState<any>([]);
   const {currentChat} = useAppSelector((state) => state.mainSlice);
@@ -195,7 +196,7 @@ const ChatMessges = memo(({user}: any) => {
   );
 });
 
-export const MainChat = memo(({user}: any) => {
+export const MainChat = memo(() => {
   const {isOpen} = useAppSelector((state: any) => state.mainSlice);
   return (
     <Flex

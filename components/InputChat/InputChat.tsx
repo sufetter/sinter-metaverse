@@ -22,7 +22,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import {useAppSelector} from "../../src/hooks/redux";
-import React, {useState, useEffect, useContext, useRef} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {AuthContext} from "../../context/AuthContext";
 import {
   HiOutlineEmojiHappy,

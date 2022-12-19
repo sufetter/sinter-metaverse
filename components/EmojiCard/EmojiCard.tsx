@@ -63,7 +63,7 @@ export const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
   };
 
   return (
-    <Flex>
+    <Flex alignSelf="end">
       <AnimatePresence>
         {smileIsOpen && (
           <motion.div
