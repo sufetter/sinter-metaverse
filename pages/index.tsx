@@ -9,6 +9,7 @@ import Link from "next/link";
 import ModalCard from "../components/ModalCard";
 
 const Home: NextPage = () => {
+  console.log("index.tsx");
   return (
     <div>
       <Head>

@@ -12,7 +12,7 @@ import {
   SkeletonCircle,
   Skeleton,
 } from "@chakra-ui/react";
-import React, {useState, useContext, useEffect, memo, useMemo} from "react";
+import React, {useState, useEffect, memo, useMemo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {CiSettings} from "react-icons/ci";
 import {MdAdd} from "react-icons/md";
@@ -64,7 +64,7 @@ const ChatItem = memo(({user, setChatCard, lastMessage}: ChatItemProps) => {
     lastMessage.message = lastMessage.message.slice(0, 6) + "...";
     displayName = user.displayName.slice(0, 6) + "...";
   }
-  const {changeMainOpen} = mainSlice.actions;
+  const {changeMainOpen, changeCurrentChat} = mainSlice.actions;
   const dispatch = useAppDispatch();
   return (
     <Flex
@@ -82,7 +82,8 @@ const ChatItem = memo(({user, setChatCard, lastMessage}: ChatItemProps) => {
         onClick={async () => {
           dispatch(changeMainOpen("flex"));
           const userInfo: any = await getDoc(doc(db, "users", user.uid));
-          setChatCard(<MainChat user={userInfo.data()} />);
+          dispatch(changeCurrentChat(userInfo.data()));
+          setChatCard(<MainChat />);
         }}
       >
         <Box boxSize="45px" overflow="hidden" borderRadius="100px">
@@ -114,7 +115,7 @@ const ChatSearch = ({
   searchInput,
 }: any) => {
   const [error, setError] = useState<boolean>(false);
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   useEffect(() => {
     if (username !== undefined && currentUser.uid !== undefined) handleSearch();
@@ -136,6 +137,7 @@ const ChatSearch = ({
       const querySnapshot: any = await getDocs(queryDB);
       await querySnapshot.forEach((doc: any) => {
         const result = doc.data();
+        console.log(result);
         if (result.userID != currentUser.uid) results.push(result);
       });
 
@@ -242,7 +244,7 @@ const Render = ({searchedUsers, username}: any) => {
 };
 
 const ChatItemsList = memo(({setChatCard}: any) => {
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [chats, setChats] = useState<any>([]);
   const [loaded, setLoaded] = useState(false);
 

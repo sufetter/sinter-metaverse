@@ -7,7 +7,7 @@ import {
   ChakraProvider,
   Spacer,
 } from "@chakra-ui/react";
-import React, {useContext, memo} from "react";
+import React, {memo} from "react";
 import {CgProfile} from "react-icons/cg";
 import {FiMessageSquare, FiSettings} from "react-icons/fi";
 import {BsNewspaper} from "react-icons/bs";
@@ -17,7 +17,6 @@ import {MdOutlineLogout} from "react-icons/md";
 import {mainStyles, navigate} from "../Layout";
 import {signOut} from "firebase/auth";
 import {auth} from "../../firebaseconfig";
-import {AuthContext} from "../../context/AuthContext";
 import {useAppSelector} from "../../src/hooks/redux";
 
 type SideBarItemProps = {
@@ -57,7 +56,7 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
 };
 
 export const Sidebar = memo(() => {
-  const currentUser = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const {isOpen} = useAppSelector((state) => state.mainSlice);
   return (

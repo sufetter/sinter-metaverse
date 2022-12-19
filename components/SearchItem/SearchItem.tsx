@@ -10,7 +10,7 @@ import {
   Tooltip,
   Box,
 } from "@chakra-ui/react";
-import React, {useState, useContext, useEffect, memo, useMemo} from "react";
+import React, {useState, useEffect, memo, useMemo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {CiSettings} from "react-icons/ci";
 import {MdAdd} from "react-icons/md";
@@ -32,6 +32,7 @@ import {
 import {AuthContext} from "../../context/AuthContext";
 import {MainChat} from "../MainChat";
 import {ModalCard} from "../Modal";
+import {useAppSelector} from "../../src/hooks/redux";
 
 type SearchItemProps = {
   searchedAvatar?: string;
@@ -42,8 +43,8 @@ type SearchItemProps = {
 
 export const SearchItem = memo(({searchedUser}: SearchItemProps) => {
   const [user, setUser] = useState(searchedUser);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [modal, setModal] = useState<any>(false);
-  const currentUser: any = useContext(AuthContext);
   let searchedAvatar: string =
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
   if (user?.photoURL != undefined && user?.photoURL != "") {

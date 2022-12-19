@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import {
   Heading,
@@ -25,6 +25,7 @@ import {auth} from "../../firebaseconfig";
 import {signInWithEmailAndPassword} from "firebase/auth";
 import {useRouter} from "next/router";
 import {AuthContext} from "../../context/AuthContext";
+import {useAppSelector} from "../../src/hooks/redux";
 import {SingupGoogle} from "../SingupGoogle";
 
 export function LoginCard() {
@@ -42,7 +43,7 @@ export function LoginCard() {
   };
 
   const handleShow = () => setShow(!show);
-  const currentUser = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

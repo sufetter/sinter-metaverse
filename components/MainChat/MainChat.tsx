@@ -9,7 +9,7 @@ import {
   SlideFade,
   Image,
 } from "@chakra-ui/react";
-import React, {useState, memo, useContext, useEffect, useRef} from "react";
+import React, {useState, memo, useEffect, useRef} from "react";
 import {InputChat} from "../../components/InputChat";
 import {MessageChat} from "../MessageChat";
 import {mainStyles} from "../Layout";
@@ -34,22 +34,24 @@ import {EmojiCard} from "../../components/EmojiCard";
 import {mainSlice} from "../../src/reducers/MainSlice";
 import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 
-export const TopBarChat = memo(({displayName, avatarSRC, user}: any) => {
+export const TopBarChat = memo(() => {
+  const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
+  const {currentChat} = useAppSelector((state) => state.mainSlice);
+  const dispatch = useAppDispatch();
+  let avatarSRC = currentChat?.photoURL;
   if (avatarSRC == "" || avatarSRC == undefined) {
     avatarSRC =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
   }
-  let date = new Date(user.lastTimeSignIn * 1000);
+  let date = new Date(currentChat?.lastTimeSignIn * 1000);
 
   let displayTime: string =
     (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +
     ":" +
     (date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes());
-  const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
-  const dispatch = useAppDispatch();
 
   if ((date + "").includes("Invalid")) {
-    displayTime = "time not found (prev v of user type)";
+    displayTime = "time not found";
   }
 
   return (
@@ -82,9 +84,9 @@ export const TopBarChat = memo(({displayName, avatarSRC, user}: any) => {
           _hover={{cursor: "pointer"}}
           pr={{base: 0, md: "10px"}}
         >
-          {displayName}
+          {currentChat?.displayName}
         </Text>
-        <Text color="white" fontSize={{base: 12, md: 16}}>
+        <Text color="white" fontSize={{base: 12, lg: 16}}>
           Last time online: {displayTime}
         </Text>
       </Flex>
@@ -113,7 +115,7 @@ export const TopBarChat = memo(({displayName, avatarSRC, user}: any) => {
   );
 });
 
-export const BottomBarChat = memo(({user}: any) => {
+export const BottomBarChat = () => {
   const [message, setMessage] = useState<string>("");
   const [smileIsOpen, changeSmileOpen] = useState<boolean>(false);
 
@@ -136,54 +138,57 @@ export const BottomBarChat = memo(({user}: any) => {
           changeSmileOpen={() => changeSmileOpen(true)}
           setMessage={(value: string) => setMessage(value)}
           message={message}
-          user={user}
         />
       </Flex>
     </Flex>
   );
-});
+};
 
-const ChatMessges = memo(({user}: any) => {
-  const currentUser: any = useContext(AuthContext);
+const ChatMessges = memo(() => {
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [messages, setMessages] = useState<any>([]);
-
+  const {currentChat} = useAppSelector((state) => state.mainSlice);
+  console.log(currentUser?.uid);
   const combinedUid: any =
-    currentUser?.uid?.slice(0, 5) + "" + user?.userID!.slice(0, 5);
+    currentUser?.uid?.slice(0, 5) + "" + currentChat?.userID!.slice(0, 5);
+  console.log(combinedUid);
   useEffect(() => {
-    const getMessages = () => {
-      const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
-        let resMessages: any = doc.data();
-        let messagesArr = Object.entries(resMessages);
-        let sender;
+    if (currentChat != null) {
+      const getMessages = () => {
+        const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
+          let resMessages: any = doc.data();
+          let messagesArr = Object.entries(resMessages);
+          let sender;
 
-        let res = messagesArr[0][1].map((chat: any) => {
-          if (chat.senderId === currentUser.uid) {
-            sender = currentUser;
-          } else {
-            sender = user;
-          }
+          let res = messagesArr[0][1].map((chat: any) => {
+            if (chat.senderId === currentUser.uid) {
+              sender = currentUser;
+            } else {
+              sender = currentChat;
+            }
 
-          return (
-            <MessageChat
-              key={Math.random()}
-              message={chat.message}
-              time={chat.date}
-              user={sender}
-            />
-          );
-          // <Flex>jhkh</Flex>;
+            return (
+              <MessageChat
+                key={Math.random()}
+                message={chat.message}
+                time={chat.date}
+                user={sender}
+              />
+            );
+            // <Flex>jhkh</Flex>;
+          });
+
+          setMessages(res);
         });
 
-        setMessages(res);
-      });
-
-      return () => {
-        getMessages();
+        return () => {
+          getMessages();
+        };
       };
-    };
 
-    currentUser.uid && getMessages();
-  }, [user]);
+      currentUser.uid && getMessages();
+    }
+  }, [currentChat]);
   return (
     <Flex direction="column" w="100%" h="100%" flex={1}>
       {messages}
@@ -191,7 +196,7 @@ const ChatMessges = memo(({user}: any) => {
   );
 });
 
-export const MainChat = memo(({user}: any) => {
+export const MainChat = memo(() => {
   const {isOpen} = useAppSelector((state: any) => state.mainSlice);
   return (
     <Flex
@@ -209,11 +214,7 @@ export const MainChat = memo(({user}: any) => {
         },
       }}
     >
-      <TopBarChat
-        displayName={user?.displayName}
-        avatarSRC={user?.photoURL}
-        user={user}
-      />
+      <TopBarChat />
       <Flex
         flex={1}
         px={{base: 3, md: 10}}
@@ -228,9 +229,9 @@ export const MainChat = memo(({user}: any) => {
           },
         }}
       >
-        <ChatMessges user={user} />
+        <ChatMessges />
       </Flex>
-      <BottomBarChat user={user} />
+      <BottomBarChat />
     </Flex>
   );
 });

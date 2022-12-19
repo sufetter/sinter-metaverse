@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React from "react";
 import type {NextPage} from "next";
 import {LoginCard} from "../components/Login";
 import {ChakraProvider} from "@chakra-ui/react";

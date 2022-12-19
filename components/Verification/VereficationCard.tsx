@@ -1,7 +1,7 @@
 import {auth} from "../../firebaseconfig";
 import {onAuthStateChanged, sendEmailVerification} from "firebase/auth";
 import {useRouter} from "next/router";
-import React, {useEffect, useContext} from "react";
+import React, {useEffect} from "react";
 
 import {
   Flex,
@@ -15,9 +15,10 @@ import {
 import {checkCustomRoutes} from "next/dist/lib/load-custom-routes";
 import {AuthContext} from "../../context/AuthContext";
 import {navigate} from "../Layout";
+import {useAppSelector} from "../../src/hooks/redux";
 
 export const VereficationCard = () => {
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   if (currentUser != Object) {
     // navigate("/register");
   }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useContext, memo} from "react";
+import React, {useEffect, useState, useRef, memo} from "react";
 import Link from "next/link";
 import {
   Heading,
@@ -38,6 +38,8 @@ import {FcAddImage} from "react-icons/fc";
 import {navigate, mainStyles} from "../Layout";
 import {SingupGoogle} from "../SingupGoogle";
 import {ModalCard} from "../Modal";
+import {useAppSelector} from "../../src/hooks/redux";
+import userAuthSlice from "../../src/reducers/userAuthSlice";
 
 export const RegisterCard = memo(() => {
   const [email, setEmail] = useState<string>("");
@@ -56,7 +58,7 @@ export const RegisterCard = memo(() => {
   );
   const [fileChecked, setFileChecked] = useState(false);
   const [modal, setModal] = useState<any>(false);
-  const currentUser = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const inputFile: any = useRef(null);
 

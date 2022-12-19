@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useRef, memo} from "react";
+import React, {useState, useEffect, useRef, memo} from "react";
 import {
   Box,
   Flex,
@@ -22,6 +22,7 @@ import {BiSearchAlt2} from "react-icons/bi";
 import {IoIosArrowDown} from "react-icons/io";
 import {mainStyles} from "../Layout/LayoutCard";
 import Link from "next/link";
+import {useAppSelector} from "../../src/hooks/redux";
 import {AuthContext} from "../../context/AuthContext";
 import {auth, db} from "../../firebaseconfig";
 import {
@@ -69,7 +70,7 @@ export const HeaderSearch = () => {
 };
 
 const Logo = memo(() => {
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const [logoSRC, setLogoSRC] = useState(
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/mainLOGO.png?alt=media&token=7a5344ac-0842-4ee6-b542-b1bddbbe8bb1"
@@ -88,7 +89,7 @@ const Logo = memo(() => {
 });
 
 export const Header = memo(() => {
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   useEffect(() => {
     if (currentUser.displayName != null) {

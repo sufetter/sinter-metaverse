@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import Link from "next/link";
 import {
   Flex,
@@ -29,9 +29,10 @@ import resetPasswordIcon from "../../images/resetPasswordIcon.png";
 import {auth} from "../../firebaseconfig";
 import {sendPasswordResetEmail} from "firebase/auth";
 import {ModalCard} from "../Modal";
+import {useAppSelector} from "../../src/hooks/redux";
 
 export const ResetPasswordCard = () => {
-  const currentUser: any = useContext(AuthContext);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [modal, setModal] = useState<any>();
   const [disabled, setDisabled] = useState(false);
 
