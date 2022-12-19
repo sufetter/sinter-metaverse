@@ -244,7 +244,6 @@ export const RegisterCard = memo(() => {
   let file: Array<File> = [];
   let fileName: string | any = "";
   let fileCheck: File | any;
-  let modalBody = "";
 
   // MAIN UI
   return (

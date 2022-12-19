@@ -8,6 +8,12 @@ import {
   Text,
   SlideFade,
   Image,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import React, {useState, memo, useEffect, useRef} from "react";
 import {InputChat} from "../../components/InputChat";
@@ -35,12 +41,14 @@ import {mainSlice} from "../../src/reducers/MainSlice";
 import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 import {ModalBlockCard} from "../ModalBlock";
 import {AnimatePresence} from "framer-motion";
+import {AlertCard} from "../Alert";
 
 export const TopBarChat = memo(() => {
   const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
   const {currentChat} = useAppSelector((state) => state.mainSlice);
   const dispatch = useAppDispatch();
   const [isOpen, setOpen] = useState<boolean>(false);
+  const [alert, setAlert] = useState<any>(false);
   let avatarSRC = currentChat?.photoURL;
   if (avatarSRC == "" || avatarSRC == undefined) {
     avatarSRC =
@@ -65,6 +73,10 @@ export const TopBarChat = memo(() => {
             <Flex
               _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
               transition="background-color 150ms linear"
+              onClick={() => {
+                setOpen(false);
+                setAlert(<AlertCard alert={alert} />);
+              }}
             >
               <Text color="white" mx={3} my={2}>
                 Delete this chat
