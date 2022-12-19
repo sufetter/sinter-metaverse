@@ -1,7 +1,7 @@
-import {auth} from "../firebaseconfig";
+import {auth} from "../../firebaseconfig";
 import {onAuthStateChanged, sendEmailVerification} from "firebase/auth";
 import {useRouter} from "next/router";
-import {useEffect} from "react";
+import React, {useEffect, useContext} from "react";
 
 import {
   Flex,
@@ -13,11 +13,11 @@ import {
   useRadio,
 } from "@chakra-ui/react";
 import {checkCustomRoutes} from "next/dist/lib/load-custom-routes";
-import {navigate} from "./LayoutCard";
-import {useAppSelector} from "../src/hooks/redux";
+import {AuthContext} from "../../context/AuthContext";
+import {navigate} from "../Layout";
 
-const VereficationCard = () => {
-  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
+export const VereficationCard = () => {
+  const currentUser: any = useContext(AuthContext);
   if (currentUser != Object) {
     // navigate("/register");
   }
@@ -105,5 +105,3 @@ const VereficationCard = () => {
     </Flex>
   );
 };
-
-export default VereficationCard;

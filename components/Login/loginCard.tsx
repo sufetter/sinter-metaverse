@@ -20,15 +20,15 @@ import {
   Checkbox,
   Spacer,
 } from "@chakra-ui/react";
-import {mainStyles} from "./LayoutCard";
-import {auth} from "../firebaseconfig";
+import {mainStyles, navigate} from "../Layout";
+import {auth} from "../../firebaseconfig";
 import {signInWithEmailAndPassword} from "firebase/auth";
 import {useRouter} from "next/router";
-import {navigate} from "./LayoutCard";
-import SingupGoogle from "./SingupGoogle";
-import {useAppSelector} from "../src/hooks/redux";
+import {AuthContext} from "../../context/AuthContext";
+import {useAppSelector} from "../../src/hooks/redux";
+import {SingupGoogle} from "../SingupGoogle";
 
-function loginCard() {
+export function LoginCard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
@@ -228,4 +228,3 @@ function loginCard() {
     </Flex>
   );
 }
-export default loginCard;

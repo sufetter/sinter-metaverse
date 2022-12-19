@@ -23,14 +23,15 @@ import {
   useDisclosure,
   extendTheme,
 } from "@chakra-ui/react";
-import {mainStyles} from "./LayoutCard";
-import resetPasswordIcon from "../images/resetPasswordIcon.png";
-import {auth} from "../firebaseconfig";
+import {mainStyles} from "../Layout";
+import {AuthContext} from "../../context/AuthContext";
+import resetPasswordIcon from "../../images/resetPasswordIcon.png";
+import {auth} from "../../firebaseconfig";
 import {sendPasswordResetEmail} from "firebase/auth";
-import ModalCard from "./ModalCard";
-import {useAppSelector} from "../src/hooks/redux";
+import {ModalCard} from "../Modal";
+import {useAppSelector} from "../../src/hooks/redux";
 
-const ResetPasswordCard = () => {
+export const ResetPasswordCard = () => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [modal, setModal] = useState<any>();
   const [disabled, setDisabled] = useState(false);

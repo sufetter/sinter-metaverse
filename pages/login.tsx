@@ -1,8 +1,8 @@
 import React from "react";
 import type {NextPage} from "next";
-import LoginCard from "../components/loginCard";
+import {LoginCard} from "../components/Login";
 import {ChakraProvider} from "@chakra-ui/react";
-import LayoutCard from "../components/LayoutCard";
+import {LayoutCard} from "../components/Layout";
 
 export default function login() {
   return (

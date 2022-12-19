@@ -9,13 +9,15 @@ import {
   Stack,
   Tooltip,
   Box,
+  SkeletonCircle,
+  Skeleton,
 } from "@chakra-ui/react";
 import React, {useState, useEffect, memo, useMemo} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {CiSettings} from "react-icons/ci";
 import {MdAdd} from "react-icons/md";
-import {mainStyles} from "./LayoutCard";
-import {db} from "../firebaseconfig";
+import {mainStyles} from "../Layout/LayoutCard";
+import {db} from "../../firebaseconfig";
 import {
   collection,
   query,
@@ -29,10 +31,11 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
-import {MainChat} from "./MainChat";
-import {mainSlice} from "../src/reducers/MainSlice";
-import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
-import {SearchItem} from "./SearchItem";
+import {AuthContext} from "../../context/AuthContext";
+import {MainChat} from "../MainChat";
+import {mainSlice} from "../../src/reducers/MainSlice";
+import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
+import {SearchItem} from "../SearchItem";
 
 type ChatItemProps = {
   searchedAvatar?: string;
@@ -42,73 +45,69 @@ type ChatItemProps = {
   setChatCard?: any;
   lastMessage: any;
 };
+const ChatItem = memo(({user, setChatCard, lastMessage}: ChatItemProps) => {
+  let searchedAvatar: string =
+    "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
+  if (user?.photoURL != undefined && user?.photoURL != "") {
+    searchedAvatar = user.photoURL;
+  }
+  let date = new Date(lastMessage?.date?.seconds * 1000);
+  let min: any = date.getMinutes();
 
-export const ChatItem = memo(
-  ({user, setChatCard, lastMessage}: ChatItemProps) => {
-    let searchedAvatar: string =
-      "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
-    if (user?.photoURL != undefined && user?.photoURL != "") {
-      searchedAvatar = user.photoURL;
-    }
-    let date = new Date(lastMessage?.date?.seconds * 1000);
-    let min: any = date.getMinutes();
+  if (date.getMinutes() < 10) {
+    min = "0" + date.getMinutes().toLocaleString();
+  }
+  let lastMessageDate = date.getHours() + ":" + min;
+  let displayName = user?.displayName;
 
-    if (date.getMinutes() < 10) {
-      min = "0" + date.getMinutes().toLocaleString();
-    }
-    let lastMessageDate = date.getHours() + ":" + min;
-    let displayName = user?.displayName;
-
-    if (user?.displayName.length > 9 || lastMessage.message.length > 9) {
-      lastMessage.message = lastMessage.message.slice(0, 6) + "...";
-      displayName = user.displayName.slice(0, 6) + "...";
-    }
-    const {changeMainOpen, changeCurrentChat} = mainSlice.actions; //Ууууу Reduux
-    const dispatch = useAppDispatch();
-    return (
+  if (user?.displayName.length > 9 || lastMessage?.message?.length > 9) {
+    lastMessage.message = lastMessage.message.slice(0, 6) + "...";
+    displayName = user.displayName.slice(0, 6) + "...";
+  }
+  const {changeMainOpen} = mainSlice.actions;
+  const dispatch = useAppDispatch();
+  return (
+    <Flex
+      align="center"
+      justify="space-between"
+      p="2"
+      _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
+      w="100%"
+      px={4}
+      py={2}
+    >
       <Flex
         align="center"
-        justify="space-between"
-        p="2"
-        _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
         w="100%"
-        px={4}
-        py={2}
+        onClick={async () => {
+          dispatch(changeMainOpen("flex"));
+          const userInfo: any = await getDoc(doc(db, "users", user.uid));
+          setChatCard(<MainChat user={userInfo.data()} />);
+        }}
       >
-        <Flex
-          align="center"
-          w="100%"
-          onClick={async () => {
-            dispatch(changeMainOpen("flex"));
-            const userInfo: any = await getDoc(doc(db, "users", user.uid));
-            dispatch(changeCurrentChat(userInfo.data()));
-            setChatCard(<MainChat />);
-          }}
-        >
-          <Box boxSize="45px" overflow="hidden" borderRadius="100px">
-            <img width="100%" src={searchedAvatar} />
-          </Box>
-          <Flex direction="column">
-            <Text ms={3} color="white">
-              {displayName}
+        <Box boxSize="45px" overflow="hidden" borderRadius="100px">
+          <img width="100%" src={searchedAvatar} />
+        </Box>
+        <Flex direction="column">
+          <Text ms={3} color="white">
+            {displayName}
+          </Text>
+          <Flex>
+            <Text wordBreak="break-all" ms={3} color="gray.400">
+              {lastMessage?.message}
             </Text>
-            <Flex>
-              <Text wordBreak="break-all" ms={3} color="gray.400">
-                {lastMessage?.message}
-              </Text>
-              {/* <Text ms={3} color={mainStyles.mainIconColor}>
+            {/* <Text ms={3} color={mainStyles.mainIconColor}>
                 {lastMessageDate}
               </Text> */}
-            </Flex>
           </Flex>
         </Flex>
-        <Flex align="center"></Flex>
       </Flex>
-    );
-  }
-);
+      <Flex align="center"></Flex>
+    </Flex>
+  );
+});
 
-export const ChatSearch = ({
+const ChatSearch = ({
   handleSearchedUsers,
   username,
   setUsername,
@@ -203,6 +202,8 @@ const Render = ({searchedUsers, username}: any) => {
       />
     );
   });
+  // TO DO
+  // make normal code here
   if (result?.length > 0) {
     borderWidth = 1;
     supMessage = "Users found:";
@@ -244,6 +245,7 @@ const Render = ({searchedUsers, username}: any) => {
 const ChatItemsList = memo(({setChatCard}: any) => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [chats, setChats] = useState<any>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const getChats = () => {
@@ -266,6 +268,20 @@ const ChatItemsList = memo(({setChatCard}: any) => {
           });
           let res = chatsArr.map((chat: any) => {
             return (
+              // <Flex
+              //   align="center"
+              //   px={loaded ? "0px" : "10px"}
+              //   py={loaded ? "0px" : "10px"}
+              // >
+              //   <Skeleton key={Math.random()} isLoaded={false} w="100%">
+              //     <ChatItem
+              //       key={Math.random()}
+              //       user={chat[1].userInfo}
+              //       setChatCard={setChatCard}
+              //       lastMessage={chat[1].lastMessage}
+              //     />
+              //   </Skeleton>
+              // </Flex>
               <ChatItem
                 key={Math.random()}
                 user={chat[1].userInfo}
@@ -276,6 +292,7 @@ const ChatItemsList = memo(({setChatCard}: any) => {
           });
 
           setChats(res);
+          setLoaded(!loaded);
         }
       );
 
@@ -287,7 +304,17 @@ const ChatItemsList = memo(({setChatCard}: any) => {
     currentUser.uid && getChats();
   }, [currentUser.uid]);
 
-  return <Flex direction="column">{chats}</Flex>;
+  return (
+    <Flex
+      direction="column"
+      h="100%"
+      onClick={() => {
+        setLoaded(!loaded);
+      }}
+    >
+      <Flex direction="column">{chats}</Flex>
+    </Flex>
+  );
 });
 
 type ChatListProps = {
@@ -295,7 +322,7 @@ type ChatListProps = {
   setChatCard: any;
 };
 
-const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
+export const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
   const [username, setUsername] = useState("");
 
@@ -332,4 +359,3 @@ const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
     </Flex>
   );
 };
-export default ChatList;

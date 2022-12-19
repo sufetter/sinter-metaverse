@@ -7,15 +7,16 @@ import {
   HStack,
   Text,
   SlideFade,
+  Image,
 } from "@chakra-ui/react";
-import React, {useState, memo, useEffect, useRef} from "react";
-import {InputChat} from "../components/InputChat";
-import MessageChat from "./MessageChat";
-import {mainStyles} from "./LayoutCard";
+import React, {useState, memo, useContext, useEffect, useRef} from "react";
+import {InputChat} from "../../components/InputChat";
+import {MessageChat} from "../MessageChat";
+import {mainStyles} from "../Layout";
 import {FiMoreHorizontal} from "react-icons/fi";
 import {BiSearchAlt2} from "react-icons/bi";
 import {HiArrowLeft} from "react-icons/hi";
-import {db} from "../firebaseconfig";
+import {db} from "../../firebaseconfig";
 import {
   collection,
   query,
@@ -28,22 +29,20 @@ import {
   serverTimestamp,
   onSnapshot,
 } from "firebase/firestore";
-import EmojiCard from "./EmojiCard";
-import {mainSlice} from "../src/reducers/MainSlice";
-import {useAppDispatch, useAppSelector} from "../src/hooks/redux";
+import {AuthContext} from "../../context/AuthContext";
+import {EmojiCard} from "../../components/EmojiCard";
+import {mainSlice} from "../../src/reducers/MainSlice";
+import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 
-export const TopBarChat = () => {
+export const TopBarChat = memo(({displayName, avatarSRC}: any) => {
   const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
   const {currentChat} = useAppSelector((state) => state.mainSlice);
-  const displayName = currentChat?.displayName;
-  let avatarSRC =
-    currentChat?.photoURL == ""
-      ? currentChat?.photoURL
-      : "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
   const dispatch = useAppDispatch();
-  let date = new Date(currentChat?.lastTimeSignIn.seconds * 1000);
-  console.log(currentChat?.lastTimeSignIn);
-  console.log(date);
+  if (avatarSRC == "" || avatarSRC == undefined) {
+    avatarSRC =
+      "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
+  }
+  let date = new Date(currentChat.lastTimeSignIn * 1000);
 
   let displayTime: string =
     (date.getHours() > 9 ? date.getHours() : "0" + date.getHours()) +
@@ -104,15 +103,16 @@ export const TopBarChat = () => {
           boxSize="28px"
           _hover={{cursor: "pointer"}}
         />
-        <Avatar
+        <Image
           src={avatarSRC}
           boxSize="33px"
           _hover={{cursor: "pointer"}}
-        ></Avatar>
+          borderRadius="100px"
+        ></Image>
       </HStack>
     </Flex>
   );
-};
+});
 
 export const BottomBarChat = () => {
   const [message, setMessage] = useState<string>("");
@@ -143,8 +143,7 @@ export const BottomBarChat = () => {
   );
 };
 
-const ChatMessges = () => {
-  // вынести в различне компоненты топ и боттом бары
+const ChatMessges = memo(({user}: any) => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [messages, setMessages] = useState<any>([]);
   const {currentChat} = useAppSelector((state) => state.mainSlice);
@@ -194,9 +193,9 @@ const ChatMessges = () => {
       {messages}
     </Flex>
   );
-};
+});
 
-export const MainChat = ({user}: any) => {
+export const MainChat = memo(({user}: any) => {
   const {isOpen} = useAppSelector((state: any) => state.mainSlice);
   return (
     <Flex
@@ -234,4 +233,4 @@ export const MainChat = ({user}: any) => {
       <BottomBarChat />
     </Flex>
   );
-};
+});

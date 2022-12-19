@@ -1,11 +1,12 @@
 import {signInWithPopup, GoogleAuthProvider} from "firebase/auth";
 import {doc, setDoc} from "firebase/firestore";
 import {collection, query, where, getDocs} from "firebase/firestore";
-import {auth, db} from "../firebaseconfig";
+import {auth, db} from "../../firebaseconfig";
+import {AuthContext} from "../../context/AuthContext";
 import {Button, Flex, Icon, Text} from "@chakra-ui/react";
-import {mainStyles} from "./LayoutCard";
+import {mainStyles} from "../Layout";
 import {FcGoogle} from "react-icons/fc";
-import {useAppSelector} from "../src/hooks/redux";
+import {useAppSelector} from "../../src/hooks/redux";
 
 const provider = new GoogleAuthProvider();
 
@@ -52,7 +53,7 @@ const handleSubmit = async () => {
       // ...
     });
 };
-const SingupGoogle = () => {
+export const SingupGoogle = () => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   // console.log(currentUser);
   return (
@@ -75,5 +76,3 @@ const SingupGoogle = () => {
     </Button>
   );
 };
-
-export default SingupGoogle;

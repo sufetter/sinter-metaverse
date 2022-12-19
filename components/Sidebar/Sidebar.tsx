@@ -14,10 +14,10 @@ import {BsNewspaper} from "react-icons/bs";
 import {FaUserFriends} from "react-icons/fa";
 import {GoFileMedia} from "react-icons/go";
 import {MdOutlineLogout} from "react-icons/md";
-import {mainStyles, navigate} from "./LayoutCard";
+import {mainStyles, navigate} from "../Layout";
 import {signOut} from "firebase/auth";
-import {auth} from "../firebaseconfig";
-import {useAppSelector} from "../src/hooks/redux";
+import {auth} from "../../firebaseconfig";
+import {useAppSelector} from "../../src/hooks/redux";
 
 type SideBarItemProps = {
   icon?: JSX.Element | any;
@@ -55,7 +55,7 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
   );
 };
 
-const Sidebar = () => {
+export const Sidebar = memo(() => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
 
   const {isOpen} = useAppSelector((state) => state.mainSlice);
@@ -79,11 +79,9 @@ const Sidebar = () => {
         desc="Logout"
         onClick={() => {
           signOut(auth);
-          // navigate("/login");
+          navigate("/login");
         }}
       />
     </Flex>
   );
-};
-
-export default memo(Sidebar);
+});
