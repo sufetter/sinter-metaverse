@@ -67,10 +67,10 @@ export const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
       <AnimatePresence>
         {smileIsOpen && (
           <motion.div
-            initial={{x: -1000, opacity: 0, scale: 0.5}}
+            initial={{x: -70, opacity: 0, scale: 0.5}}
             animate={{x: 0, opacity: 1, scale: 1}}
-            transition={{duration: 0.3, default: {ease: "easeInOut"}}}
-            exit={{opacity: 0}}
+            transition={{duration: 0.5, default: {ease: "easeInOut"}}}
+            exit={{x: 70, opacity: 0, scale: 0.5}}
             key={Math.random()}
           >
             <Flex direction="column" align="flex-end" w="100%">

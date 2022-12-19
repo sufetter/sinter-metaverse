@@ -87,7 +87,7 @@ export const InputChat: React.FC<MainInput> = ({
         date: Timestamp.now(),
       }),
     });
-    console.log("asdf");
+
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [combinedUid + ".lastMessage"]: {
         message,

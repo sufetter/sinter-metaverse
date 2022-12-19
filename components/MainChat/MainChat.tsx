@@ -33,11 +33,14 @@ import {AuthContext} from "../../context/AuthContext";
 import {EmojiCard} from "../../components/EmojiCard";
 import {mainSlice} from "../../src/reducers/MainSlice";
 import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
+import {ModalBlockCard} from "../ModalBlock";
+import {AnimatePresence} from "framer-motion";
 
 export const TopBarChat = memo(() => {
   const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
   const {currentChat} = useAppSelector((state) => state.mainSlice);
   const dispatch = useAppDispatch();
+  const [isOpen, setOpen] = useState<boolean>(false);
   let avatarSRC = currentChat?.photoURL;
   if (avatarSRC == "" || avatarSRC == undefined) {
     avatarSRC =
@@ -55,62 +58,92 @@ export const TopBarChat = memo(() => {
   }
 
   return (
-    <Flex
-      w="100%"
-      align="center"
-      justify="space-between"
-      p={2}
-      px={4}
-      h="50px"
-      borderBottom="2px solid"
-      borderColor={mainStyles.chatInputBorderColor}
-      bg={mainStyles.chatCardSecondBGColor}
-    >
-      <Icon
-        as={HiArrowLeft}
-        color="white"
-        display={{base: "block", md: "none"}}
-        boxSize="20px"
-        _hover={{cursor: "pointer"}}
-        onClick={() => {
-          dispatch(changeMainOpen("none"));
-        }}
-      />
-      <Flex flex={1} flexDirection={{base: "column", lg: "row"}} align="center">
-        <Text
-          color={mainStyles.chatHeaderTextColor}
-          fontSize={{base: 14, md: 16}}
-          fontWeight="500"
-          _hover={{cursor: "pointer"}}
-          pr={{base: 0, md: "10px"}}
-        >
-          {currentChat?.displayName}
-        </Text>
-        <Text color="white" fontSize={{base: 12, lg: 16}}>
-          Last time online: {displayTime}
-        </Text>
-      </Flex>
-      <HStack align="center" spacing={{base: "5px", md: "15px"}}>
+    <Flex direction="column-reverse">
+      <AnimatePresence>
+        {isOpen && (
+          <ModalBlockCard>
+            <Flex
+              _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
+              transition="background-color 150ms linear"
+            >
+              <Text color="white" mx={3} my={2}>
+                Delete this chat
+              </Text>
+            </Flex>
+            <Flex
+              _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
+              transition="background-color 150ms linear"
+            >
+              <Text color="white" mx={3} my={2}>
+                Delete messages history
+              </Text>
+            </Flex>
+          </ModalBlockCard>
+        )}
+      </AnimatePresence>
+      <Flex
+        w="100%"
+        align="center"
+        justify="space-between"
+        p={2}
+        px={4}
+        h="50px"
+        borderBottom="2px solid"
+        borderColor={mainStyles.chatInputBorderColor}
+        bg={mainStyles.chatCardSecondBGColor}
+      >
         <Icon
-          as={BiSearchAlt2}
+          as={HiArrowLeft}
           color="white"
-          display={{base: "none", md: "block"}}
+          display={{base: "block", md: "none"}}
           boxSize="20px"
           _hover={{cursor: "pointer"}}
+          onClick={() => {
+            dispatch(changeMainOpen("none"));
+          }}
         />
-        <Icon
-          as={FiMoreHorizontal}
-          color="white"
-          boxSize="28px"
-          _hover={{cursor: "pointer"}}
-        />
-        <Image
-          src={avatarSRC}
-          boxSize="33px"
-          _hover={{cursor: "pointer"}}
-          borderRadius="100px"
-        ></Image>
-      </HStack>
+        <Flex
+          flex={1}
+          flexDirection={{base: "column", lg: "row"}}
+          align="center"
+        >
+          <Text
+            color={mainStyles.chatHeaderTextColor}
+            fontSize={{base: 14, md: 16}}
+            fontWeight="500"
+            _hover={{cursor: "pointer"}}
+            pr={{base: 0, md: "10px"}}
+          >
+            {currentChat?.displayName}
+          </Text>
+          <Text color="white" fontSize={{base: 12, lg: 16}}>
+            Last time online: {displayTime}
+          </Text>
+        </Flex>
+
+        <HStack align="center" spacing={{base: "5px", md: "15px"}}>
+          <Icon
+            as={BiSearchAlt2}
+            color="white"
+            display={{base: "none", md: "block"}}
+            boxSize="20px"
+            _hover={{cursor: "pointer"}}
+          />
+          <Icon
+            as={FiMoreHorizontal}
+            color="white"
+            boxSize="28px"
+            _hover={{cursor: "pointer"}}
+            onClick={() => setOpen(!isOpen)}
+          />
+          <Image
+            src={avatarSRC}
+            boxSize="33px"
+            _hover={{cursor: "pointer"}}
+            borderRadius="100px"
+          ></Image>
+        </HStack>
+      </Flex>
     </Flex>
   );
 });
@@ -148,10 +181,9 @@ const ChatMessges = memo(() => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [messages, setMessages] = useState<any>([]);
   const {currentChat} = useAppSelector((state) => state.mainSlice);
-  console.log(currentUser?.uid);
   const combinedUid: any =
     currentUser?.uid?.slice(0, 5) + "" + currentChat?.userID!.slice(0, 5);
-  console.log(combinedUid);
+
   useEffect(() => {
     if (currentChat != null) {
       const getMessages = () => {
