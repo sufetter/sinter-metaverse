@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -9,42 +9,60 @@ import {
   Flex,
   Button,
   useDisclosure,
+  Text,
 } from "@chakra-ui/react";
+import {motion} from "framer-motion";
+import {mainStyles} from "../Layout";
 
-export const AlertCard = ({alert}: any) => {
-  const {isOpen, onOpen, onClose} = useDisclosure();
-  const cancelRef: any = React.useRef();
-  useEffect(() => {
-    onOpen();
-  }, [alert]);
+export const AlertCard = ({header, body, children}: any) => {
+  let alertRef = useRef(null);
+  // useEffect(() => {
+  //   if (document)
+  //     document.addEventListener("click", (e) => {
+  //       if (e.target != alertRef.current) {
+  //         console.log("work");
+  //       }
+  //     });
+  // }, [document]);
+
   return (
-    <Flex>
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
+    <Flex
+      mt={5}
+      ref={alertRef}
+      bg={"#383D45"}
+      w="300px"
+      borderRadius="7px"
+      border="1px solid"
+      borderColor={"gray"}
+    >
+      <motion.div
+        initial={{x: -70, opacity: 0, scale: 0.5}}
+        animate={{x: 0, opacity: 1, scale: 1}}
+        transition={{duration: 0.5, default: {ease: "easeInOut"}}}
+        exit={{x: 70, opacity: 0, scale: 0.5}}
+        key={Math.random()}
       >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Customer
-            </AlertDialogHeader>
+        <Flex direction="column" w="100%" p={3}>
+          <Flex w="100%" align="center">
+            <Text
+              color={mainStyles.mainItemColor}
+              fontSize="18px"
+              fontWeight="600"
+            >
+              {header}
+            </Text>
+          </Flex>
+          <Flex align="center" justify="center" mb={3} mt={1}>
+            <Text color={"white"} fontSize="16px">
+              {body}
+            </Text>
+          </Flex>
 
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={onClose} ml={3}>
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+          <Flex justifyContent="flex-end" w="100%">
+            {children}
+          </Flex>
+        </Flex>
+      </motion.div>
     </Flex>
   );
 };

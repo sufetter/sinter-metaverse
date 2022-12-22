@@ -109,30 +109,32 @@ const id: React.FC = () => {
                 </Flex>
 
                 <Text color="white" maxWidth="300px" textAlign="justify">
-                  You are not authorized, access is denied. Please
+                  You are not authorized, access is denied. Please{" "}
                   <Text
                     color={mainStyles.mainItemColor}
                     as="span"
                     _hover={{textDecoration: "underline", cursor: "pointer"}}
+                    onClick={() => navigate("/login")}
                   >
-                    {" "}
-                    sing in{" "}
-                  </Text>
-                  or
+                    sing in
+                  </Text>{" "}
+                  or{" "}
                   <Text
                     color={mainStyles.mainItemColor}
                     as="span"
                     _hover={{textDecoration: "underline", cursor: "pointer"}}
+                    onClick={() => navigate("/register")}
                   >
-                    {" "}
-                    register{" "}
+                    register
                   </Text>
                   . You will be automatically redirected to the registration
                   page in 5 seconds.
                 </Text>
               </Flex>
             </Flex>
-            <ChatList searchInput={searchInput} setChatCard={setChatCard} />
+            {chatList && (
+              <ChatList searchInput={searchInput} setChatCard={setChatCard} />
+            )}
             {chatCard}
           </Flex>
         </Flex>

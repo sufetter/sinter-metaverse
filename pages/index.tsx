@@ -6,7 +6,7 @@ import Register from "./register";
 import Test from "../components/test";
 
 import Link from "next/link";
-import ModalCard from "../components/ModalCard";
+import {ModalCard} from "../components/Modal";
 
 const Home: NextPage = () => {
   console.log("index.tsx");

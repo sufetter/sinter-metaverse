@@ -254,46 +254,47 @@ const ChatItemsList = memo(({setChatCard}: any) => {
         doc(db, "userChats", currentUser.uid),
         (doc) => {
           let resChats: any = doc.data();
+          if (resChats) {
+            let chatsArr = Object.entries(resChats).sort();
+            chatsArr.sort((a, b) => {
+              if (a[1].userInfo < b[1].userInfo) {
+                return -1;
+              }
+              if (a[1].userInfo < b[1].userInfo) {
+                return 1;
+              }
 
-          let chatsArr = Object.entries(resChats).sort();
-          chatsArr.sort((a, b) => {
-            if (a[1].userInfo < b[1].userInfo) {
-              return -1;
-            }
-            if (a[1].userInfo < b[1].userInfo) {
-              return 1;
-            }
+              // names must be equal
+              return 0;
+            });
+            let res = chatsArr.map((chat: any) => {
+              return (
+                // <Flex
+                //   align="center"
+                //   px={loaded ? "0px" : "10px"}
+                //   py={loaded ? "0px" : "10px"}
+                // >
+                //   <Skeleton key={Math.random()} isLoaded={false} w="100%">
+                //     <ChatItem
+                //       key={Math.random()}
+                //       user={chat[1].userInfo}
+                //       setChatCard={setChatCard}
+                //       lastMessage={chat[1].lastMessage}
+                //     />
+                //   </Skeleton>
+                // </Flex>
+                <ChatItem
+                  key={Math.random()}
+                  user={chat[1].userInfo}
+                  setChatCard={setChatCard}
+                  lastMessage={chat[1].lastMessage}
+                />
+              );
+            });
 
-            // names must be equal
-            return 0;
-          });
-          let res = chatsArr.map((chat: any) => {
-            return (
-              // <Flex
-              //   align="center"
-              //   px={loaded ? "0px" : "10px"}
-              //   py={loaded ? "0px" : "10px"}
-              // >
-              //   <Skeleton key={Math.random()} isLoaded={false} w="100%">
-              //     <ChatItem
-              //       key={Math.random()}
-              //       user={chat[1].userInfo}
-              //       setChatCard={setChatCard}
-              //       lastMessage={chat[1].lastMessage}
-              //     />
-              //   </Skeleton>
-              // </Flex>
-              <ChatItem
-                key={Math.random()}
-                user={chat[1].userInfo}
-                setChatCard={setChatCard}
-                lastMessage={chat[1].lastMessage}
-              />
-            );
-          });
-
-          setChats(res);
-          setLoaded(!loaded);
+            setChats(res);
+            setLoaded(!loaded);
+          }
         }
       );
 

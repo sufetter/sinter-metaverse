@@ -14,6 +14,8 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
+  useDisclosure,
+  Button,
 } from "@chakra-ui/react";
 import React, {useState, memo, useEffect, useRef} from "react";
 import {InputChat} from "../../components/InputChat";
@@ -34,6 +36,8 @@ import {
   updateDoc,
   serverTimestamp,
   onSnapshot,
+  deleteDoc,
+  deleteField,
 } from "firebase/firestore";
 import {AuthContext} from "../../context/AuthContext";
 import {EmojiCard} from "../../components/EmojiCard";
@@ -42,13 +46,20 @@ import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 import {ModalBlockCard} from "../ModalBlock";
 import {AnimatePresence} from "framer-motion";
 import {AlertCard} from "../Alert";
+import userAuthSlice from "../../src/reducers/userAuthSlice";
 
 export const TopBarChat = memo(() => {
-  const {changeMainOpen} = mainSlice.actions; //Ууууу Reduux
+  const {changeMainOpen} = mainSlice.actions;
   const {currentChat} = useAppSelector((state) => state.mainSlice);
+  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const dispatch = useAppDispatch();
-  const [isOpen, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [alert, setAlert] = useState<any>(false);
+  const combinedUid: any =
+    currentUser?.uid.slice(0, 5) + "" + currentChat?.userID?.slice(0, 5);
+  const combinedUidReverse =
+    currentChat?.userID?.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
+
   let avatarSRC = currentChat?.photoURL;
   if (avatarSRC == "" || avatarSRC == undefined) {
     avatarSRC =
@@ -65,17 +76,28 @@ export const TopBarChat = memo(() => {
     displayTime = "time not found";
   }
 
+  const deleteChat = async () => {
+    await updateDoc(doc(db, "userChats", currentUser.uid), {
+      [combinedUid]: deleteField(),
+    });
+    await deleteDoc(doc(db, "chats", combinedUid));
+    await updateDoc(doc(db, "userChats", currentChat.userID), {
+      [combinedUidReverse]: deleteField(),
+    });
+    await deleteDoc(doc(db, "chats", combinedUidReverse));
+  };
+
   return (
     <Flex direction="column-reverse">
       <AnimatePresence>
-        {isOpen && (
+        {open && (
           <ModalBlockCard>
             <Flex
               _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
               transition="background-color 150ms linear"
               onClick={() => {
                 setOpen(false);
-                setAlert(<AlertCard alert={alert} />);
+                setAlert(true);
               }}
             >
               <Text color="white" mx={3} my={2}>
@@ -91,6 +113,31 @@ export const TopBarChat = memo(() => {
               </Text>
             </Flex>
           </ModalBlockCard>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {alert && (
+          <AlertCard
+            header="Deletion Alert"
+            body="Do you want to delete this chat? You cant cancel this action in future"
+          >
+            <Button
+              colorScheme="teal"
+              variant="outline"
+              mr={2}
+              onClick={() => setAlert(false)}
+              _hover={{bg: mainStyles.mainItemColor}}
+            >
+              <Text color="white">Cancel</Text>
+            </Button>
+            <Button
+              colorScheme="teal"
+              _hover={{bg: mainStyles.mainItemColor}}
+              onClick={deleteChat}
+            >
+              <Text color="white">Delete</Text>
+            </Button>
+          </AlertCard>
         )}
       </AnimatePresence>
       <Flex
@@ -146,7 +193,7 @@ export const TopBarChat = memo(() => {
             color="white"
             boxSize="28px"
             _hover={{cursor: "pointer"}}
-            onClick={() => setOpen(!isOpen)}
+            onClick={() => setOpen(!open)}
           />
           <Image
             src={avatarSRC}
@@ -201,6 +248,7 @@ const ChatMessges = memo(() => {
       const getMessages = () => {
         const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
           let resMessages: any = doc.data();
+
           let messagesArr = Object.entries(resMessages);
           let sender;
 
