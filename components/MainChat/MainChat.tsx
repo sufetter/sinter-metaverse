@@ -46,7 +46,9 @@ import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 import {ModalBlockCard} from "../ModalBlock";
 import {AnimatePresence} from "framer-motion";
 import {AlertCard} from "../Alert";
-import userAuthSlice from "../../src/reducers/userAuthSlice";
+import {AiOutlineUserAdd} from "react-icons/ai";
+import deleteChatIcon from "../../images/deleteChat.png";
+import deleteHistoryIcon from "../../images/deleteHistory.png";
 
 export const TopBarChat = memo(() => {
   const {changeMainOpen} = mainSlice.actions;
@@ -55,12 +57,15 @@ export const TopBarChat = memo(() => {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState<boolean>(false);
   const [alert, setAlert] = useState<any>(false);
+  const [alertCard, setAlertCard] = useState(<></>);
   const combinedUid: any =
-    currentUser?.uid.slice(0, 5) + "" + currentChat?.userID?.slice(0, 5);
+    currentUser?.uid?.slice(0, 5) + "" + currentChat?.userID?.slice(0, 5);
   const combinedUidReverse =
     currentChat?.userID?.slice(0, 5) + currentUser?.uid?.slice(0, 5) + "";
 
   let avatarSRC = currentChat?.photoURL;
+  let alertHeader = "";
+  let alertBody = "";
   if (avatarSRC == "" || avatarSRC == undefined) {
     avatarSRC =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
@@ -86,6 +91,31 @@ export const TopBarChat = memo(() => {
     });
     await deleteDoc(doc(db, "chats", combinedUidReverse));
   };
+  const deleteChatHistory = async () => {
+    await updateDoc(doc(db, "chats", combinedUid), {messages: []});
+    await updateDoc(doc(db, "chats", combinedUidReverse), {messages: []});
+    await updateDoc(doc(db, "userChats", currentUser.uid), {
+      [combinedUid + ".lastMessage"]: {
+        message: "",
+        date: serverTimestamp(),
+        sender: currentUser.displayName,
+      },
+    });
+    await updateDoc(doc(db, "userChats", currentChat.userID), {
+      [combinedUid + ".lastMessage"]: {
+        message: "",
+        date: serverTimestamp(),
+        sender: currentUser.displayName,
+      },
+    });
+  };
+  const addFriend = async () => {
+    await updateDoc(doc(db, "userFriends", currentUser.uid), {
+      [currentChat.userID]: {
+        added: serverTimestamp(),
+      },
+    });
+  };
 
   return (
     <Flex direction="column-reverse">
@@ -95,51 +125,150 @@ export const TopBarChat = memo(() => {
             <Flex
               _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
               transition="background-color 150ms linear"
+              align="center"
               onClick={() => {
                 setOpen(false);
+                alertHeader = "Chat deletion alert";
+                alertBody =
+                  "Do you want to delete this? You cant cancel this action in future";
+
+                setAlertCard(
+                  <AlertCard header={alertHeader} body={alertBody}>
+                    <Flex>
+                      <Button
+                        colorScheme="teal"
+                        variant="outline"
+                        mr={2}
+                        onClick={() => setAlert(false)}
+                        _hover={{bg: mainStyles.mainItemColor}}
+                      >
+                        <Text color="white">Cancel</Text>
+                      </Button>
+                      <Button
+                        colorScheme="teal"
+                        _hover={{bg: mainStyles.mainItemColor}}
+                        onClick={deleteChat}
+                      >
+                        <Text color="white">Delete</Text>
+                      </Button>
+                    </Flex>
+                  </AlertCard>
+                );
                 setAlert(true);
               }}
             >
-              <Text color="white" mx={3} my={2}>
+              <Image src={deleteChatIcon.src} mx={3} boxSize="20px" />
+              <Text color="white" ml={1} my={2}>
                 Delete this chat
               </Text>
             </Flex>
             <Flex
               _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
               transition="background-color 150ms linear"
+              align="center"
+              onClick={() => {
+                setOpen(false);
+                alertHeader = "ChatHistory deletion alert";
+                alertBody =
+                  "Do you want to delete history of this chat? You cant cancel this action in future";
+
+                setAlertCard(
+                  <AlertCard header={alertHeader} body={alertBody}>
+                    <Flex>
+                      <Button
+                        colorScheme="teal"
+                        variant="outline"
+                        mr={2}
+                        onClick={() => setAlert(false)}
+                        _hover={{bg: mainStyles.mainItemColor}}
+                      >
+                        <Text color="white">Cancel</Text>
+                      </Button>
+                      <Button
+                        colorScheme="teal"
+                        _hover={{bg: mainStyles.mainItemColor}}
+                        onClick={deleteChatHistory}
+                      >
+                        <Text color="white">Delete</Text>
+                      </Button>
+                    </Flex>
+                  </AlertCard>
+                );
+                setAlert(true);
+              }}
             >
-              <Text color="white" mx={3} my={2}>
+              <Image src={deleteHistoryIcon.src} mx={3} boxSize="20px" />
+              <Text color="white" ml={1} my={2}>
                 Delete messages history
+              </Text>
+            </Flex>
+            {/* {friend ? (
+              <Flex
+                _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
+                transition="background-color 150ms linear"
+                align="center"
+                w="100%"
+                onClick={() => {
+                  setOpen(false);
+                  addFriend();
+                }}
+              >
+                <Icon
+                  mx={3}
+                  boxSize="20px"
+                  color={mainStyles.mainItemColor}
+                  as={AiOutlineUserAdd}
+                />
+                <Text color="white" ml={1} my={2}>
+                  Add friend
+                </Text>
+              </Flex>
+            ) : (
+              <Flex
+                _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
+                transition="background-color 150ms linear"
+                align="center"
+                w="100%"
+                onClick={() => {
+                  setOpen(false);
+                  addFriend();
+                }}
+              >
+                <Icon
+                  mx={3}
+                  boxSize="20px"
+                  color={mainStyles.mainItemColor}
+                  as={AiOutlineUserAdd}
+                />
+                <Text color="white" ml={1} my={2}>
+                  Add friend
+                </Text>
+              </Flex>
+            )} */}
+            <Flex
+              _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
+              transition="background-color 150ms linear"
+              align="center"
+              w="100%"
+              onClick={() => {
+                setOpen(false);
+                addFriend();
+              }}
+            >
+              <Icon
+                mx={3}
+                boxSize="20px"
+                color={mainStyles.mainItemColor}
+                as={AiOutlineUserAdd}
+              />
+              <Text color="white" ml={1} my={2}>
+                Add friend
               </Text>
             </Flex>
           </ModalBlockCard>
         )}
       </AnimatePresence>
-      <AnimatePresence>
-        {alert && (
-          <AlertCard
-            header="Deletion Alert"
-            body="Do you want to delete this chat? You cant cancel this action in future"
-          >
-            <Button
-              colorScheme="teal"
-              variant="outline"
-              mr={2}
-              onClick={() => setAlert(false)}
-              _hover={{bg: mainStyles.mainItemColor}}
-            >
-              <Text color="white">Cancel</Text>
-            </Button>
-            <Button
-              colorScheme="teal"
-              _hover={{bg: mainStyles.mainItemColor}}
-              onClick={deleteChat}
-            >
-              <Text color="white">Delete</Text>
-            </Button>
-          </AlertCard>
-        )}
-      </AnimatePresence>
+      <AnimatePresence>{alert && alertCard}</AnimatePresence>
       <Flex
         w="100%"
         align="center"
