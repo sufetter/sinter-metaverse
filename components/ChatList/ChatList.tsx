@@ -61,8 +61,9 @@ const ChatItem = memo(({user, setChatCard, lastMessage}: ChatItemProps) => {
   let displayName = user?.displayName;
 
   if (user?.displayName.length > 9 || lastMessage?.message?.length > 9) {
-    lastMessage.message = lastMessage.message.slice(0, 6) + "...";
-    displayName = user.displayName.slice(0, 6) + "...";
+    if (lastMessage?.message)
+      lastMessage.message = lastMessage?.message.slice(0, 6) + "...";
+    displayName = user?.displayName.slice(0, 6) + "...";
   }
   const {changeMainOpen, changeCurrentChat} = mainSlice.actions;
   const dispatch = useAppDispatch();

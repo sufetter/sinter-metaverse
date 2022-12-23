@@ -82,6 +82,7 @@ export const TopBarChat = memo(() => {
   }
 
   const deleteChat = async () => {
+    setAlert(false);
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [combinedUid]: deleteField(),
     });
@@ -377,29 +378,31 @@ const ChatMessges = memo(() => {
       const getMessages = () => {
         const newChat = onSnapshot(doc(db, "chats", combinedUid), (doc) => {
           let resMessages: any = doc.data();
+          if (resMessages) {
+            let messagesArr = Object.entries(resMessages);
+            let sender;
 
-          let messagesArr = Object.entries(resMessages);
-          let sender;
+            let res = messagesArr[0][1].map((chat: any) => {
+              if (chat.senderId === currentUser.uid) {
+                sender = currentUser;
+              } else {
+                sender = currentChat;
+              }
 
-          let res = messagesArr[0][1].map((chat: any) => {
-            if (chat.senderId === currentUser.uid) {
-              sender = currentUser;
-            } else {
-              sender = currentChat;
-            }
-
-            return (
-              <MessageChat
-                key={Math.random()}
-                message={chat.message}
-                time={chat.date}
-                user={sender}
-              />
-            );
-            // <Flex>jhkh</Flex>;
-          });
-
-          setMessages(res);
+              return (
+                <MessageChat
+                  key={Math.random()}
+                  message={chat.message}
+                  time={chat.date}
+                  user={sender}
+                />
+              );
+              // <Flex>jhkh</Flex>;
+            });
+            setMessages(res);
+          } else {
+            setMessages(<></>);
+          }
         });
 
         return () => {
