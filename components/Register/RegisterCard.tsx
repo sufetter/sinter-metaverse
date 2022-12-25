@@ -191,7 +191,7 @@ export const RegisterCard = memo(() => {
             email,
           });
         }
-
+        await setDoc(doc(db, "userFriends", user.uid), {});
         await setDoc(doc(db, "userChats", user.uid), {});
 
         navigate("/chat/" + displayName + "." + res.user.uid.slice(0, 5));

@@ -38,6 +38,7 @@ const handleSubmit = async () => {
           photoURL: user.photoURL,
         });
         await setDoc(doc(db, "userChats", user.uid), {});
+        await setDoc(doc(db, "userFriends", user.uid), {});
       }
       // ...
     })

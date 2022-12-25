@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, memo} from "react";
+import React, {useState, useEffect, useRef, memo, useContext} from "react";
 import {
   Box,
   Flex,
@@ -22,7 +22,7 @@ import {BiSearchAlt2} from "react-icons/bi";
 import {IoIosArrowDown} from "react-icons/io";
 import {mainStyles} from "../Layout/LayoutCard";
 import Link from "next/link";
-import {useAppSelector} from "../../src/hooks/redux";
+// import {useAppSelector} from "../../src/hooks/redux";
 import {AuthContext} from "../../context/AuthContext";
 import {auth, db} from "../../firebaseconfig";
 import {
@@ -39,6 +39,7 @@ import {
 } from "firebase/firestore";
 import {onAuthStateChanged} from "firebase/auth";
 import {motion} from "framer-motion";
+import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 
 export const HeaderSearch = () => {
   return (
@@ -70,8 +71,6 @@ export const HeaderSearch = () => {
 };
 
 const Logo = memo(() => {
-  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
-
   const [logoSRC, setLogoSRC] = useState(
     "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/mainLOGO.png?alt=media&token=7a5344ac-0842-4ee6-b542-b1bddbbe8bb1"
   );
@@ -89,7 +88,9 @@ const Logo = memo(() => {
 });
 
 export const Header = memo(() => {
-  const {currentUser} = useAppSelector((state) => state.userAuthSlice);
+  const currentUser: any = useContext(AuthContext);
+  // To Do Change on Redux
+  // Федя, только тронь сука еще раз этот кусок кода
   let dbUser: any;
 
   const userIcon =
