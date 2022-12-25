@@ -90,16 +90,6 @@ const Logo = memo(() => {
 
 export const Header = memo(() => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
-
-  useEffect(() => {
-    if (currentUser.displayName != null) {
-      console.log("updating");
-      updateDoc(doc(db, "users", currentUser.uid), {
-        lastTimeSignIn: Timestamp.now(),
-      });
-    }
-  }, [currentUser]);
-
   let dbUser: any;
 
   const userIcon =
@@ -112,6 +102,9 @@ export const Header = memo(() => {
         const existed: any = await getDoc(docRef);
 
         if (existed.exists() && user.displayName != null) {
+          await updateDoc(doc(db, "users", user.uid), {
+            lastTimeSignIn: Timestamp.now(),
+          });
           if (username != user.displayName) {
             dbUser = await existed.data();
             if (dbUser.photoURL == undefined) {
