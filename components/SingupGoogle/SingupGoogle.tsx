@@ -40,6 +40,8 @@ const handleSubmit = async () => {
         await setDoc(doc(db, "userChats", user.uid), {});
         await setDoc(doc(db, "userFriends", user.uid), {});
       }
+      await setDoc(doc(db, "userFriends", user.uid), {});
+
       // ...
     })
     .catch((error) => {
