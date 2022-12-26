@@ -16,6 +16,7 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Button,
+  Box,
 } from "@chakra-ui/react";
 import React, {useState, memo, useEffect, useRef} from "react";
 import {InputChat} from "../../components/InputChat";
@@ -50,7 +51,7 @@ import {AiOutlineUserAdd} from "react-icons/ai";
 import deleteChatIcon from "../../images/deleteChat.png";
 import deleteHistoryIcon from "../../images/deleteHistory.png";
 
-export const TopBarChat = memo(() => {
+export const TopBarChat = memo(({setChatCard, ChatCardDefault}: any) => {
   const {changeMainOpen} = mainSlice.actions;
   const {currentChat} = useAppSelector((state) => state.mainSlice);
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
@@ -82,6 +83,7 @@ export const TopBarChat = memo(() => {
   }
 
   const deleteChat = async () => {
+    setChatCard(ChatCardDefault);
     setAlert(false);
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [combinedUid]: deleteField(),
@@ -122,88 +124,96 @@ export const TopBarChat = memo(() => {
     <Flex direction="column-reverse">
       <AnimatePresence>
         {open && (
-          <ModalBlockCard>
-            <Flex
-              _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
-              transition="background-color 150ms linear"
-              align="center"
-              onClick={() => {
-                setOpen(false);
-                alertHeader = "Chat deletion alert";
-                alertBody =
-                  "Do you want to delete this? You cant cancel this action in future";
+          <Flex justifyContent="flex-end" mb="-132px">
+            <ModalBlockCard h="132px" id="a">
+              <Flex
+                _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
+                transition="background-color 150ms linear"
+                align="center"
+                onClick={() => {
+                  setOpen(false);
+                  alertHeader = "Chat deletion alert";
+                  alertBody =
+                    "Do you want to delete this? You cant cancel this action in future";
+                  setAlertCard(
+                    <AlertCard
+                      header={alertHeader}
+                      body={alertBody}
+                      bottom={"-176px"}
+                    >
+                      <Flex>
+                        <Button
+                          colorScheme="teal"
+                          variant="outline"
+                          mr={2}
+                          onClick={() => setAlert(false)}
+                          _hover={{bg: mainStyles.mainItemColor}}
+                        >
+                          <Text color="white">Cancel</Text>
+                        </Button>
+                        <Button
+                          colorScheme="teal"
+                          _hover={{bg: mainStyles.mainItemColor}}
+                          onClick={deleteChat}
+                        >
+                          <Text color="white">Delete</Text>
+                        </Button>
+                      </Flex>
+                    </AlertCard>
+                  );
+                  setAlert(true);
+                }}
+              >
+                <Image src={deleteChatIcon.src} mx={3} boxSize="20px" />
+                <Text color="white" ml={1} my={2}>
+                  Delete this chat
+                </Text>
+              </Flex>
+              <Flex
+                _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
+                transition="background-color 150ms linear"
+                align="center"
+                onClick={() => {
+                  setOpen(false);
+                  alertHeader = "ChatHistory deletion alert";
+                  alertBody =
+                    "Do you want to delete history of this chat? You cant cancel this action in future";
 
-                setAlertCard(
-                  <AlertCard header={alertHeader} body={alertBody}>
-                    <Flex>
-                      <Button
-                        colorScheme="teal"
-                        variant="outline"
-                        mr={2}
-                        onClick={() => setAlert(false)}
-                        _hover={{bg: mainStyles.mainItemColor}}
-                      >
-                        <Text color="white">Cancel</Text>
-                      </Button>
-                      <Button
-                        colorScheme="teal"
-                        _hover={{bg: mainStyles.mainItemColor}}
-                        onClick={deleteChat}
-                      >
-                        <Text color="white">Delete</Text>
-                      </Button>
-                    </Flex>
-                  </AlertCard>
-                );
-                setAlert(true);
-              }}
-            >
-              <Image src={deleteChatIcon.src} mx={3} boxSize="20px" />
-              <Text color="white" ml={1} my={2}>
-                Delete this chat
-              </Text>
-            </Flex>
-            <Flex
-              _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
-              transition="background-color 150ms linear"
-              align="center"
-              onClick={() => {
-                setOpen(false);
-                alertHeader = "ChatHistory deletion alert";
-                alertBody =
-                  "Do you want to delete history of this chat? You cant cancel this action in future";
-
-                setAlertCard(
-                  <AlertCard header={alertHeader} body={alertBody}>
-                    <Flex>
-                      <Button
-                        colorScheme="teal"
-                        variant="outline"
-                        mr={2}
-                        onClick={() => setAlert(false)}
-                        _hover={{bg: mainStyles.mainItemColor}}
-                      >
-                        <Text color="white">Cancel</Text>
-                      </Button>
-                      <Button
-                        colorScheme="teal"
-                        _hover={{bg: mainStyles.mainItemColor}}
-                        onClick={deleteChatHistory}
-                      >
-                        <Text color="white">Delete</Text>
-                      </Button>
-                    </Flex>
-                  </AlertCard>
-                );
-                setAlert(true);
-              }}
-            >
-              <Image src={deleteHistoryIcon.src} mx={3} boxSize="20px" />
-              <Text color="white" ml={1} my={2}>
-                Delete messages history
-              </Text>
-            </Flex>
-            {/* {friend ? (
+                  setAlertCard(
+                    <AlertCard
+                      header={alertHeader}
+                      body={alertBody}
+                      bottom={"-200px"}
+                    >
+                      <Flex>
+                        <Button
+                          colorScheme="teal"
+                          variant="outline"
+                          mr={2}
+                          onClick={() => setAlert(false)}
+                          _hover={{bg: mainStyles.mainItemColor}}
+                        >
+                          <Text color="white">Cancel</Text>
+                        </Button>
+                        <Button
+                          colorScheme="teal"
+                          _hover={{bg: mainStyles.mainItemColor}}
+                          onClick={deleteChatHistory}
+                        >
+                          <Text color="white">Delete</Text>
+                        </Button>
+                      </Flex>
+                    </AlertCard>
+                  );
+                  setAlert(true);
+                }}
+              >
+                <Image src={deleteHistoryIcon.src} mx={3} boxSize="20px" />
+                <Text color="white" ml={1} my={2}>
+                  Delete messages history
+                </Text>
+              </Flex>
+              {/* {friend ? (
               <Flex
                 _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
                 transition="background-color 150ms linear"
@@ -246,27 +256,28 @@ export const TopBarChat = memo(() => {
                 </Text>
               </Flex>
             )} */}
-            <Flex
-              _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
-              transition="background-color 150ms linear"
-              align="center"
-              w="100%"
-              onClick={() => {
-                setOpen(false);
-                addFriend();
-              }}
-            >
-              <Icon
-                mx={3}
-                boxSize="20px"
-                color={mainStyles.mainItemColor}
-                as={AiOutlineUserAdd}
-              />
-              <Text color="white" ml={1} my={2}>
-                Add friend
-              </Text>
-            </Flex>
-          </ModalBlockCard>
+              <Flex
+                _hover={{cursor: "pointer", bg: mainStyles.sidebarBTNSHover}}
+                transition="background-color 150ms linear"
+                align="center"
+                w="100%"
+                onClick={() => {
+                  setOpen(false);
+                  addFriend();
+                }}
+              >
+                <Icon
+                  mx={3}
+                  boxSize="20px"
+                  color={mainStyles.mainItemColor}
+                  as={AiOutlineUserAdd}
+                />
+                <Text color="white" ml={1} my={2}>
+                  Add friend
+                </Text>
+              </Flex>
+            </ModalBlockCard>
+          </Flex>
         )}
       </AnimatePresence>
       <AnimatePresence>{alert && alertCard}</AnimatePresence>
@@ -420,7 +431,7 @@ const ChatMessges = memo(() => {
   );
 });
 
-export const MainChat = memo(() => {
+export const MainChat = memo(({setChatCard, ChatCardDefault}: any) => {
   const {isOpen} = useAppSelector((state: any) => state.mainSlice);
   return (
     <Flex
@@ -438,7 +449,7 @@ export const MainChat = memo(() => {
         },
       }}
     >
-      <TopBarChat />
+      <TopBarChat ChatCardDefault={ChatCardDefault} setChatCard={setChatCard} />
       <Flex
         flex={1}
         px={{base: 3, md: 10}}

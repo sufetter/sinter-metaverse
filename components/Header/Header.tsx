@@ -42,7 +42,7 @@ import {motion} from "framer-motion";
 
 export const HeaderSearch = () => {
   return (
-    <Flex pr={3} h="55px" align="center">
+    <Flex ml={{base: 3, md: "44px"}} pr={3} h="55px" align="center">
       <InputGroup size="sm">
         <InputLeftElement
           pointerEvents="none"
@@ -150,14 +150,23 @@ export const Header = memo(() => {
         justify="center"
         // onClick={() => console.log(userAvatarSRC)}
       >
-        <Flex maxW="1076px" w="100%" align="center" mx="60px">
-          <Flex _hover={{cursor: "pointer"}} w="148px" align="center">
+        <Flex maxW="1076px" w="100%" align="center" mx={{base: 3, lg: "60px"}}>
+          <Flex
+            _hover={{cursor: "pointer"}}
+            // w={{sm: "auto", lg: "148px"}}
+            align="center"
+          >
             <Logo />
-            <Text fontFamily="Roboto" fontSize="20px" pl={2}>
+            <Text
+              fontFamily="Roboto"
+              fontSize="20px"
+              pl={2}
+              display={{base: "none", md: "block"}}
+            >
               Sinter
             </Text>
           </Flex>
-          <Flex>
+          <Flex shrink={2}>
             <HeaderSearch />
             <HStack align="center">
               <Link href={chatHref}>
@@ -170,13 +179,14 @@ export const Header = memo(() => {
           </Flex>
           <Spacer />
           <Flex align="center" _hover={{cursor: "pointer"}}>
-            <Text color="white" pr={5}>
+            <Text color="white" display={{base: "none", md: "block"}} pr={5}>
               {username}
             </Text>
             <Image
               // ref={userAvatar}
               src={userAvatarSRC}
               h="35px"
+              w="35px"
               borderRadius="20px"
             />
             <Flex>

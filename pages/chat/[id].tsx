@@ -44,7 +44,7 @@ const id: React.FC = () => {
     };
     return (
       <Flex
-        display={{sm: "none", md: "flex"}}
+        display={{base: "none", md: "flex"}}
         flex={2}
         h="100%"
         align="center"
@@ -80,15 +80,15 @@ const id: React.FC = () => {
         <Flex
           bg={mainStyles.mainBGColor}
           overflowY="hidden"
-          my={{base: 0, lg: 3}}
-          mx={{base: 0, lg: 3}}
+          my={{base: 0, sm: 3}}
+          mx={{base: 0, sm: 3, lg: "60px"}}
           h="100%"
         >
           <Sidebar />
           <Flex
             bg={mainStyles.chatCardBG}
             w="100%"
-            borderRadius={{base: 0, sm: "10px 0 0 10px", lg: 10}}
+            borderRadius={{base: 0, sm: 10}}
             border="1px solid"
             overflow="hidden"
             borderColor={mainStyles.chatListBorderColor}
@@ -133,7 +133,11 @@ const id: React.FC = () => {
               </Flex>
             </Flex>
             {chatList && (
-              <ChatList searchInput={searchInput} setChatCard={setChatCard} />
+              <ChatList
+                searchInput={searchInput}
+                ChatCardDefault={ChatCardDefault}
+                setChatCard={setChatCard}
+              />
             )}
             {chatCard}
           </Flex>

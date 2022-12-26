@@ -14,7 +14,7 @@ import {
 import {motion} from "framer-motion";
 import {mainStyles} from "../Layout";
 
-export const AlertCard = ({header, body, children}: any) => {
+export const AlertCard = ({header, body, children, bottom}: any) => {
   let alertRef = useRef(null);
   // useEffect(() => {
   //   if (document)
@@ -27,6 +27,8 @@ export const AlertCard = ({header, body, children}: any) => {
 
   return (
     <Flex
+      mb={bottom}
+      position="relative"
       mt={5}
       ref={alertRef}
       bg={"#383D45"}

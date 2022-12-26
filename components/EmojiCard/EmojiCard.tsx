@@ -66,50 +66,50 @@ export const EmojiCard = ({smileIsOpen, setMessage, message}: any) => {
     <Flex alignSelf="end">
       <AnimatePresence>
         {smileIsOpen && (
-          <motion.div
-            initial={{x: -70, opacity: 0, scale: 0.5}}
-            animate={{x: 0, opacity: 1, scale: 1}}
-            transition={{duration: 0.5, default: {ease: "easeInOut"}}}
-            exit={{x: 70, opacity: 0, scale: 0.5}}
-            key={Math.random()}
-          >
-            <Flex direction="column" align="flex-end" w="100%">
-              <Flex
-                direction="row"
-                color="white"
-                w="210px"
-                align-self="flex-end"
-                bg={mainStyles.emojiDashboardColor}
-                borderRadius="7px"
-                h="250px"
-                wrap="wrap"
-                overflowY="scroll"
-                display={smileIsOpen ? "flex" : "none"}
-                fontSize="20px"
-                zIndex={10}
-                mx={1}
-                mt="-250px"
-                css={browserStyles}
-                textAlign="justify"
-                user-select="none"
-              >
-                {symbols.map((symbol) => (
-                  <Flex
-                    align="center"
-                    justify="center"
-                    key={symbol}
-                    onClick={() => setMessage(message + symbol)}
-                    m="10px 10px"
-                    w="30px"
-                    h="30px"
-                    _hover={{cursor: "pointer"}}
-                  >
-                    {symbol}
-                  </Flex>
-                ))}
-              </Flex>
+          // <motion.div
+          //   initial={{x: -70, opacity: 0, scale: 0.5}}
+          //   animate={{x: 0, opacity: 1, scale: 1}}
+          //   transition={{duration: 0.5, default: {ease: "easeInOut"}}}
+          //   exit={{x: 70, opacity: 0, scale: 0.5}}
+          //   key={Math.random()}
+          // >
+          <Flex direction="column" align="flex-end" w="100%">
+            <Flex
+              direction="row"
+              color="white"
+              w="210px"
+              align-self="flex-end"
+              bg={mainStyles.emojiDashboardColor}
+              borderRadius="7px"
+              h="250px"
+              wrap="wrap"
+              overflowY="scroll"
+              display={smileIsOpen ? "flex" : "none"}
+              fontSize="20px"
+              zIndex={10}
+              mx={1}
+              mt="-250px"
+              css={browserStyles}
+              textAlign="justify"
+              user-select="none"
+            >
+              {symbols.map((symbol) => (
+                <Flex
+                  align="center"
+                  justify="center"
+                  key={symbol}
+                  onClick={() => setMessage(message + symbol)}
+                  m="10px 10px"
+                  w="30px"
+                  h="30px"
+                  _hover={{cursor: "pointer"}}
+                >
+                  {symbol}
+                </Flex>
+              ))}
             </Flex>
-          </motion.div>
+          </Flex>
+          // </motion.div>
         )}
       </AnimatePresence>
     </Flex>
