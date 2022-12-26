@@ -39,6 +39,7 @@ import {
 } from "firebase/firestore";
 import {onAuthStateChanged} from "firebase/auth";
 import {motion} from "framer-motion";
+import {useAppDispatch, useAppSelector} from "../../src/hooks/redux";
 
 export const HeaderSearch = () => {
   return (
@@ -87,18 +88,9 @@ const Logo = memo(() => {
 });
 
 export const Header = memo(() => {
-  // TO DO Change on Redux
   const currentUser: any = useContext(AuthContext);
-
-  useEffect(() => {
-    if (currentUser.displayName != null) {
-      console.log("updating");
-      updateDoc(doc(db, "users", currentUser.uid), {
-        lastTimeSignIn: Timestamp.now(),
-      });
-    }
-  }, [currentUser]);
-
+  // To Do Change on Redux
+  // Федя, только тронь сука еще раз этот кусок кода
   let dbUser: any;
 
   const userIcon =
@@ -111,6 +103,9 @@ export const Header = memo(() => {
         const existed: any = await getDoc(docRef);
 
         if (existed.exists() && user.displayName != null) {
+          await updateDoc(doc(db, "users", user.uid), {
+            lastTimeSignIn: Timestamp.now(),
+          });
           if (username != user.displayName) {
             dbUser = await existed.data();
             if (dbUser.photoURL == undefined) {

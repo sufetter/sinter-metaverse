@@ -31,7 +31,8 @@ const id: React.FC = () => {
 
     if (
       typeof currentUser == "object" &&
-      router.asPath.split("/chat/")[1] !== trueRoute
+      router.asPath.split("/chat/")[1] !== trueRoute &&
+      Object.keys(currentUser).length > 1
     ) {
       navigate(
         "/chat/" + currentUser.displayName + "." + currentUser.uid?.slice(0, 5)
