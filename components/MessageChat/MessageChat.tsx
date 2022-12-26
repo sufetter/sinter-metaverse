@@ -55,7 +55,7 @@ export const MessageChat = memo(
           overflow="hidden"
           mr="10px"
         >
-          <img src={src} />
+          <img style={{height: "100%"}} src={src} />
         </Box>
 
         <Flex direction="column">

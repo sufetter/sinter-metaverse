@@ -68,8 +68,7 @@ export const InputChat: React.FC<MainInput> = ({
   const handleSend = async () => {
     message = message.trim();
     if (message == "") {
-      console.log("fake");
-      // return;
+      return;
     }
     await updateDoc(doc(db, "chats", combinedUid), {
       messages: arrayUnion({
@@ -87,7 +86,7 @@ export const InputChat: React.FC<MainInput> = ({
         date: Timestamp.now(),
       }),
     });
-    console.log("asdf");
+
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [combinedUid + ".lastMessage"]: {
         message,

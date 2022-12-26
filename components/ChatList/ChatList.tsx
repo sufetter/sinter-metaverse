@@ -44,69 +44,78 @@ type ChatItemProps = {
   options?: boolean;
   setChatCard?: any;
   lastMessage: any;
+  ChatCardDefault: any;
 };
-const ChatItem = memo(({user, setChatCard, lastMessage}: ChatItemProps) => {
-  let searchedAvatar: string =
-    "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
-  if (user?.photoURL != undefined && user?.photoURL != "") {
-    searchedAvatar = user.photoURL;
-  }
-  let date = new Date(lastMessage?.date?.seconds * 1000);
-  let min: any = date.getMinutes();
+const ChatItem = memo(
+  ({user, setChatCard, lastMessage, ChatCardDefault}: ChatItemProps) => {
+    let searchedAvatar: string =
+      "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
+    if (user?.photoURL != undefined && user?.photoURL != "") {
+      searchedAvatar = user.photoURL;
+    }
+    let date = new Date(lastMessage?.date?.seconds * 1000);
+    let min: any = date.getMinutes();
 
-  if (date.getMinutes() < 10) {
-    min = "0" + date.getMinutes().toLocaleString();
-  }
-  let lastMessageDate = date.getHours() + ":" + min;
-  let displayName = user?.displayName;
+    if (date.getMinutes() < 10) {
+      min = "0" + date.getMinutes().toLocaleString();
+    }
+    let lastMessageDate = date.getHours() + ":" + min;
+    let displayName = user?.displayName;
 
-  if (user?.displayName.length > 9 || lastMessage?.message?.length > 9) {
-    lastMessage.message = lastMessage.message.slice(0, 6) + "...";
-    displayName = user.displayName.slice(0, 6) + "...";
-  }
-  const {changeMainOpen, changeCurrentChat} = mainSlice.actions;
-  const dispatch = useAppDispatch();
-  return (
-    <Flex
-      align="center"
-      justify="space-between"
-      p="2"
-      _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
-      w="100%"
-      px={4}
-      py={2}
-    >
+    if (user?.displayName.length > 9 || lastMessage?.message?.length > 9) {
+      if (lastMessage?.message)
+        lastMessage.message = lastMessage?.message.slice(0, 6) + "...";
+      displayName = user?.displayName.slice(0, 6) + "...";
+    }
+    const {changeMainOpen, changeCurrentChat} = mainSlice.actions;
+    const dispatch = useAppDispatch();
+    return (
       <Flex
         align="center"
+        justify="space-between"
+        p="2"
+        _hover={{bg: mainStyles.chatListItemHover, cursor: "pointer"}}
         w="100%"
-        onClick={async () => {
-          dispatch(changeMainOpen("flex"));
-          const userInfo: any = await getDoc(doc(db, "users", user.uid));
-          dispatch(changeCurrentChat(userInfo.data()));
-          setChatCard(<MainChat />);
-        }}
+        px={4}
+        py={2}
       >
-        <Box boxSize="45px" overflow="hidden" borderRadius="100px">
-          <img width="100%" src={searchedAvatar} />
-        </Box>
-        <Flex direction="column">
-          <Text ms={3} color="white">
-            {displayName}
-          </Text>
-          <Flex>
-            <Text wordBreak="break-all" ms={3} color="gray.400">
-              {lastMessage?.message}
+        <Flex
+          align="center"
+          w="100%"
+          onClick={async () => {
+            dispatch(changeMainOpen("flex"));
+            const userInfo: any = await getDoc(doc(db, "users", user.uid));
+            dispatch(changeCurrentChat(userInfo.data()));
+            setChatCard(
+              <MainChat
+                ChatCardDefault={ChatCardDefault}
+                setChatCard={setChatCard}
+              />
+            );
+          }}
+        >
+          <Box boxSize="45px" overflow="hidden" borderRadius="100px">
+            <img width="100%" src={searchedAvatar} />
+          </Box>
+          <Flex direction="column">
+            <Text ms={3} color="white">
+              {displayName}
             </Text>
-            {/* <Text ms={3} color={mainStyles.mainIconColor}>
+            <Flex>
+              <Text wordBreak="break-all" ms={3} color="gray.400">
+                {lastMessage?.message}
+              </Text>
+              {/* <Text ms={3} color={mainStyles.mainIconColor}>
                 {lastMessageDate}
               </Text> */}
+            </Flex>
           </Flex>
         </Flex>
+        <Flex align="center"></Flex>
       </Flex>
-      <Flex align="center"></Flex>
-    </Flex>
-  );
-});
+    );
+  }
+);
 
 const ChatSearch = ({
   handleSearchedUsers,
@@ -243,7 +252,7 @@ const Render = ({searchedUsers, username}: any) => {
   );
 };
 
-const ChatItemsList = memo(({setChatCard}: any) => {
+const ChatItemsList = memo(({setChatCard, ChatCardDefault}: any) => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [chats, setChats] = useState<any>([]);
   const [loaded, setLoaded] = useState(false);
@@ -254,46 +263,48 @@ const ChatItemsList = memo(({setChatCard}: any) => {
         doc(db, "userChats", currentUser.uid),
         (doc) => {
           let resChats: any = doc.data();
+          if (resChats) {
+            let chatsArr = Object.entries(resChats).sort();
+            chatsArr.sort((a, b) => {
+              if (a[1].userInfo < b[1].userInfo) {
+                return -1;
+              }
+              if (a[1].userInfo < b[1].userInfo) {
+                return 1;
+              }
 
-          let chatsArr = Object.entries(resChats).sort();
-          chatsArr.sort((a, b) => {
-            if (a[1].userInfo < b[1].userInfo) {
-              return -1;
-            }
-            if (a[1].userInfo < b[1].userInfo) {
-              return 1;
-            }
+              // names must be equal
+              return 0;
+            });
+            let res = chatsArr.map((chat: any) => {
+              return (
+                // <Flex
+                //   align="center"
+                //   px={loaded ? "0px" : "10px"}
+                //   py={loaded ? "0px" : "10px"}
+                // >
+                //   <Skeleton key={Math.random()} isLoaded={false} w="100%">
+                //     <ChatItem
+                //       key={Math.random()}
+                //       user={chat[1].userInfo}
+                //       setChatCard={setChatCard}
+                //       lastMessage={chat[1].lastMessage}
+                //     />
+                //   </Skeleton>
+                // </Flex>
+                <ChatItem
+                  key={Math.random()}
+                  user={chat[1].userInfo}
+                  setChatCard={setChatCard}
+                  ChatCardDefault={ChatCardDefault}
+                  lastMessage={chat[1].lastMessage}
+                />
+              );
+            });
 
-            // names must be equal
-            return 0;
-          });
-          let res = chatsArr.map((chat: any) => {
-            return (
-              // <Flex
-              //   align="center"
-              //   px={loaded ? "0px" : "10px"}
-              //   py={loaded ? "0px" : "10px"}
-              // >
-              //   <Skeleton key={Math.random()} isLoaded={false} w="100%">
-              //     <ChatItem
-              //       key={Math.random()}
-              //       user={chat[1].userInfo}
-              //       setChatCard={setChatCard}
-              //       lastMessage={chat[1].lastMessage}
-              //     />
-              //   </Skeleton>
-              // </Flex>
-              <ChatItem
-                key={Math.random()}
-                user={chat[1].userInfo}
-                setChatCard={setChatCard}
-                lastMessage={chat[1].lastMessage}
-              />
-            );
-          });
-
-          setChats(res);
-          setLoaded(!loaded);
+            setChats(res);
+            setLoaded(!loaded);
+          }
         }
       );
 
@@ -321,9 +332,14 @@ const ChatItemsList = memo(({setChatCard}: any) => {
 type ChatListProps = {
   searchInput: any;
   setChatCard: any;
+  ChatCardDefault: any;
 };
 
-export const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
+export const ChatList = ({
+  searchInput,
+  setChatCard,
+  ChatCardDefault,
+}: ChatListProps) => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
   const [username, setUsername] = useState("");
 
@@ -355,7 +371,10 @@ export const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
           },
         }}
       >
-        <ChatItemsList setChatCard={setChatCard} />
+        <ChatItemsList
+          ChatCardDefault={ChatCardDefault}
+          setChatCard={setChatCard}
+        />
       </Flex>
     </Flex>
   );

@@ -68,9 +68,7 @@ export const SearchItem = memo(({searchedUser}: SearchItemProps) => {
 
       if (!existed.exists()) {
         console.log("added");
-        console.log(combinedUid);
-        console.log(user.userID);
-        console.log(currentUser.uid);
+
         await setDoc(doc(db, "chats", combinedUid), {messages: []});
         await setDoc(doc(db, "chats", combinedUidReverse), {messages: []});
         await updateDoc(doc(db, "userChats", currentUser.uid), {

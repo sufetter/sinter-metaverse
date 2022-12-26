@@ -28,9 +28,8 @@ type SideBarItemProps = {
 export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
   return (
     <Flex
-      w={{base: "auto", sm: "120px", md: "140px"}}
+      w={{base: "auto", md: "140px"}}
       mb={2}
-      mr={{base: 1, sm: 3, lg: 2}}
       p={1.5}
       bg={mainStyles.sidebarBTNS}
       align="center"
@@ -44,7 +43,7 @@ export const SidebarItem = ({icon, desc, onClick}: SideBarItemProps) => {
     >
       <Icon boxSize={"20px"} color={mainStyles.mainItemColor} as={icon} />
       <Text
-        display={{base: "none", sm: "block"}}
+        display={{base: "none", md: "block"}}
         color={mainStyles.mainTextColor}
         pl={3}
         fontSize="14px"
@@ -62,9 +61,9 @@ export const Sidebar = memo(() => {
   return (
     <Flex
       display={{base: isOpen === "none" ? "flex" : "none", sm: "flex"}}
-      ml={{base: 1, sm: 3, lg: 0}}
-      mt={{base: 1, sm: 3, lg: 0}}
-      mb={{base: 0, sm: 2, lg: 0}}
+      mr={{base: 1, sm: 3, lg: 2}}
+      mt={{base: 1, md: 0}}
+      mb={{base: 0, md: 0}}
       direction="column"
     >
       <SidebarItem icon={CgProfile} desc="My Profile" />
