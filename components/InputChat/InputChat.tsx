@@ -68,8 +68,7 @@ export const InputChat: React.FC<MainInput> = ({
   const handleSend = async () => {
     message = message.trim();
     if (message == "") {
-      console.log("fake");
-      // return;
+      return;
     }
     await updateDoc(doc(db, "chats", combinedUid), {
       messages: arrayUnion({
