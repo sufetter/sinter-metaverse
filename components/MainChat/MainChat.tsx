@@ -116,6 +116,11 @@ export const TopBarChat = memo(() => {
         added: serverTimestamp(),
       },
     });
+    await updateDoc(doc(db, "userFriends", currentChat.userID), {
+      [currentUser.uid]: {
+        added: serverTimestamp(),
+      },
+    });
   };
 
   return (
@@ -262,7 +267,15 @@ export const TopBarChat = memo(() => {
                 color={mainStyles.mainItemColor}
                 as={AiOutlineUserAdd}
               />
-              <Text color="white" ml={1} my={2}>
+              <Text
+                color="white"
+                ml={1}
+                my={2}
+                onClick={() => {
+                  setOpen(false);
+                  addFriend();
+                }}
+              >
                 Add friend
               </Text>
             </Flex>

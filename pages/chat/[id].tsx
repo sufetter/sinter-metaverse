@@ -10,6 +10,7 @@ import {HiOutlineChatAlt2} from "react-icons/hi";
 import {TbLock} from "react-icons/tb";
 import {AuthContext} from "../../context/AuthContext";
 import {useRouter} from "next/router";
+import {FriendsCard} from "../../components/Friends";
 
 const id: React.FC = () => {
   const currentUser: any = useContext(AuthContext);
@@ -134,6 +135,7 @@ const id: React.FC = () => {
             </Flex>
             {chatList && (
               <ChatList searchInput={searchInput} setChatCard={setChatCard} />
+              // <FriendsCard />
             )}
             {chatCard}
           </Flex>
