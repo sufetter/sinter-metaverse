@@ -27,18 +27,25 @@ export const FriendsCard = () => {
   useEffect(() => {
     if (currentUser != String) {
       const getFriends = async () => {
-        const newChat = onSnapshot(
-          doc(db, "userfriends", currentUser.uid),
-          (doc) => {
-            let resFriends: any = doc.data();
+        const newFriend = onSnapshot(
+          doc(db, "userFriends", currentUser.uid),
+          (docs) => {
+            let resFriends: any = docs.data();
             if (resFriends) {
               let friendsArr = Object.entries(resFriends);
-              console.log(friendsArr);
-              // let res = friendsArr.map((userID: any) => {
-              //  const userInfo: any = await getDoc(doc(db, "users", friendsArr[0]));
-              //   // <Flex>jhkh</Flex>;
-              // });
-              // setFriends(res);
+              const res = friendsArr.map((friend) => {
+                let data: any;
+                async function Get() {
+                  const user: any = await getDoc(doc(db, "users", friend[0]));
+                  data = user.data();
+                  return data;
+                }
+                const r = Get();
+                console.log(r);
+                return <ChatItem user={Get} key={Math.random()} />;
+              });
+
+              setFriends(res);
             } else {
               setFriends(<></>);
             }
@@ -46,7 +53,7 @@ export const FriendsCard = () => {
         );
 
         return () => {
-          getFriends();
+          newFriend();
         };
       };
 

@@ -43,10 +43,12 @@ type ChatItemProps = {
   user?: any;
   options?: boolean;
   setChatCard?: any;
-  lastMessage: any;
+  lastMessage?: any;
+  ChatCardDefault?: any;
 };
 export const ChatItem = memo(
-  ({user, setChatCard, lastMessage}: ChatItemProps) => {
+  ({user, setChatCard, lastMessage, ChatCardDefault}: ChatItemProps) => {
+    console.log(user);
     let searchedAvatar: string =
       "https://firebasestorage.googleapis.com/v0/b/sinter-metaverse.appspot.com/o/user.png?alt=media&token=516be896-9714-4101-ab89-f2002fe7b099";
     if (user?.photoURL != undefined && user?.photoURL != "") {
@@ -85,7 +87,12 @@ export const ChatItem = memo(
             dispatch(changeMainOpen("flex"));
             const userInfo: any = await getDoc(doc(db, "users", user.uid));
             dispatch(changeCurrentChat(userInfo.data()));
-            setChatCard(<MainChat />);
+            setChatCard(
+              <MainChat
+                ChatCardDefault={ChatCardDefault}
+                setChatCard={setChatCard}
+              />
+            );
           }}
         >
           <Box boxSize="45px" overflow="hidden" borderRadius="100px">
@@ -246,7 +253,7 @@ const Render = ({searchedUsers, username}: any) => {
   );
 };
 
-const ChatItemsList = memo(({setChatCard}: any) => {
+const ChatItemsList = memo(({setChatCard, ChatCardDefault}: any) => {
   const {currentUser} = useAppSelector((state) => state.userAuthSlice);
   const [chats, setChats] = useState<any>([]);
   const [loaded, setLoaded] = useState(false);
@@ -290,6 +297,7 @@ const ChatItemsList = memo(({setChatCard}: any) => {
                   key={Math.random()}
                   user={chat[1].userInfo}
                   setChatCard={setChatCard}
+                  ChatCardDefault={ChatCardDefault}
                   lastMessage={chat[1].lastMessage}
                 />
               );
@@ -325,9 +333,14 @@ const ChatItemsList = memo(({setChatCard}: any) => {
 type ChatListProps = {
   searchInput: any;
   setChatCard: any;
+  ChatCardDefault: any;
 };
 
-export const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
+export const ChatList = ({
+  searchInput,
+  setChatCard,
+  ChatCardDefault,
+}: ChatListProps) => {
   const [searchedUsers, setSearchedUsers] = useState<any>();
   const [username, setUsername] = useState("");
 
@@ -359,7 +372,10 @@ export const ChatList = ({searchInput, setChatCard}: ChatListProps) => {
           },
         }}
       >
-        <ChatItemsList setChatCard={setChatCard} />
+        <ChatItemsList
+          ChatCardDefault={ChatCardDefault}
+          setChatCard={setChatCard}
+        />
       </Flex>
     </Flex>
   );
